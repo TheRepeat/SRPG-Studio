@@ -16,8 +16,8 @@ Check out its readme, it is VERY important.
 
 Warning Markers, which adds floating icons over dangerous enemies, units that can be spoken to, and supporters.
 The readme is VERY important.
- 1. warn-markers-v2.js
- 2. warn-markers-values-v2.js
+ 1. warn-markers.js
+ 2. warn-markers-values.js
 
 Better No-Animation Combat, which displays attack/accuracy/critical rate even when combat animations are turned off.
  1. detailed-easy-battle.js
@@ -34,4 +34,4 @@ UPDATE HISTORY (not comprehensive):
 2/11/2020: compiled separate plugins into enhancement pack
 2/17/2020: added detailed easy battle
 2/24/2020: added intuitive seals
-4/21/2020: updated warning markers to v2
+4/21/2020: updated warning markers with McMagister's changes

@@ -152,7 +152,7 @@
 					TextRenderer.drawText(x + dx1[4], y + 3, root.queryCommand('attack_capacity'), 64, statColor, font);
 					TextRenderer.drawKeywordText(x + dx1[5], y, StringTable.SignWord_WaveDash, -1, color, font);
 					TextRenderer.drawText(x + dx1[0], y + 3, root.queryCommand('agility_capacity'), 64, statColor, font);
-					TextRenderer.drawKeywordText(x + dx1[1], y, agi, -1, color, font);
+					NumberRenderer.drawNumber(x + dx1[1], y, agi);
 					TextRenderer.drawText(x + dx1[2], y + 3, root.queryCommand('critical_capacity'), 64, statColor, font);
 					TextRenderer.drawKeywordText(x + dx1[3], y, StringTable.SignWord_WaveDash, -1, color, font);
 					TextRenderer.drawText(x + dx1[6], y + 3, root.queryCommand('hit_capacity'), 64, statColor, font);

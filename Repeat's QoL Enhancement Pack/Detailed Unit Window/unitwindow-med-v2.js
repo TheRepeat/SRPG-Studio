@@ -17,8 +17,6 @@
 		var font = textui.getFont();
 
 		x += GraphicsFormat.FACE_WIDTH + this._getInterval();
-		// y += 32;
-		// TextRenderer.drawText(x, y, unit.getClass().getName(), length, color, font);
 	};
 
 	UnitSimpleRenderer._drawSubInfo = function (x, y, unit, textui) {

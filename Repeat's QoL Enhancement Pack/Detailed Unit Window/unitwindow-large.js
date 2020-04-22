@@ -43,7 +43,6 @@
 				this._drawFace(x, y, unit, textui);
 				this._drawName(x, y, unit, textui);
 				this._drawInfo(x, y, unit, textui);
-				// this._drawWeapon(x, y, unit, textui);
 				this._drawSubInfo(x, y, unit, textui, this._mhp);
 			},
 
@@ -110,7 +109,6 @@
 				var font = textui.getFont();
 
 				var dxComp = -(GraphicsFormat.FACE_WIDTH) / 2 + 5;
-				var dx = [0, 44, 60, 98, -60, -20]; // only used if no weapon is equipped
 				var dx1 = [dxComp, dxComp + 44, dxComp + 60, dxComp + 98, dxComp - 60, dxComp - 20, dxComp + 119, dxComp + 160];
 
 				var totalStatus = this._getTotalStatus(unit);
@@ -128,12 +126,11 @@
 				y += 32;
 				ContentRenderer.drawHp(x, y, unit.getHp(), ParamBonus.getMhp(unit));
 				y += 20;
-				// TextRenderer.drawText(x+25, y+3, unit.getClass().getName(), length, color, font);
 				ContentRenderer.drawLevelInfo(x, y, unit);
 				y += 22;
 
 				var weapon;
-				// no weapon equipped; only def/res are shown
+				// no weapon equipped
 				if (ItemControl.getEquippedWeapon(unit) === null) {
 					TextRenderer.drawText(x, y + 2, "(Unarmed)", length, color, font);
 

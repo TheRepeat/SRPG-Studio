@@ -43,7 +43,6 @@
 				this._drawFace(x, y, unit, textui);
 				this._drawName(x, y, unit, textui);
 				this._drawInfo(x, y, unit, textui);
-				// this._drawWeapon(x, y, unit, textui);
 				this._drawSubInfo(x, y, unit, textui, this._mhp);
 			},
 
@@ -110,7 +109,6 @@
 				var font = textui.getFont();
 
 				var dxComp = -(GraphicsFormat.FACE_WIDTH) / 2 + 5;
-				var dx = [0, 44, 60, 98, -60, -20]; // only used if no weapon is equipped
 				var dx1 = [dxComp, dxComp + 44, dxComp + 60, dxComp + 98, dxComp - 60, dxComp - 20, dxComp + 119, dxComp + 160];
 
 				var totalStatus = this._getTotalStatus(unit);
@@ -138,12 +136,11 @@
 				y += 32;
 				ContentRenderer.drawHp(x, y, unit.getHp(), ParamBonus.getMhp(unit));
 				y += 20;
-				// TextRenderer.drawText(x+25, y+3, unit.getClass().getName(), length, color, font);
 				ContentRenderer.drawLevelInfo(x, y, unit);
 				y += 22;
 
 				var weapon;
-				// no weapon equipped; only def/res are shown
+				// no weapon equipped
 				if (ItemControl.getEquippedWeapon(unit) === null) {
 					TextRenderer.drawText(x, y + 2, "(Unarmed)", length, color, font);
 
@@ -288,35 +285,5 @@
 				return ['XL','L','M','S'];
 			}
 		}
-	);
-
-		// // For strings that are too long for the unit window but fine for everywhere else
-		// ItemRenderer.drawItemLarge = function (x, y, item, color, font, isDrawLimit) {
-		// 	if (typeof item.custom.lrgname !== 'undefined') {
-		// 		this.drawItemAlphaLarge(x, y, item, color, font, isDrawLimit, 255);
-		// 	}
-		// 	else {
-		// 		this.drawItemAlpha(x, y, item, color, font, isDrawLimit, 255);
-		// 	}
-		// };
-	
-		// var alias1 = ItemRenderer.drawItemAlpha;
-		// ItemRenderer.drawItemAlphaLarge = function (x, y, item, color, font, isDrawLimit, alpha) {
-		// 	var interval = this._getItemNumberInterval();
-		// 	var iconWidth = GraphicsFormat.ICON_WIDTH + 5;
-		// 	var length = this._getTextLength();
-		// 	var handle = item.getIconResourceHandle();
-		// 	var graphicsRenderParam = StructureBuilder.buildGraphicsRenderParam();
-	
-		// 	graphicsRenderParam.alpha = alpha;
-		// 	GraphicsRenderer.drawImageParam(x, y, handle, GraphicsType.ICON, graphicsRenderParam);
-	
-		// 	TextRenderer.drawAlphaText(x + iconWidth, y + ContentLayout.KEYWORD_HEIGHT, item.custom.lrgname, length, color, alpha, font);
-	
-		// 	if (isDrawLimit) {
-		// 		this.drawItemLimit(x + iconWidth + interval, y, item, alpha);
-		// 	}
-	
-		// };
-	
+	)
 })();

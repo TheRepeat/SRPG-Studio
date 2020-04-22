@@ -155,9 +155,19 @@
             var playerUnit = players.getData(i);
             playerUnit.custom.talkWarning = false;
             playerUnit.custom.supWarning = false;
+            playerUnit.custom.critWarning = false;
+            playerUnit.custom.effWarning = false;
+            playerUnit.custom.weapWarning = false;
+            playerUnit.custom.unitWarning = false;
+            playerUnit.custom.talkWarning = false;
         }
         for (i = 0; i < allies.getCount(); i++) {
             var allyUnit = allies.getData(i);
+            allyUnit.custom.talkWarning = false;
+            allyUnit.custom.critWarning = false;
+            allyUnit.custom.effWarning = false;
+            allyUnit.custom.weapWarning = false;
+            allyUnit.custom.unitWarning = false;
             allyUnit.custom.talkWarning = false;
         }
 

@@ -18,14 +18,74 @@
             if (!unit.isWait()) {
                 var enemies = EnemyList.getAliveList();
 
+                // ENEMY MARKERS
+
                 for (var i = 0; i < enemies.getCount(); i++) {
+                    var seal = false;
+                    var breakSeal = false;
+                    var j;
 
                     var enemyUnit = enemies.getData(i);
 
                     if (enemyUnit.isInvisible()) continue;
-                    if (ItemControl.getEquippedWeapon(enemyUnit) === null) continue;
-
                     var weapon = ItemControl.getEquippedWeapon(enemyUnit);
+                    // Unarmed units can still have Seal skills. Other enemy markers can be skipped.
+
+                    // SEAL WARNING
+
+                    // Find any Break Seal skills
+                    var unitSkills = unit.getSkillReferenceList();
+                    var unitClassSkills = unit.getClass().getSkillReferenceList();
+                    var unitTerrainSkills = root.getCurrentSession().getTerrainFromPos(unit.getMapX(), unit.getMapY(), true).getSkillReferenceList();
+                    var unitItemSkills = unit.getItem(0) == null ? null : unit.getItem(0).getSkillReferenceList();
+                    var unitWeapon = ItemControl.getEquippedWeapon(unit);
+                    if (unitWeapon !== null) {
+                        var unitWeaponSkills = unitWeapon.getSkillReferenceList();
+                        if (unitWeapon.getWeaponOption() === WeaponOption.SEALATTACKBREAK) breakSeal = true;
+                        breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitWeaponSkills, enemyUnit);
+                    }
+                    breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitSkills, enemyUnit);
+                    breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitClassSkills, enemyUnit);
+                    breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitTerrainSkills, enemyUnit);
+                    j = 0;
+                    while (unitItemSkills != null) {
+                        if (!unit.getItem(j).isWeapon()) {
+                            breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitItemSkills, enemyUnit);
+                        }
+                        j++;
+                        unitItemSkills = unit.getItem(j) == null ? null : unit.getItem(j).getSkillReferenceList();
+                    }
+
+                    if (!breakSeal) {
+                        // Find Seal skills
+                        var targetUnitSkills = enemyUnit.getSkillReferenceList();
+                        var targetUnitClassSkills = enemyUnit.getClass().getSkillReferenceList();
+                        var targetUnitTerrainSkills = root.getCurrentSession().getTerrainFromPos(enemyUnit.getMapX(), enemyUnit.getMapY(), true).getSkillReferenceList();
+                        var targetUnitItemSkills = enemyUnit.getItem(0) == null ? null : enemyUnit.getItem(0).getSkillReferenceList();
+                        if(weapon !== null){
+                            var targetWeaponSkills = weapon.getSkillReferenceList();
+                            seal = seal ? seal : findSealSkill(targetWeaponSkills, unit);
+                            if (weapon.getWeaponOption() === WeaponOption.SEALATTACK) seal = true;
+                        }
+                        
+                        seal = seal ? seal : findSealSkill(targetUnitSkills, unit);
+                        seal = seal ? seal : findSealSkill(targetUnitClassSkills, unit);
+                        seal = seal ? seal : findSealSkill(targetUnitTerrainSkills, unit);
+                        j = 0;
+                        while (targetUnitItemSkills != null) {
+                            if (!enemyUnit.getItem(j).isWeapon()) {
+                                seal = seal ? seal : findSealSkill(targetUnitItemSkills, unit);
+                            }
+                            j++;
+                            targetUnitItemSkills = enemyUnit.getItem(j) == null ? null : enemyUnit.getItem(j).getSkillReferenceList();
+                        }
+                    }
+
+                    if (seal) enemyUnit.custom.sealWarning = true;
+
+                    // END SEAL WARNING
+
+                    if (weapon === null) continue;
 
                     // Critical rate warning
                     // The enemy's Crit is compared to the user's Critical Avoid (supports not taken 
@@ -42,10 +102,14 @@
                     var eff = DamageCalculator.isEffective(enemyUnit, unit, weapon, false, TrueHitValue.NONE);
                     if (eff) enemyUnit.custom.effWarning = true;
 
+
+
                     if (weapon.custom.warning) enemyUnit.custom.weapWarning = true;
 
                     if (enemyUnit.custom.warning) enemyUnit.custom.unitWarning = true;
                 }
+
+                // END ENEMY MARKERS
 
                 var talkArr = EventCommonArray.createArray(root.getCurrentSession().getTalkEventList(), EventType.TALK);
                 // for all events
@@ -78,7 +142,7 @@
                 // getting support pardners
                 // If unit receives non-skill support from someone, draw icon
                 // TODO: different icons for different supporters
-                var i,j, data;
+                var i, j, data;
                 var amigos = PlayerList.getAliveList();
                 for (i = 0; i < amigos.getCount(); i++) {
                     var friend = amigos.getData(i);
@@ -103,9 +167,45 @@
         return root.isInputState(InputType.BTN2) || root.isMouseAction(MouseType.RIGHT);
     }
 
+    // match all skills with one that seals the selected unit. The weapon option for Seal is handled elsewhere
+    var findSealSkill = function (skillReferenceList, unit) {
+        var data, type, value, targets;
+        var count = skillReferenceList.getTypeCount();
+        for (i = 0; i < count; i++) {
+            data = skillReferenceList.getTypeData(i);
+            type = data.getSkillType();
+            value = data.getSkillValue();
+            if (type === SkillType.BATTLERESTRICTION && value === BattleRestrictionValue.SEALATTACK) {
+                targets = data.getTargetAggregation();
+                if (targets.isCondition(unit)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // find any Break Seal skills. The weapon option for Break Seal is handled on its own, not here
+    var findBreakSealSkill = function (skillReferenceList, unit) {
+        var data, type, value, targets;
+        var count = skillReferenceList.getTypeCount();
+        for (i = 0; i < count; i++) {
+            data = skillReferenceList.getTypeData(i);
+            type = data.getSkillType();
+            value = data.getSkillValue();
+            if (type === SkillType.INVALID && value === InvalidFlag.SEALATTACKBREAK) {
+                targets = data.getTargetAggregation();
+                if (targets.isCondition(unit)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     // REMOVE STATES
 
-    // remove states when Cancel/Right mouse button is pressed
+    // ...when Cancel/Right mouse button is pressed
     var alias2 = MapEdit._moveCursorMove;
     MapEdit._moveCursorMove = function () {
         var result = MapEditResult.NONE;
@@ -119,7 +219,7 @@
         return result;
     }
 
-    // remove states after unit acts
+    // ...after unit acts
     var alias4 = PlayerTurn.recordPlayerAction;
     PlayerTurn.recordPlayerAction = function (isPlayerActioned) {
         alias4.call(this, isPlayerActioned);
@@ -128,7 +228,7 @@
         }
     }
 
-    // remove states when switching units' sortie positions during battle prep
+    // ...when switching units' sortie positions during battle prep
     var alias5 = SetupEdit._changePos;
     SetupEdit._changePos = function (obj) {
         removeWarningStates();
@@ -151,6 +251,7 @@
             enemyUnit.custom.weapWarning = false;
             enemyUnit.custom.unitWarning = false;
             enemyUnit.custom.supWarning = false;
+            enemyUnit.custom.sealWarning = false;
         }
         for (i = 0; i < players.getCount(); i++) {
             var playerUnit = players.getData(i);
@@ -160,6 +261,7 @@
             playerUnit.custom.weapWarning = false;
             playerUnit.custom.unitWarning = false;
             playerUnit.custom.supWarning = false;
+            playerUnit.custom.sealWarning = false;
         }
         for (i = 0; i < allies.getCount(); i++) {
             var allyUnit = allies.getData(i);
@@ -169,6 +271,7 @@
             allyUnit.custom.weapWarning = false;
             allyUnit.custom.unitWarning = false;
             allyUnit.custom.supWarning = false;
+            allyUnit.custom.sealWarning = false;
         }
 
         UnitStateAnimator.updateIcons();
@@ -176,7 +279,7 @@
 
 
     // Delegate the responsibility of rendering the custom parameters to UnitStateAnimator
-    // Icons are defined in warn-markers-values-v2.js
+    // Icons are defined in warn-markers-values.js
     var alias = UnitStateAnimator._updateIconByUnit;
     UnitStateAnimator._updateIconByUnit = function (unit) {
         alias.call(this, unit);
@@ -209,6 +312,11 @@
         if (unit.custom.supWarning) {
             var SUPPORT_ICON_HANDLE = root.createResourceHandle(SUPPORT_ICON.isRuntime, SUPPORT_ICON.id, 0, SUPPORT_ICON.xSrc, SUPPORT_ICON.ySrc);
             this._addIcon(unit, SUPPORT_ICON_HANDLE);
+        }
+
+        if (unit.custom.sealWarning) {
+            var SEALED_ICON_HANDLE = root.createResourceHandle(SEALED_ICON.isRuntime, SEALED_ICON.id, 0, SEALED_ICON.xSrc, SEALED_ICON.ySrc);
+            this._addIcon(unit, SEALED_ICON_HANDLE);
         }
     }
 

@@ -14,44 +14,51 @@
 
 var TALK_ICON = {
     isRuntime: false,
-    id: 0,
+    id: 1,
     xSrc: 1,
     ySrc: 0
 }
 
 var EFFECTIVE_ICON = {
     isRuntime: false,
-    id: 0,
+    id: 1,
     xSrc: 0,
     ySrc: 0
 }
 
 var CRITICAL_ICON = {
     isRuntime: false,
-    id: 0,
+    id: 1,
     xSrc: 2,
     ySrc: 0
 }
 
 var WEAPON_ICON = {
     isRuntime: false,
-    id: 0,
+    id: 1,
     xSrc: 0,
     ySrc: 1
 }
 
 var UNIT_ICON = {
     isRuntime: false,
-    id: 0,
+    id: 1,
     xSrc: 1,
     ySrc: 1
 }
 
 var SUPPORT_ICON = {
     isRuntime: false,
-    id: 0,
+    id: 1,
     xSrc: 2,
     ySrc: 1
+}
+
+var SEALED_ICON = {
+    isRuntime: false,
+    id: 1,
+    xSrc: 3,
+    ySrc: 0
 }
 
 // Critical warning starts showing up at this % or higher

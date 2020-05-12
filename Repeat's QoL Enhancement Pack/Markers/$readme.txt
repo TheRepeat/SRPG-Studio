@@ -3,6 +3,7 @@ This plugin allows for warning markers like later FE games and many GBAFE romhac
 When a player unit is selected, the following units have a marker put over their heads:
   - Enemies with a dangerously high critical rate
   - Enemies with a weapon effective against the player unit (e.g. an armorslayer)
+  - Enemies that will seal the selected unit's attack
   - Any unit that the selected unit is able to have a conversation with
   - Specific enemy units or weapons with the custom parameter {warning:true}
   - Allies that grant support bonuses to the selected unit
@@ -46,3 +47,4 @@ or something less traditional, like numbered support tiers or displaying allies'
 	   * Placeholder image file updated.
 	   * Helper image file added.
 	   * Support markers added.
+5/12/2020: added Seal markers, updated placeholder image file. Lost the raw .xcf of the helper file so hopefully the old one's good enough for now, will remake it some other time

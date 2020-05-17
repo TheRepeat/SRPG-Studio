@@ -4,7 +4,7 @@
    Me no likey, so this plugin separates those commands.
    CANCEL (BTN2): show enemy range and cancel.
    OPTION (BTN3): unit menu, as usual. What's unique is that it is now the only key that does this.
-   OPTION2 (BTN4): by default an unused key, now this handles fast forward and fast cursor.
+   SYSTEM (BTN7): handles fast forward like default, but now also handles fast cursor.
 
    InputControl.isAccelState is a new function. 
    However, the other functions in this plugin override default functions without an alias.
@@ -15,7 +15,7 @@
 
   // remap Accelerate (fast cursor/fast forward)
   InputControl.isAccelState = function () {
-    return root.isInputState(InputType.BTN4);
+    return root.isInputState(InputType.BTN7);
   }
   MapCursor._isAccelerate = function () {
     return InputControl.isAccelState();

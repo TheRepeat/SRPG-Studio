@@ -4,44 +4,21 @@
 */
 
 (function () {
-    var findAltHit = function (skillReferenceList) {
-        var count = skillReferenceList.getTypeCount();
-        for (i = 0; i < count; i++) {
-            if (skillReferenceList.getTypeData(i).getCustomKeyword() == "althit") {
-                return true;
-            }
+
+    var alias1 = SkillRandomizer.isCustomSkillInvokedInternal;
+    SkillRandomizer.isCustomSkillInvokedInternal = function (active, passive, skill, keyword) {
+        if (keyword === 'althit') {
+            return this._isSkillInvokedInternal(active, passive, skill);
         }
-        return false;
+        return alias1.call(this, active, passive, skill, keyword);
     }
 
     var calhit = HitCalculator.calculateHit;
     HitCalculator.calculateHit = function (active, passive, weapon, activeTotalStatus, passiveTotalStatus) {
         var percent;
-        var found = false;
+        var skill = SkillControl.getPossessionCustomSkill(active, 'althit');
 
-        var unitSkills = active.getSkillReferenceList();
-        var unitWeaponSkills = weapon.getSkillReferenceList(); // already have the equipped weapon
-        var unitClassSkills = active.getClass().getSkillReferenceList();
-        var unitTerrainSkills = root.getCurrentSession().getTerrainFromPos(active.getMapX(), active.getMapY(), true).getSkillReferenceList();
-        var unitItemSkills = active.getItem(0) == null ? null : active.getItem(0).getSkillReferenceList();
-        var i; // for checking items
-
-        found = found ? found : weapon.custom.althit;
-        found = found ? found : findAltHit(unitSkills);
-        found = found ? found : findAltHit(unitClassSkills);
-        found = found ? found : findAltHit(unitWeaponSkills);
-        found = found ? found : findAltHit(unitTerrainSkills);
-        found = found ? found : findAltHit(unitSkills);
-        i = 0;
-        while (unitItemSkills !== null) {
-            if (!active.getItem(i).isWeapon()) {
-                found = found ? found : findAltHit(unitItemSkills);
-            }
-            i++;
-            unitItemSkills = active.getItem(i) === null ? null : active.getItem(i).getSkillReferenceList();
-        }
-
-        if (found) {
+        if (skill || weapon.custom.althit) {
 
             if (root.isAbsoluteHit()) {
                 if (passive.isImmortal()) {

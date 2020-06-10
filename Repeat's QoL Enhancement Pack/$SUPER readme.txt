@@ -4,7 +4,7 @@ Modification: OK
 Redistribution: OK
 Commercial use: OK
 Adult use: OK
-If you use my plugins in your own project, it'd be nice if you credited me as Repeat, but I won't force you to.
+If you use my plugins in your own project, it'd be nice if you credited me as Repeat or TheRepeat, but I won't force you to.
 
 
 	WHAT ALL IS IN HERE?
@@ -39,6 +39,10 @@ Intuitive Seals, which hides units' stats on the combat forecast if the unit(s) 
 opponent's skill or weapon. Plug and play, doesn't require anything special.
  1. intuitive-seal.js
 
+Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
+Plug and play, but has a handful of values you can edit in the file if you want to.
+ 1. R-show-weapontype.js
+
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
 
@@ -48,3 +52,6 @@ UPDATE HISTORY (not comprehensive):
 2/17/2020: added detailed easy battle
 2/24/2020: added intuitive seals
 4/21/2020: updated warning markers & detailed unit window
+6/9/2020 (nice): show weapontype plugin added
+
+I want to rename all my files to start with "R-" like R-show-weapontype.js so it's easier to keep em together but apparently renaming files in a repository is a huge pain and a big nono soooo

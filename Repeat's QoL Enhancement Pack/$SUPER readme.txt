@@ -43,6 +43,10 @@ Show Weapon Type, which shows either the icon or the name of a weapon's type whe
 Plug and play, but has a handful of values you can edit in the file if you want to.
  1. R-show-weapontype.js
 
+Item Drop Indicators, which places an icon over enemies that have an item they will drop.
+Uses McMagister's Unit State Animator.
+ 1. R-drops-items.js
+
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
 
@@ -53,5 +57,6 @@ UPDATE HISTORY (not comprehensive):
 2/24/2020: added intuitive seals
 4/21/2020: updated warning markers & detailed unit window
 6/9/2020 (nice): show weapontype plugin added
+6/18/2020: item drop indicator plugin added
 
 I want to rename all my files to start with "R-" like R-show-weapontype.js so it's easier to keep em together but apparently renaming files in a repository is a huge pain and a big nono soooo

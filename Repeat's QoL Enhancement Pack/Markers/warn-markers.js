@@ -1,12 +1,15 @@
 /* By Repeat, edited by McMagister
-   Places warning markers over enemies that have high critical rates or
-   have weaponry effective against the selected player unit.
-   (If you wish, you can also denote specific weapons or enemies with {warning:true} 
-   to give them a unique warning icon.)
-   Also puts a marker over units the current unit can Talk to, and allies that give 
-   support bonuses to the current unit.
+   Places floating markers over enemies and allies that fulfill certain criteria.
+   These markers can be opted in and out of by changing a handful of boolean values below.
+   You can also use custom parameter {warning:true} on weapons or units to give warning markers to individuals.
 */
 (function () {
+
+    EFFECTIVE_WARNING = true;   // if true, enemies with weaponry effective against the selected unit will be marked
+    CRITICAL_WARNING = true;    // if true, enemies with a high critical rate will be marked
+    TALK_WARNING = true;        // if true, units whom the selected unit can speak to will be marked
+    SUPPORT_WARNING = true;     // if true, units who give support bonuses to the selected unit will be marked
+    SEAL_WARNING = true;        // if true, enemies who would seal the selected unit's attack will be marked
 
     var alias1 = MapEdit._selectAction;
     MapEdit._selectAction = function (unit) {
@@ -19,7 +22,6 @@
                 var enemies = EnemyList.getAliveList();
 
                 // ENEMY MARKERS
-
                 for (var i = 0; i < enemies.getCount(); i++) {
                     var seal = false;
                     var breakSeal = false;
@@ -29,81 +31,87 @@
 
                     if (enemyUnit.isInvisible()) continue;
                     var weapon = ItemControl.getEquippedWeapon(enemyUnit);
-                    // Unarmed units can still have Seal skills. Other enemy markers can be skipped.
 
                     // SEAL WARNING
 
-                    // Find any Break Seal skills
-                    var unitSkills = unit.getSkillReferenceList();
-                    var unitClassSkills = unit.getClass().getSkillReferenceList();
-                    var unitTerrainSkills = root.getCurrentSession().getTerrainFromPos(unit.getMapX(), unit.getMapY(), true).getSkillReferenceList();
-                    var unitItemSkills = unit.getItem(0) == null ? null : unit.getItem(0).getSkillReferenceList();
-                    var unitWeapon = ItemControl.getEquippedWeapon(unit);
-                    if (unitWeapon !== null) {
-                        var unitWeaponSkills = unitWeapon.getSkillReferenceList();
-                        if (unitWeapon.getWeaponOption() === WeaponOption.SEALATTACKBREAK) breakSeal = true;
-                        breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitWeaponSkills, enemyUnit);
-                    }
-                    breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitSkills, enemyUnit);
-                    breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitClassSkills, enemyUnit);
-                    breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitTerrainSkills, enemyUnit);
-                    j = 0;
-                    while (unitItemSkills != null) {
-                        if (!unit.getItem(j).isWeapon()) {
-                            breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitItemSkills, enemyUnit);
+                    if (SEAL_WARNING) {
+                        // Find any Break Seal skills
+                        var unitSkills = unit.getSkillReferenceList();
+                        var unitClassSkills = unit.getClass().getSkillReferenceList();
+                        var unitTerrainSkills = root.getCurrentSession().getTerrainFromPos(unit.getMapX(), unit.getMapY(), true).getSkillReferenceList();
+                        var unitItemSkills = unit.getItem(0) == null ? null : unit.getItem(0).getSkillReferenceList();
+                        var unitWeapon = ItemControl.getEquippedWeapon(unit);
+                        if (unitWeapon !== null) {
+                            var unitWeaponSkills = unitWeapon.getSkillReferenceList();
+                            if (unitWeapon.getWeaponOption() === WeaponOption.SEALATTACKBREAK) breakSeal = true;
+                            breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitWeaponSkills, enemyUnit);
                         }
-                        j++;
-                        unitItemSkills = unit.getItem(j) == null ? null : unit.getItem(j).getSkillReferenceList();
-                    }
-
-                    if (!breakSeal) {
-                        // Find Seal skills
-                        var targetUnitSkills = enemyUnit.getSkillReferenceList();
-                        var targetUnitClassSkills = enemyUnit.getClass().getSkillReferenceList();
-                        var targetUnitTerrainSkills = root.getCurrentSession().getTerrainFromPos(enemyUnit.getMapX(), enemyUnit.getMapY(), true).getSkillReferenceList();
-                        var targetUnitItemSkills = enemyUnit.getItem(0) == null ? null : enemyUnit.getItem(0).getSkillReferenceList();
-                        if(weapon !== null){
-                            var targetWeaponSkills = weapon.getSkillReferenceList();
-                            seal = seal ? seal : findSealSkill(targetWeaponSkills, unit);
-                            if (weapon.getWeaponOption() === WeaponOption.SEALATTACK) seal = true;
-                        }
-                        
-                        seal = seal ? seal : findSealSkill(targetUnitSkills, unit);
-                        seal = seal ? seal : findSealSkill(targetUnitClassSkills, unit);
-                        seal = seal ? seal : findSealSkill(targetUnitTerrainSkills, unit);
+                        breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitSkills, enemyUnit);
+                        breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitClassSkills, enemyUnit);
+                        breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitTerrainSkills, enemyUnit);
                         j = 0;
-                        while (targetUnitItemSkills != null) {
-                            if (!enemyUnit.getItem(j).isWeapon()) {
-                                seal = seal ? seal : findSealSkill(targetUnitItemSkills, unit);
+                        while (unitItemSkills != null) {
+                            if (!unit.getItem(j).isWeapon()) {
+                                breakSeal = breakSeal ? breakSeal : findBreakSealSkill(unitItemSkills, enemyUnit);
                             }
                             j++;
-                            targetUnitItemSkills = enemyUnit.getItem(j) == null ? null : enemyUnit.getItem(j).getSkillReferenceList();
+                            unitItemSkills = unit.getItem(j) == null ? null : unit.getItem(j).getSkillReferenceList();
                         }
-                    }
 
-                    if (seal) enemyUnit.custom.sealWarning = true;
+                        if (!breakSeal) {
+                            // Find Seal skills
+                            var targetUnitSkills = enemyUnit.getSkillReferenceList();
+                            var targetUnitClassSkills = enemyUnit.getClass().getSkillReferenceList();
+                            var targetUnitTerrainSkills = root.getCurrentSession().getTerrainFromPos(enemyUnit.getMapX(), enemyUnit.getMapY(), true).getSkillReferenceList();
+                            var targetUnitItemSkills = enemyUnit.getItem(0) == null ? null : enemyUnit.getItem(0).getSkillReferenceList();
+                            if (weapon !== null) {
+                                var targetWeaponSkills = weapon.getSkillReferenceList();
+                                seal = seal ? seal : findSealSkill(targetWeaponSkills, unit);
+                                if (weapon.getWeaponOption() === WeaponOption.SEALATTACK) seal = true;
+                            }
+
+                            seal = seal ? seal : findSealSkill(targetUnitSkills, unit);
+                            seal = seal ? seal : findSealSkill(targetUnitClassSkills, unit);
+                            seal = seal ? seal : findSealSkill(targetUnitTerrainSkills, unit);
+                            j = 0;
+                            while (targetUnitItemSkills != null) {
+                                if (!enemyUnit.getItem(j).isWeapon()) {
+                                    seal = seal ? seal : findSealSkill(targetUnitItemSkills, unit);
+                                }
+                                j++;
+                                targetUnitItemSkills = enemyUnit.getItem(j) == null ? null : enemyUnit.getItem(j).getSkillReferenceList();
+                            }
+                        }
+
+                        if (seal) enemyUnit.custom.sealWarning = true;
+                    }
 
                     // END SEAL WARNING
 
+                    // Unarmed units can still have Seal skills. Other enemy markers can be skipped.
                     if (weapon === null) continue;
 
                     // Critical rate warning
                     // The enemy's Crit is compared to the user's Critical Avoid (supports not taken 
                     // into consideration) and compared against CRT_THRESHOLD.
-                    if (!Miscellaneous.isCriticalAllowed(enemyUnit, null)) {
-                        var crt = 0;
-                    } else {
-                        var crt = AbilityCalculator.getCritical(enemyUnit, weapon);
+                    if (CRITICAL_WARNING) {
+                        if (!Miscellaneous.isCriticalAllowed(enemyUnit, null)) {
+                            var crt = 0;
+                        } else {
+                            var crt = AbilityCalculator.getCritical(enemyUnit, weapon);
+                        }
+                        var cav = AbilityCalculator.getCriticalAvoid(unit);
+                        if ((crt - cav) >= CRT_THRESHOLD) enemyUnit.custom.critWarning = true;
                     }
-                    var cav = AbilityCalculator.getCriticalAvoid(unit);
-                    if ((crt - cav) >= CRT_THRESHOLD) enemyUnit.custom.critWarning = true;
 
                     // Effectiveness warning
-                    var eff = DamageCalculator.isEffective(enemyUnit, unit, weapon, false, TrueHitValue.NONE);
-                    if (eff) enemyUnit.custom.effWarning = true;
+                    if (EFFECTIVE_WARNING) {
+                        var eff = DamageCalculator.isEffective(enemyUnit, unit, weapon, false, TrueHitValue.NONE);
+                        if (eff) enemyUnit.custom.effWarning = true;
+                    }
 
 
-
+                    // Custom parameter warnings
                     if (weapon.custom.warning) enemyUnit.custom.weapWarning = true;
 
                     if (enemyUnit.custom.warning) enemyUnit.custom.unitWarning = true;
@@ -111,46 +119,50 @@
 
                 // END ENEMY MARKERS
 
-                var talkArr = EventCommonArray.createArray(root.getCurrentSession().getTalkEventList(), EventType.TALK);
-                // for all events
-                for (var j = 0; j < talkArr.length; j++) {
-                    event = talkArr[j];
-                    talkInfo = event.getTalkEventInfo();
-                    src = talkInfo.getSrcUnit();
-                    dest = talkInfo.getDestUnit();
-                    if (src === null || dest === null) {
-                        continue;
-                    }
-                    if (unit != src && unit != dest) {
-                        continue;
-                    } else if (unit != src && !talkInfo.isMutual()) {
-                        continue;
-                    }
-
-                    // talk warning
-                    if (event.isEvent() && event.getExecutedMark() === EventExecutedType.FREE) {
-                        var unit2;
-                        if (unit === src) {
-                            unit2 = dest;
-                        } else {
-                            unit2 = src;
+                if (TALK_WARNING) {
+                    var talkArr = EventCommonArray.createArray(root.getCurrentSession().getTalkEventList(), EventType.TALK);
+                    // for all events
+                    for (var j = 0; j < talkArr.length; j++) {
+                        event = talkArr[j];
+                        talkInfo = event.getTalkEventInfo();
+                        src = talkInfo.getSrcUnit();
+                        dest = talkInfo.getDestUnit();
+                        if (src === null || dest === null) {
+                            continue;
                         }
-                        unit2.custom.talkWarning = true;
+                        if (unit != src && unit != dest) {
+                            continue;
+                        } else if (unit != src && !talkInfo.isMutual()) {
+                            continue;
+                        }
+
+                        // talk warning
+                        if (event.isEvent() && event.getExecutedMark() === EventExecutedType.FREE) {
+                            var unit2;
+                            if (unit === src) {
+                                unit2 = dest;
+                            } else {
+                                unit2 = src;
+                            }
+                            unit2.custom.talkWarning = true;
+                        }
                     }
                 }
 
                 // getting support pardners
                 // If unit receives non-skill support from someone, draw icon
                 // TODO: different icons for different supporters
-                var i, j, data;
-                var amigos = PlayerList.getAliveList();
-                for (i = 0; i < amigos.getCount(); i++) {
-                    var friend = amigos.getData(i);
-                    var supportCount = friend.getSupportDataCount();
-                    for (j = 0; j < supportCount; j++) {
-                        data = friend.getSupportData(j);
-                        if (unit === data.getUnit() && data.isGlobalSwitchOn() && data.isVariableOn()) {
-                            friend.custom.supWarning = true;
+                if (SUPPORT_WARNING) {
+                    var i, j, data;
+                    var amigos = PlayerList.getAliveList();
+                    for (i = 0; i < amigos.getCount(); i++) {
+                        var friend = amigos.getData(i);
+                        var supportCount = friend.getSupportDataCount();
+                        for (j = 0; j < supportCount; j++) {
+                            data = friend.getSupportData(j);
+                            if (unit === data.getUnit() && data.isGlobalSwitchOn() && data.isVariableOn()) {
+                                friend.custom.supWarning = true;
+                            }
                         }
                     }
                 }

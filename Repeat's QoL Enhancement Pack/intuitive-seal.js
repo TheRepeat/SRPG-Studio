@@ -109,7 +109,7 @@ PosAttackWindow.setPosTarget = function (unit, item, targetUnit, targetItem, isS
     var isCalculation = false;
 
     // compatibility. Not foolproof yet
-    if (!this.isUnitSealed(unit, item, targetUnit)) {
+    if (item !== null && !this.isUnitSealed(unit, item, targetUnit)) {
         intSealAlias.call(this, unit, item, targetUnit, targetItem, isSrc);
     }
 

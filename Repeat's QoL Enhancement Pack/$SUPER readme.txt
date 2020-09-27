@@ -58,4 +58,4 @@ UPDATE HISTORY (not comprehensive):
 4/21/2020: updated warning markers & detailed unit window
 6/9/2020 (nice): show weapontype plugin added
 6/18/2020: item drop indicator plugin added
-9/27/2020: refactoring to add 'R-' prefix to all filenames
+9/27/2020: refactoring to add 'R-' prefix to all filenames. Messes with history on GitHub, but history prior to 9/27 can be viewed in cmd/terminal with git log --follow <file>

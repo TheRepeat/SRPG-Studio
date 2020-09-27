@@ -14,7 +14,7 @@ The Large setting of this file trims it down to just the 4 essentials: Atk, Agi,
 
 All stats are displayed with the name defined in-engine, so change them in Resources > Resource Location > Strings instead
 of in this plugin. The only exception is Critical Avoid (CAv), which  is never named in SRPG Studio.
-If you want to change that name, change CRIT_AVOID_STAT on line 7 of unitwindow-0_altnames.js.
+If you want to change that name, change CRIT_AVOID_STAT on line 7 of 0_unitwindow.js.
 
 
 	ABOUT: MEDIUM SETTING OPTIONS

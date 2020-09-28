@@ -12,32 +12,32 @@ There are a bunch of nice plugins included in this enhancement pack:
 
 Terrain Details, which shows the HP recovery (or damage) of terrain. Modified from LadyRena's Hide 0 Avoid script.
 Doesn't have a readme because it doesn't need one.
- 1. terrain-details.js
+ 1. R-terrain-details.js
 
 Detailed Unit Window, which expands on the unit window in the map view.
 Check out the readme for more info.
- 1. unitwindow-0_altnames.js
- 2. unitwindow-extralarge.js
- 3. unitwindow-large.js
- 4. unitwindow-med-v1.js **OR** unitwindow-med-v2.js
+ 1. 0-unitwindow.js
+ 2. R-unitwindow-extralarge.js
+ 3. R-unitwindow-large.js
+ 4. R-unitwindow-med-v1.js **OR** R-unitwindow-med-v2.js
 
 Objective Window, which adds a new window to the map screen that allows you to display custom text.
 Check out its readme, it is VERY important.
- 1. map-objective-editable.js
- 2. move-terrain.js
+ 1. R-map-objective-editable.js
+ 2. R-move-terrain.js
 
 Warning Markers, which adds floating icons over dangerous enemies, units that can be spoken to, and supporters.
 The readme is VERY important.
  1. 0_mcmagister-unit-state-animator.js
- 2. warn-markers.js
- 3. warn-markers-values.js
+ 2. R-warn-markers.js
+ 3. R-warn-markers-values.js
 
 Better No-Animation Combat, which displays attack/accuracy/critical rate even when combat animations are turned off.
- 1. detailed-easy-battle.js
+ 1. R-detailed-easy-battle.js
 
 Intuitive Seals, which hides units' stats on the combat forecast if the unit(s) in question will be sealed by the 
 opponent's skill or weapon. Plug and play, doesn't require anything special.
- 1. intuitive-seal.js
+ 1. R-intuitive-seal.js
 
 Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
 Plug and play, but has a handful of values you can edit in the file if you want to.
@@ -58,5 +58,4 @@ UPDATE HISTORY (not comprehensive):
 4/21/2020: updated warning markers & detailed unit window
 6/9/2020 (nice): show weapontype plugin added
 6/18/2020: item drop indicator plugin added
-
-I want to rename all my files to start with "R-" like R-show-weapontype.js so it's easier to keep em together but apparently renaming files in a repository is a huge pain and a big nono soooo
+9/27/2020: refactoring to add 'R-' prefix to all filenames. Messes with history on GitHub, but history prior to 9/27 can be viewed in cmd/terminal with git log --follow <file>

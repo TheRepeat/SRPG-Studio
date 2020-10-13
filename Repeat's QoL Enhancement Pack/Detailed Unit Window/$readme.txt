@@ -1,8 +1,6 @@
 	Detailed Unit Window by Repeat
 This plugin changes the Map Unit Window from two sizes to four: Small, Medium, Large, and Extra Large. The small size is the same as vanilla.
-There are two versions of the Medium size for you to choose from; only place EITHER v1 or v2 into your project's Plugin folder, not both.
 
-I included a comparison image of the medium sizes to help you make an educated decision :)
 
 
 	ABOUT THIS PLUGIN: LARGE/EXTRA LARGE SETTINGS
@@ -14,7 +12,10 @@ The Large setting of this file trims it down to just the 4 essentials: Atk, Agi,
 
 All stats are displayed with the name defined in-engine, so change them in Resources > Resource Location > Strings instead
 of in this plugin. The only exception is Critical Avoid (CAv), which  is never named in SRPG Studio.
-If you want to change that name, change CRIT_AVOID_STAT on line 7 of 0_unitwindow.js.
+If you want to change that name, change CRIT_AVOID_STAT on line 8 of 0_unitwindow-config.js.
+
+Another option you have is to change ICONS_ONLY on line 9 of the same file to change the functionality! 
+If you change that line to ICONS_ONLY = true; then instead of displaying the unit's equipped weapon, the icons of the first 5 items in the unit's inventory will be shown instead.
 
 
 	ABOUT: MEDIUM SETTING OPTIONS
@@ -22,12 +23,15 @@ This affects the Medium setting of the unit window. This window also shows up wh
 
 This file displays the unit's name, current HP, and equipped weapon in the unit's hover window.
 
-VERSION 1 of this file shows the unit's Atk and Agi.
-VERSION 2 of this file shows the unit's Level and EXP instead.
+You can toggle between the two versions of this file by opening 0_unitwindow-config.js in a text editor and changing MEDIUM_SHOWS_STATS on line 11 to true or false.
 
-The two versions are mutually exclusive, so place ONLY the one you prefer in your project's Plugin folder.
-Alternatively, if you don't use either of these files, then the vanilla version of the medium window will be used instead.
+VERSION 1 (MEDIUM_SHOWS_STATS = true;) of this file shows the unit's Atk and Agi.
+VERSION 2 (MEDIUM_SHOWS_STATS = false;) of this file shows the unit's Level and EXP instead.
+
+Alternatively, if you just aren't a fan, then just don't put the unitwindow-medium.js file in your plugins folder, and the SRPG Studio default version will be used instead.
 This version of the window shows the unit's name, class, and current HP alongside an HP bar.
+
+I included a comparison image of each version of the medium size to help you make an educated decision :)
 
 
 	ABOUT: CUSTOM PARAMETERS

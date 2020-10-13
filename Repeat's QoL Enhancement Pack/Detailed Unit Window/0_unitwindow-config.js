@@ -1,10 +1,14 @@
-/* Part of the Detailed Unit Window plugin. 
-   Make sure this plugin loads before the rest of the detailed unit window plugins. It has the 0 in the name 
-   to make sure it gets loaded first.
+/*  By Repeat.
+    Part of the Detailed Unit Window plugin. 
+    Make sure this plugin loads before the rest of the detailed unit window plugins. It has the 0 in the name 
+    to make sure it gets loaded first.
 */
 
 (function () {
-	CRIT_AVOID_STAT = "CAv"; // Edit this to change string for Critical Avoid
+    CRIT_AVOID_STAT = "CAv";            // Edit this to change string for Critical Avoid
+    ICONS_ONLY = false;                 // if true, show icons of all items in inventory. If false, show equipped weapon and name.
+    STAT_COLOR = ColorValue.INFO;       // color of the stat names
+    MEDIUM_SHOWS_STATS = true;          // true: atk/as, false: lv/exp. You can remove unitwindow-med.js if you prefer the SRPG Studio default
 
     // FOR THE MEDIUM SIZE
     ItemRenderer.drawItemSmall = function (x, y, item, color, font, isDrawLimit) {
@@ -36,6 +40,7 @@
 
     // FOR THE LARGE AND EXTRA LARGE WINDOW SIZES
     ItemRenderer.drawItemLarge = function (x, y, item, color, font, isDrawLimit) {
+        if (!item) return;
         if (typeof item.custom.lrgname !== 'undefined') {
             this.drawItemAlphaLarge(x, y, item, color, font, isDrawLimit, 255);
         }

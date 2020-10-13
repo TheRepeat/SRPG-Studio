@@ -62,4 +62,8 @@ UPDATE HISTORY:
 4/21/2020: Overhauled in honor of posting all my stuff on GitHub:
 	   * Merged both "large" versions into XL and L sizes that are compatible with each other. (Removed comparison image as a result, since you don't have to choose between them anymore)
 	   * Made smallname/lrgname custom parameters public & added a tutorial image.
-	   * Moved CRIT_AVOID_STAT and the custom parameter handling to a separate file.
+	   * Moved CRIT_AVOID_STAT and the custom parameter handling to a separate config file.
+10/12/2020: Complete rewrite to clean up the code, making it easier to handle, read, and add onto if I think of something down the road.
+	   * XL and L sizes are now merged into one file. File renamed to match.
+	   * med-v1 and v2 are now merged into one file. File renamed to match.
+	   * Config file has new customization options, including toggling between v1 and v2 and toggling between full inventory icons and the equipped weapon name.

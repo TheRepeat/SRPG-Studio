@@ -16,10 +16,9 @@ Doesn't have a readme because it doesn't need one.
 
 Detailed Unit Window, which expands on the unit window in the map view.
 Check out the readme for more info.
- 1. 0-unitwindow.js
- 2. R-unitwindow-extralarge.js
- 3. R-unitwindow-large.js
- 4. R-unitwindow-med-v1.js **OR** R-unitwindow-med-v2.js
+ 1. 0_unitwindow-config.js
+ 2. R-unitwindow-large.js
+ 3. R-unitwindow-med.js
 
 Objective Window, which adds a new window to the map screen that allows you to display custom text.
 Check out its readme, it is VERY important.
@@ -59,3 +58,4 @@ UPDATE HISTORY (not comprehensive):
 6/9/2020 (nice): show weapontype plugin added
 6/18/2020: item drop indicator plugin added
 9/27/2020: refactoring to add 'R-' prefix to all filenames. Messes with history on GitHub, but history prior to 9/27 can be viewed in cmd/terminal with git log --follow <file>
+10/12/2020: detailed unit window overhaul

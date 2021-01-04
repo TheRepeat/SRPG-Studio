@@ -26,7 +26,7 @@ Check out its readme, it is VERY important.
  2. R-move-terrain.js
 
 Warning Markers, which adds floating icons over dangerous enemies, units that can be spoken to, and supporters.
-Also adds an icon to units during battle prep who has a conversation during the chapter.
+Also adds an icon to units on the unit selection screen in battle prep who have Talk events during the chapter.
 The readme is VERY important.
  1. 0_mcmagister-unit-state-animator.js
  2. R-warn-markers.js
@@ -61,3 +61,4 @@ UPDATE HISTORY (not comprehensive):
 6/18/2020: item drop indicator plugin added
 9/27/2020: refactoring to add 'R-' prefix to all filenames. Messes with history on GitHub, but history prior to 9/27 can be viewed in cmd/terminal with git log --follow <file>
 10/12/2020: detailed unit window overhaul
+1/3/2021: added prep talk markers

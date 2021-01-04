@@ -123,16 +123,16 @@
                     var talkArr = EventCommonArray.createArray(root.getCurrentSession().getTalkEventList(), EventType.TALK);
                     // for all events
                     for (var j = 0; j < talkArr.length; j++) {
-                        event = talkArr[j];
+                        var event = talkArr[j];
                         talkInfo = event.getTalkEventInfo();
                         src = talkInfo.getSrcUnit();
                         dest = talkInfo.getDestUnit();
                         if (src === null || dest === null) {
                             continue;
                         }
-                        if (unit != src && unit != dest) {
+                        if (unit !== src && unit !== dest) {
                             continue;
-                        } else if (unit != src && !talkInfo.isMutual()) {
+                        } else if (unit !== src && !talkInfo.isMutual()) {
                             continue;
                         }
 

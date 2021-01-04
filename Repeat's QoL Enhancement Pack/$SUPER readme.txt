@@ -26,10 +26,12 @@ Check out its readme, it is VERY important.
  2. R-move-terrain.js
 
 Warning Markers, which adds floating icons over dangerous enemies, units that can be spoken to, and supporters.
+Also adds an icon to units during battle prep who has a conversation during the chapter.
 The readme is VERY important.
  1. 0_mcmagister-unit-state-animator.js
  2. R-warn-markers.js
  3. R-warn-markers-values.js
+ 4. R-prep-talk-markers.js
 
 Better No-Animation Combat, which displays attack/accuracy/critical rate even when combat animations are turned off.
  1. R-detailed-easy-battle.js

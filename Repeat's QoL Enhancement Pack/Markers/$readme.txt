@@ -7,6 +7,7 @@ When a player unit is selected, the following units have a marker put over their
   - Any unit that the selected unit is able to have a conversation with
   - Specific enemy units or weapons with the custom parameter {warning:true}
   - Allies that grant support bonuses to the selected unit
+In addition, units who can participate in a Talk event will have an icon next to their name on the unit selection screen during battle preparations.
 
 	TO USE
 Unit State Animator by McMagister is required. If you don't already have it from a different plugin, it's bundled with this one as well.
@@ -23,6 +24,10 @@ In the file warn-markers-values.js, you'll see that each icon follows the follow
 isRuntime is a true/false value and determines if the file uses a custom imported asset (false) or a default Runtime asset (true).
 id refers to the ID number of the file you added to the icon folder in SRPG Studio. If you're just using the icon file included with this, then this is the only value that you need to edit.
 xSrc and ySrc are the positions of the particular icon you want to use WITHIN the file. There's an example image that shows what these mean inside this folder.
+
+Note that the TALK_ICON defined in warn-markers-values.js is also the icon used in prep-talk-markers.js on the battle preparations screen.
+In prep-talk-markers.js, the custom parameter SHOW_ONE_WAY_CONVOS determines whether the unit MUST be the initiator in order for the marker to show up during preparations.
+Set SHOW_ONE_WAY_CONVOS to true or false at your discretion.
 
 
 	KNOWN ISSUES
@@ -48,3 +53,4 @@ or something less traditional, like numbered support tiers or displaying allies'
 	   * Helper image file added.
 	   * Support markers added.
 5/12/2020: added Seal markers, updated placeholder image file. Lost the raw .xcf of the helper file so hopefully the old one's good enough for now, will remake it some other time
+1/3/2021: added prep-talk-markers.js; talk icons now appear during battle prep

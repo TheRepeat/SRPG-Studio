@@ -9,6 +9,8 @@
     ICONS_ONLY = false;                 // if true, show icons of all items in inventory. If false, show equipped weapon and name.
     STAT_COLOR = ColorValue.INFO;       // color of the stat names
     MEDIUM_SHOWS_STATS = true;          // true: atk/as, false: lv/exp. You can remove unitwindow-med.js if you prefer the SRPG Studio default
+    CAV_IS_UNIQUE = false;              // true: invalid-crit skills show MAX_CAV_TEXT instead of calculated CAv value.
+    MAX_CAV_TEXT = StringTable.SignWord_WaveDash;   // units that invalidate critical hits have special text next to CAv (just a hyphen/wavedash by default).
 
     // FOR THE MEDIUM SIZE
     ItemRenderer.drawItemSmall = function (x, y, item, color, font, isDrawLimit) {

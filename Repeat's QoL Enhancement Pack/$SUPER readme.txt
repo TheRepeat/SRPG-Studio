@@ -10,7 +10,7 @@ If you use my plugins in your own project, it'd be nice if you credited me as Re
 	WHAT ALL IS IN HERE?
 There are a bunch of nice plugins included in this enhancement pack:
 
-Terrain Details, which shows the HP recovery (or damage) of terrain. Modified from LadyRena's Hide 0 Avoid script.
+Terrain Details, which shows the HP recovery (or damage) of terrain. Modified from Claris's Hide 0 Avoid script.
 Doesn't have a readme because it doesn't need one.
  1. R-terrain-details.js
 
@@ -50,6 +50,8 @@ Uses McMagister's Unit State Animator.
 
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
+
+Contact me on Discord if you need help getting anything to work!
 
 
 UPDATE HISTORY (not comprehensive):

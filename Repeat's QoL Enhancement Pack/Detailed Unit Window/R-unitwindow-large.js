@@ -113,6 +113,25 @@
 				return this._totalStatus;
 			},
 
+			// CAv is displayed differently if unit has an Invalid Critical skill.
+			_getHasInvalidCritSkill: function (unit) {
+				if (!CAV_IS_UNIQUE) return;
+
+				var hasInvalidCritSkill = false;
+				var skillArr = SkillControl.getDirectSkillArray(unit, SkillType.INVALID, '')
+
+				for (var i = 0; i < skillArr.length; i++) {
+					var skill = skillArr[i].skill;
+					var value = skill.getSkillValue();
+					if (value === InvalidFlag.CRITICAL) {
+						hasInvalidCritSkill = true;
+						break;
+					}
+					continue;
+				}
+				return hasInvalidCritSkill;
+			},
+
 			_drawStatText: function (x, y, dx, statColor, font) {
 				// ATK/AS positions are the same in XL and L
 				TextRenderer.drawText(x + dx[4], y + 3, root.queryCommand('attack_capacity'), 64, statColor, font);
@@ -173,7 +192,9 @@
 
 					this._drawSingleStat(x + dx[5], y, def, font);
 					this._drawSingleStat(x + dx[1], y, res, font);
-					this._drawSingleStat(x + dx[3], y, cav, font);
+					this._getHasInvalidCritSkill(unit)
+						? TextRenderer.drawKeywordText(x + dx[3], y, MAX_CAV_TEXT, -1, color, font)
+						: this._drawSingleStat(x + dx[3], y, cav, font);
 					this._drawSingleStat(x + dx[7], y, avo, font);
 				}
 			},

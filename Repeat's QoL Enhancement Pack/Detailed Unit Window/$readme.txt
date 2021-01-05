@@ -14,6 +14,10 @@ All stats are displayed with the name defined in-engine, so change them in Resou
 of in this plugin. The only exception is Critical Avoid (CAv), which  is never named in SRPG Studio.
 If you want to change that name, change CRIT_AVOID_STAT on line 8 of 0_unitwindow-config.js.
 
+On the subject of critical avoid, if the unit has a skill that invalidates enemy crits, their critical avoid is given as a hyphen! 
+If you'd rather that hyphen be something else, then you can edit MAX_CAV_TEXT in 0_unitwindow-config.js to the text of choice. (Not a lot can fit in that space, just so you're aware.)
+Or, if you don't like this option and would rather CAv always be displayed as-is, leave CAV_IS_UNIQUE as false in 0_unitwindow-config.js.
+
 Another option you have is to change ICONS_ONLY on line 9 of the same file to change the functionality! 
 If you change that line to ICONS_ONLY = true; then instead of displaying the unit's equipped weapon, the icons of the first 5 items in the unit's inventory will be shown instead.
 
@@ -67,3 +71,4 @@ UPDATE HISTORY:
 	   * XL and L sizes are now merged into one file. File renamed to match.
 	   * med-v1 and v2 are now merged into one file. File renamed to match.
 	   * Config file has new customization options, including toggling between v1 and v2 and toggling between full inventory icons and the equipped weapon name.
+1/4/2021: Added check for skills that invalidate criticals, and a change to CAv's displayed text as a result. 

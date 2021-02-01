@@ -13,6 +13,9 @@
    NOTE: This plugin allows either ALL weapon types or ONLY ONE weapon type, nothing in between.
    You can make multiples of the skill with different custom params if you want it to behave more specifically.
 
+   If you don't want all weapons to use Powermove, then give a weapon the custom parameter {noPowermove:true} to prevent
+   it from taking advantage of the Powermove skill.
+
    Naturally, if you want to use all three custom parameters together, just encase them all in the same curly braces {} and
    separate each parameter with a comma. For example:
    {
@@ -24,7 +27,7 @@
 
 (function () {
 
-    // I referenced the blow skills script to learn how to invoke custom skills, so thank you Rena :)
+    // I referenced the blow skills script to learn how to invoke custom skills, so thank you Claris :)
     var alias1 = SkillRandomizer.isCustomSkillInvokedInternal;
     SkillRandomizer.isCustomSkillInvokedInternal = function (active, passive, skill, keyword) {
         if (keyword === 'Powermove') {
@@ -38,8 +41,9 @@
         var pow = alias2.call(this, active, passive, weapon, isCritical, totalStatus, trueHitValue);
         var skill = SkillControl.getPossessionCustomSkill(active, 'Powermove');
         
-        // unit is presumed able to use it unless user specifies only one weapon type can use it
-        var able = true;
+        // Unit is presumed able to use it unless user specifies only one weapon type can use it
+        // First check is against weapon's noPowermove custom parameter
+        var able = !weapon.custom.noPowermove;
         if(skill && typeof skill.custom.weapontype !== 'undefined' && typeof skill.custom.weaponcategory !== 'undefined'){
             weaponType = root.getBaseData().getWeaponTypeList(skill.custom.weaponcategory).getDataFromId(skill.custom.weapontypes);
             able = weapon.isWeaponTypeMatched(weaponType);

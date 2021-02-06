@@ -15,7 +15,7 @@
     MapEdit._selectAction = function (unit) {
         var result = MapEditResult.NONE;
 
-        if (unit != null && unit.getUnitType() == UnitType.PLAYER) {
+        if (unit !== null && unit.getUnitType() == UnitType.PLAYER) {
             result = MapEditResult.UNITSELECT; // normal cursor effect
             // Check for danger:
             if (!unit.isWait()) {
@@ -134,6 +134,8 @@
                             continue;
                         } else if (unit !== src && !talkInfo.isMutual()) {
                             continue;
+                        } else if (src.getSortieState() !== SortieType.SORTIE || dest.getSortieState() !== SortieType.SORTIE) {
+                            continue;
                         }
 
                         // talk warning
@@ -157,6 +159,7 @@
                     var amigos = PlayerList.getAliveList();
                     for (i = 0; i < amigos.getCount(); i++) {
                         var friend = amigos.getData(i);
+                        if (friend.getSortieState() !== SortieType.SORTIE) continue;
                         var supportCount = friend.getSupportDataCount();
                         for (j = 0; j < supportCount; j++) {
                             data = friend.getSupportData(j);

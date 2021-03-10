@@ -1,8 +1,9 @@
-/* By Repeat.
-   A package deal with select-jingle-once.js.
-   The main highlight here is JingleControl.resetUses(), which you can use 
-   in-engine with an Execute Script event.
-*/
+/**
+ * By Repeat.
+ * A package deal with R-selection-actions.js.
+ * NOTE: Any references to a unitId refers to the unit's DATABASE ID.
+ * Be sure to go to Tools > Options > Data and check 'Display id next to data name' to see these numbers.
+ *  */
 
 var JingleControl = {
 
@@ -15,7 +16,7 @@ var JingleControl = {
         
     },
 
-    // to reset only 1 unit's jingle
+    // resets only 1 unit's jingle
     resetSingleUnit: function(unitId){
         var players = PlayerList.getAliveList();
         for (var i = 0; i < players.getCount(); i++) {

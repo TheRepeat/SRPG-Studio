@@ -1,7 +1,7 @@
 /*  By Repeat.
     Normally, button 2 (CANCEL) does 5 things. Five! 
     Show enemy range, fast forward, fast cursor, unit menu, and cancel are all mapped to the same key. Insanity.
-    Me no likey, so this plugin separates those commands.
+    That sucks, so this plugin separates those commands.
     CANCEL (BTN2): show enemy range and cancel.
     OPTION (BTN3): unit menu, as usual. What's unique is that it is now the only key that does this.
     SYSTEM (BTN7): handles fast forward like default, but now also handles fast cursor.

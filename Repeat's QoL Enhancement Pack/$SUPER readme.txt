@@ -36,8 +36,8 @@ The readme is VERY important.
 Better No-Animation Combat, which displays attack/accuracy/critical rate even when combat animations are turned off.
  1. R-detailed-easy-battle.js
 
-Intuitive Seals, which hides units' stats on the combat forecast if the unit(s) in question will be sealed by the 
-opponent's skill or weapon. Plug and play, doesn't require anything special.
+Intuitive Seals, which hides units' stats on the combat forecast if the unit(s) in question will be sealed by the opponent's skill or weapon.
+Plug and play.
  1. R-intuitive-seal.js
 
 Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
@@ -47,6 +47,12 @@ Plug and play, but has a handful of values you can edit in the file if you want 
 Item Drop Indicators, which places an icon over enemies that have an item they will drop.
 Uses McMagister's Unit State Animator.
  1. R-drops-items.js
+
+Player Phase Animations, which adds a third choice to the Real Battle config option: show full animations only on player phase, and show map animations on other phases.
+ 1. R-player-only-battle.js
+
+Unit Roster, which adds new options to the map commands that allow you to view the full rosters of player, enemy, and ally units on the field, including plenty of information about all of them and allowing you to snap your cursor to a unit by selecting them in the menu.
+ 1. R-unit-roster.js
 
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
@@ -64,3 +70,4 @@ UPDATE HISTORY (not comprehensive):
 9/27/2020: refactoring to add 'R-' prefix to all filenames. Messes with history on GitHub, but history prior to 9/27 can be viewed in cmd/terminal with git log --follow <file>
 10/12/2020: detailed unit window overhaul
 1/3/2021: added prep talk markers
+4/14/2021: added player phase animations

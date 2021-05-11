@@ -9,7 +9,10 @@
         var text;
         var index = scrollbar.getIndex();
         var event = scrollbar.getObject();
-
+        // "unknown" if exists, "undefined" if not, for some reason
+        if (!event || typeof event.getEventType !== 'unknown') {
+            return alias1.call(this, scrollbar);
+        }
         if (event.getEventType() !== EventType.RECOLLECTION) {
             return alias1.call(this, scrollbar);
         }

@@ -26,7 +26,6 @@ Check out its readme, it is VERY important.
 
 Warning Markers, which adds floating icons over dangerous enemies, units that can be spoken to, and supporters.
 Also adds an icon to units on the unit selection screen in battle prep who have Talk events during the chapter.
-The readme is VERY important.
  1. 0_mcmagister-unit-state-animator.js
  2. R-warn-markers.js
  3. R-warn-markers-values.js
@@ -36,11 +35,9 @@ Better No-Animation Combat, which displays attack/accuracy/critical rate even wh
  1. R-detailed-easy-battle.js
 
 Intuitive Seals, which hides units' stats on the combat forecast if the unit(s) in question will be sealed by the opponent's skill or weapon.
-Plug and play.
  1. R-intuitive-seal.js
 
 Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
-Plug and play, but has a handful of values you can edit in the file if you want to.
  1. R-show-weapontype.js
 
 Item Drop Indicators, which places an icon over enemies that have an item they will drop.
@@ -74,3 +71,4 @@ UPDATE HISTORY (not comprehensive):
 1/3/2021: added prep talk markers
 4/14/2021: added player phase animations
 5/9/2021: added danger skills, new fnality for detailed easy battle
+5/18/2021: added unit roster

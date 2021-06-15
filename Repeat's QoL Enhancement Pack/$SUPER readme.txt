@@ -53,6 +53,9 @@ Unit Roster, which adds new options to the map commands that allow you to view t
 Danger Skills, which shows icons for an enemy's dangerous skills in the combat forecast. See the file for more info.
  1. R-danger-skills.js
 
+Visualize Sortie. If a unit is not selected in battle prep, their name and charchip will be grayed out in Manage Items.
+ 1. R-visualize-sortie.js
+
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
 
@@ -72,3 +75,4 @@ UPDATE HISTORY (not comprehensive):
 4/14/2021: added player phase animations
 5/9/2021: added danger skills, new fnality for detailed easy battle
 5/18/2021: added unit roster
+6/14/2021: added visualize sortie

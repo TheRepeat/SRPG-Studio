@@ -26,25 +26,15 @@
 */
 
 (function () {
-
-    // I referenced the blow skills script to learn how to invoke custom skills, so thank you Claris :)
-    var alias1 = SkillRandomizer.isCustomSkillInvokedInternal;
-    SkillRandomizer.isCustomSkillInvokedInternal = function (active, passive, skill, keyword) {
-        if (keyword === 'Powermove') {
-            return this._isSkillInvokedInternal(active, passive, skill);
-        }
-        return alias1.call(this, active, passive, skill, keyword);
-    }
-
     var alias2 = DamageCalculator.calculateAttackPower;
     DamageCalculator.calculateAttackPower = function (active, passive, weapon, isCritical, totalStatus, trueHitValue) {
         var pow = alias2.call(this, active, passive, weapon, isCritical, totalStatus, trueHitValue);
         var skill = SkillControl.getPossessionCustomSkill(active, 'Powermove');
-        
+
         // Unit is presumed able to use it unless user specifies only one weapon type can use it
         // First check is against weapon's noPowermove custom parameter. Won't do other checks if able===false.
         var able = !weapon.custom.noPowermove;
-        if(able && skill && typeof skill.custom.weapontype !== 'undefined' && typeof skill.custom.weaponcategory !== 'undefined'){
+        if (able && skill && typeof skill.custom.weapontype !== 'undefined' && typeof skill.custom.weaponcategory !== 'undefined') {
             weaponType = root.getBaseData().getWeaponTypeList(skill.custom.weaponcategory).getDataFromId(skill.custom.weapontypes);
             able = weapon.isWeaponTypeMatched(weaponType);
         }

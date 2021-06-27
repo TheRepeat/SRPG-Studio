@@ -1,6 +1,12 @@
-/** By Repeat.
- *  Separates avoid and magic avoid. Default value is Spd+Luk, like Gaiden.
- *  */ 
+/** 
+ * By Repeat.
+ * Separates avoid and magic avoid into separate calculations. Default value is Spd+Luk, like Fire Emblem Gaiden.
+ * 
+ * This plugin overwrites the following function without an alias:
+ * 		HitCalculator.calculateHit
+ * If you have other plugins that modify this same function, be sure they are loaded AFTER this file.
+ * You can accomplish this by making it alphabetically high, for example by leading this file's name with a zero (0).
+ *  */
 
 AbilityCalculator.getMAvoid = function (unit) {
 	var avoid;

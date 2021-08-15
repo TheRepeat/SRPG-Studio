@@ -1,9 +1,10 @@
 /**
  * By Repeat.
  * Adds a third choice to the Real Battle config that lets the player have combat animations only occur on player phase.
+ * Player can hold a "Cycle Units" key (A/S by default, or LB/RB on controller) as combat begins to invert the chosen config option.
  * Plug and play.
  */
-(function () {
+ (function () {
     ConfigItem.RealBattle = defineObject(BaseConfigtItem,
         {
             selectFlag: function (index) {
@@ -50,6 +51,21 @@
             battleType = BattleType.REAL;
         }
 
+        // Invert selection if player is holding a Cycle Units key
+        if (InputControl.isCycleState()) {
+            if (battleType === BattleType.REAL) {
+                battleType = BattleType.EASY;
+            } else {
+                battleType = BattleType.REAL;
+            }
+        }
+
         return battleType;
     }
+
+    // Check if Cycle key is being held (NB: isInputAction = pressed, isInputState = held)
+    InputControl.isCycleState = function () {
+        return root.isInputState(InputType.BTN5) || root.isInputState(InputType.BTN6);
+    }
+
 })();

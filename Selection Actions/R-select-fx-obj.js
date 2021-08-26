@@ -29,7 +29,6 @@ var JingleControl = {
     },
 
     setJingleUsed: function(unit){
-        // root.log('jingle:' + unit.custom.jingleUsed);
         unit.custom.jingleUsed = true;
     },
 

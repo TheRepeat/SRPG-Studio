@@ -1,0 +1,9 @@
+Walking Map plugin (lets you move a character around with the arrow keys like in a JRPG), translated to English with a couple new features.
+
+The instructions are all inside the files, at the top of each. I recommend opening them with an editor like Notepad++, VS Code, or Sublime Text.
+"character-walking.js" in particular is the one you're probably here for.
+
+Credits: 
+Creator, original author: 名前未定（仮） / name TBD (tentative)
+Translation: Google Translate, DeepL
+Localization, TL notes, some new features/fixes: Repeat

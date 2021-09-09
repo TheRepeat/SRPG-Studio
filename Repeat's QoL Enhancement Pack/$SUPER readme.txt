@@ -78,3 +78,4 @@ UPDATE HISTORY (not comprehensive):
 5/18/2021: added unit roster
 6/14/2021: added visualize sortie
 8/15/2021: "Hold L to Skip" added to player phase anims
+8/28/2021: warning markers overhaul, cleaning & bugfixes

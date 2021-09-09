@@ -15,7 +15,7 @@
  * 
  * An important exception is that movement costs will still check the transparent layer, not the base layer!
  * There's nothing I can do to fix that since movement costs are checked with an internal function I can't edit (MapSimulator.getSimulationMovePoint()).
- * You'll need to make duplicate shadow tiles with the correct movement costs.
+ * You'll need to make duplicate transparent-layer tiles with the correct movement costs.
  * 
  * I've also received reports of Terrain Groups sometimes still using the top layer instead of the bottom layer. This also seems to be internal.
  * My recommended solution is praying to the deity of your choice that it works for you.

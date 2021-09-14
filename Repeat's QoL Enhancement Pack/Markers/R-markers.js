@@ -92,7 +92,7 @@
                 hasSealSkill = hasSealSkill || this.hasValidSealSkill(unit, unitWeapon, enemyUnit);
             }
 
-            if (hasSealSkill) enemyUnit.custom.sealWarning = true;
+            enemyUnit.custom.sealWarning = hasSealSkill;
         },
 
         // Critical rate warning

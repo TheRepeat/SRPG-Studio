@@ -30,11 +30,21 @@
 	MapParts.UnitInfoLarge = defineObject(MapParts.UnitInfo,
 		{
 			_mhp: 0,
+			_hp: 0,
 			_weapon: null,
 			_isLargeFace: false,
 			_faceWidth: 0,
 			_faceHeight: 0,
 			_totalStatus: null,
+			_agi: 0,
+			_crt: 0,
+			_def: 0,
+			_res: 0,
+			_cav: 0,
+			_hit: 0,
+			_avo: 0,
+			_mt: 0,
+			_isCritAllowed: false,
 
 			initialize: function () {
 				this._isLargeFace = root.isLargeFaceUse();
@@ -45,12 +55,38 @@
 			setUnit: function (unit) {
 				if (unit !== null) {
 					this._mhp = ParamBonus.getMhp(unit);
+					this._hp = unit.getHp();
 					this._weapon = ItemControl.getEquippedWeapon(unit);
 					this._totalStatus = SupportCalculator.createTotalStatus(unit);
+					this._agi = AbilityCalculator.getAgility(unit, this._weapon);
+					if (this._weapon === null) {
+						this._crt = 0;
+						this._hit = 0;
+						this._mt = 0;
+					} else {
+						this._crt = AbilityCalculator.getCritical(unit, this._weapon);
+						this._hit = AbilityCalculator.getHit(unit, this._weapon);
+						this._mt = AbilityCalculator.getPower(unit, this._weapon);
+					}
+					this._def = RealBonus.getDef(unit);
+					this._res = RealBonus.getMdf(unit);
+					this._cav = AbilityCalculator.getCriticalAvoid(unit);
+					this._avo = AbilityCalculator.getAvoid(unit);
+					this._isCritAllowed = Miscellaneous.isCriticalAllowed(unit, null);
 				}
 				else {
 					this._weapon = null;
 					this._totalStatus = null;
+					this._hp = 0;
+					this._agi = 0;
+					this._crt = 0;
+					this._def = 0;
+					this._res = 0;
+					this._cav = 0;
+					this._hit = 0;
+					this._avo = 0;
+					this._mt = 0;
+					this._isCritAllowed = false;
 				}
 			},
 
@@ -167,13 +203,11 @@
 			_drawStats: function (x, y, unit, dx, color, font, isUnarmed, atk, agi, crt, hit, def, res, cav, avo) {
 				// ATK/SPD positions are the same in XL and L
 				if (isUnarmed) {
-					agi = RealBonus.getSpd(unit);
 					TextRenderer.drawKeywordText(x + dx[5], y, StringTable.SignWord_WaveDash, -1, color, font); // ATK
-					this._drawSingleStat(x + dx[1], y, agi, font);
 				} else {
 					this._drawSingleStat(x + dx[5], y, atk, font);
-					this._drawSingleStat(x + dx[1], y, agi, font);
 				}
+				this._drawSingleStat(x + dx[1], y, agi, font);
 
 				if (this._getConfigOption() === 1) { // L
 					this._drawSingleStat(x + dx[3], y, def, font);
@@ -245,17 +279,17 @@
 					hitBonus = totalStatus.hitTotal;
 				}
 				var atk = 0;
-				var agi;
+				var agi = 0;
 				var crt = 0;
 				var hit = 0;
-				var def = RealBonus.getDef(unit) + defBonus;
-				var res = RealBonus.getMdf(unit) + defBonus;
-				var cav = AbilityCalculator.getCriticalAvoid(unit) + cavBonus;
-				var avo = AbilityCalculator.getAvoid(unit) + avoBonus;
+				var def = this._def + defBonus;
+				var res = this._res + defBonus;
+				var cav = this._cav + cavBonus;
+				var avo = this._avo + avoBonus;
 
 				x += GraphicsFormat.FACE_WIDTH + this._getInterval();
 				y += 32;
-				ContentRenderer.drawHp(x, y, unit.getHp(), ParamBonus.getMhp(unit));
+				ContentRenderer.drawHp(x, y, this._hp, this._mhp);
 				y += 20;
 				ContentRenderer.drawLevelInfo(x, y, unit);
 				y += 22;
@@ -263,23 +297,22 @@
 				var weapon;
 				var isUnarmed = false; // determines whether to draw certain stats
 				// no weapon equipped; don't try to get combat stats
-				if (ItemControl.getEquippedWeapon(unit) === null) {
+				if (this._weapon === null) {
 					isUnarmed = true;
-				} else {
-					weapon = ItemControl.getEquippedWeapon(unit);
-					agi = AbilityCalculator.getAgility(unit, weapon);
-					atk = AbilityCalculator.getPower(unit, weapon) + pwrBonus;
-					if (!Miscellaneous.isCriticalAllowed(unit, null)) {
-						crt = 0;
-					} else {
-						crt = AbilityCalculator.getCritical(unit, weapon) + crtBonus;
-					}
-					hit = AbilityCalculator.getHit(unit, weapon) + hitBonus;
 				}
+				weapon = this._weapon;
+				agi = this._agi;
+				atk = this._mt + pwrBonus;
+				if (!this._isCritAllowed) {
+					crt = 0;
+				} else {
+					crt = this._crt + crtBonus;
+				}
+				hit = this._hit + hitBonus;
 
 				// equipped weapon or list of icons in inventory
 				if (!ICONS_ONLY) {
-					if (ItemControl.getEquippedWeapon(unit) === null) {
+					if (isUnarmed) {
 						TextRenderer.drawText(x + GraphicsFormat.ICON_WIDTH, y + 2, "(Unarmed)", length, color, font);
 					} else {
 						ItemRenderer.drawItemLarge(x, y, weapon, textui.getColor(), textui.getFont(), false);

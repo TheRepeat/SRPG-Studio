@@ -27,12 +27,12 @@ This affects the Medium setting of the unit window. This window also shows up wh
 
 This file displays the unit's name, current HP, and equipped weapon in the unit's hover window.
 
-You can toggle between the two versions of this file by opening 0_unitwindow-config.js in a text editor and changing MEDIUM_SHOWS_STATS on line 11 to true or false.
+You can toggle between the two versions of this file by opening 0_unitwindow-config.js in a text editor and changing MEDIUM_SHOWS_STATS to true or false.
 
 VERSION 1 (MEDIUM_SHOWS_STATS = true;) of this file shows the unit's Atk and Agi.
 VERSION 2 (MEDIUM_SHOWS_STATS = false;) of this file shows the unit's Level and EXP instead.
 
-Alternatively, if you just aren't a fan, then just don't put the unitwindow-medium.js file in your plugins folder, and the SRPG Studio default version will be used instead.
+Alternatively, if you just aren't a fan, then simply don't put the unitwindow-medium.js file in your Plugin folder, and the SRPG Studio default version will be used instead.
 This version of the window shows the unit's name, class, and current HP alongside an HP bar.
 
 I included a comparison image of each version of the medium size to help you make an educated decision :)
@@ -72,3 +72,5 @@ UPDATE HISTORY:
 	   * med-v1 and v2 are now merged into one file. File renamed to match.
 	   * Config file has new customization options, including toggling between v1 and v2 and toggling between full inventory icons and the equipped weapon name.
 1/4/2021: Added check for skills that invalidate criticals, and a change to CAv's displayed text as a result. 
+10/28/2021: Implemented lag fix by Purplemandown for large unitwindow 
+	   * Added lag fix for medium unitwindow to match

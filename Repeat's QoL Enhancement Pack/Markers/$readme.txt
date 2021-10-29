@@ -29,12 +29,6 @@ Note that the TALK_ICON defined in warn-markers-values.js is also the icon used 
 In prep-talk-markers.js, the custom parameter SHOW_ONE_WAY_CONVOS determines whether the unit MUST be the initiator in order for the marker to show up during preparations.
 Set SHOW_ONE_WAY_CONVOS to true or false at your discretion.
 
-
-	KNOWN ISSUES
-After a talk conversation, the state will not be removed from the target until the selected unit's action ends. This is relevant when 
-the unit has Canto (AKA Use Leftover Mov) or if the action-after-talk plugin is being used, but it is only a visual quirk and does not
-present any real problems.
-
 	TO DO
 In the future, I want the plugin to enable using different icons for different support types. For example, drawing C/B/A/S icons for the typical Fire Emblem-style support hierarchy, 
 or something less traditional, like numbered support tiers or displaying allies' affinities.
@@ -54,3 +48,4 @@ or something less traditional, like numbered support tiers or displaying allies'
 	   * Support markers added.
 5/12/2020: added Seal markers, updated placeholder image file. Lost the raw .xcf of the helper file so hopefully the old one's good enough for now, will remake it some other time
 1/3/2021: added prep-talk-markers.js; talk icons now appear during battle prep
+9/14/2021: huge cleanup; fixed bug with talk markers not disappearing after conversation; markers now update when switching items

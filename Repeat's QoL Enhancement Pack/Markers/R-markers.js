@@ -188,7 +188,7 @@
         },
 
         // helper function to remove warning custom parameters
-        removeWarningStates: function () {
+        removeMarkers: function () {
             var enemies = EnemyList.getAliveList();
             var players = PlayerList.getAliveList();
             var allies = AllyList.getAliveList();
@@ -238,7 +238,7 @@
     var equipUpdateAlias = ItemControl.updatePossessionItem;
     ItemControl.updatePossessionItem = function (unit) {
         equipUpdateAlias.call(this, unit);
-        WarningMarkers.removeWarningStates();
+        WarningMarkers.removeMarkers();
         WarningMarkers.checkForMarkConditions(unit);
     };
 
@@ -247,7 +247,7 @@
     var appendTalkEventAlias = UnitCommand._appendTalkEvent;
     UnitCommand._appendTalkEvent = function (groupArray) {
         var unit = this.getListCommandUnit();
-        WarningMarkers.removeWarningStates();
+        WarningMarkers.removeMarkers();
         WarningMarkers.checkForMarkConditions(unit);
 
         appendTalkEventAlias.call(this, groupArray);
@@ -262,11 +262,11 @@
     MapEdit._moveCursorMove = function () {
         var result = MapEditResult.NONE;
         if (InputControl.isCancelState() || root.isMouseAction(MouseType.RIGHT)) {
-            WarningMarkers.removeWarningStates();
+            WarningMarkers.removeMarkers();
         }
         result = cancelActionAlias.call(this);
         if (result == MapEditResult.NONE) {
-            WarningMarkers.removeWarningStates();
+            WarningMarkers.removeMarkers();
         }
         return result;
     }
@@ -276,14 +276,14 @@
     PlayerTurn.recordPlayerAction = function (isPlayerActioned) {
         unitWaitAlias.call(this, isPlayerActioned);
         if (isPlayerActioned) {
-            WarningMarkers.removeWarningStates();
+            WarningMarkers.removeMarkers();
         }
     }
 
     // ...when switching units' sortie positions during battle prep
     var changePosAlias = SetupEdit._changePos;
     SetupEdit._changePos = function (obj) {
-        WarningMarkers.removeWarningStates();
+        WarningMarkers.removeMarkers();
         changePosAlias.call(this, obj);
     }
 

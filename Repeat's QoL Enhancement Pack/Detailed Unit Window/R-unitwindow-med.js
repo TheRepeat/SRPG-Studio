@@ -88,25 +88,26 @@
 		y += 30;
 		ContentRenderer.drawHp(x, y, unit.getHp(), mhp);
 		y += 20;
+
 		if (!MEDIUM_SHOWS_STATS) {
 			ContentRenderer.drawLevelInfo(x, y, unit);
-			y += 21;
-		}
-
-		if (MEDIUM_SHOWS_STATS) {
+		} else {
 			TextRenderer.drawText(x + dx[0], y + 3, root.queryCommand('attack_capacity'), 64, statColor, font);
-			// atk is drawn below
+			if (weapon) {
+				NumberRenderer.drawNumber(x + dx[1], y, atk);
+			} else {
+				TextRenderer.drawKeywordText(x + dx[1], y, StringTable.SignWord_WaveDash, -1, color, font);
+			}
 			TextRenderer.drawText(x + dx[2], y + 3, root.queryCommand('agility_capacity'), 64, statColor, font);
 			NumberRenderer.drawNumber(x + dx[3], y, agi);
 		}
 
-		// Atk and weapon text are drawn differently if unarmed
+		y += 21;
+
 		if (!weapon) {
-			TextRenderer.drawKeywordText(x + dx[1], y, StringTable.SignWord_WaveDash, -1, color, font);
-			TextRenderer.drawText(x + GraphicsFormat.ICON_WIDTH, y + 23, "(Unarmed)", length, color, font);
+			TextRenderer.drawText(x + GraphicsFormat.ICON_WIDTH, y + 2, "(Unarmed)", length, color, font);
 		} else {
-			NumberRenderer.drawNumber(x + dx[1], y, atk);
-			ItemRenderer.drawItemSmall(x, y + 21, weapon, textui.getColor(), textui.getFont(), false);
+			ItemRenderer.drawItemSmall(x, y, weapon, textui.getColor(), textui.getFont(), false);
 		}
 	};
 })();

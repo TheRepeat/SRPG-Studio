@@ -21,7 +21,7 @@ var MarkerDisplay = {
     talkWarning: true,              // if true, units whom the selected unit can speak to will be marked
     supportWarning: true,           // if true, units who give support bonuses to the selected unit will be marked
     sealWarning: true,              // if true, enemies who would seal the selected unit's attack will be marked
-    showBattlePrepOneWays: true     // If true, will show conversations that the unit is a participant of even if they cannot initiate.
+    showBattlePrepOneWays: true     // If true, for the Talk display in battle prep, will show conversations that the unit is a participant of even if they cannot initiate.
 }
 
 var TALK_ICON = {

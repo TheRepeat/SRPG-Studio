@@ -2,16 +2,12 @@
  * By Repeat. Thanks for the idea bwdyeti :)
  * In the battle prep, when selecting units, units that participate in any talk event have a talk marker next to them.
  * 
- * Check out SHOW_ONE_WAY_CONVOS and decide if you want that to be true or false.
+ * In R-markers-values, check out showBattlePrepOneWays and decide if you want that to be true or false.
  * 
- * TALK_ICON comes from warn-markers-values.js.
+ * TALK_ICON comes from R-markers-values.js.
  */
 
 (function () {
-
-    // If true, will show conversations that the unit is a participant of even if they cannot initiate.
-    SHOW_ONE_WAY_CONVOS = true;
-
     var alias1 = UnitSortieListScrollbar.drawScrollContent;
     UnitSortieListScrollbar.drawScrollContent = function (x, y, object, isSelect, index) {
         alias1.call(this, x, y, object, isSelect, index)
@@ -36,7 +32,7 @@
 
             if (unit !== src && unit !== dest) {
                 continue;
-            } else if (!SHOW_ONE_WAY_CONVOS && unit !== src && !talkInfo.isMutual()) {
+            } else if (!MarkerDisplay.showBattlePrepOneWays && unit !== src && !talkInfo.isMutual()) {
                 continue;
             }
 

@@ -2,17 +2,10 @@
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Places floating markers over enemies and allies that fulfill certain criteria.
- * These markers can be opted in and out of by changing a handful of boolean values below.
  * You can also use custom parameter {warning:true} on weapons or units to give warning markers to individuals.
  *  */
 
 (function () {
-
-    EFFECTIVE_WARNING = true;   // if true, enemies with weaponry effective against the selected unit will be marked
-    CRITICAL_WARNING = true;    // if true, enemies with a high critical rate will be marked
-    TALK_WARNING = true;        // if true, units whom the selected unit can speak to will be marked
-    SUPPORT_WARNING = true;     // if true, units who give support bonuses to the selected unit will be marked
-    SEAL_WARNING = true;        // if true, enemies who would seal the selected unit's attack will be marked
 
     var selectionAlias = MapEdit._selectAction;
     MapEdit._selectAction = function (unit) {
@@ -37,7 +30,7 @@
                     if (enemyUnit.isInvisible()) continue;
                     var enemyWeapon = ItemControl.getEquippedWeapon(enemyUnit);
 
-                    if (SEAL_WARNING) {
+                    if (MarkerDisplay.sealWarning) {
                         this.searchSealWarnings(unit, enemyUnit, enemyWeapon);
                     }
 
@@ -46,12 +39,12 @@
                     // Unarmed enemies can still have Seal skills and custom warnings. Other enemy markers can be skipped.
                     if (enemyWeapon === null) continue;
 
-                    if (CRITICAL_WARNING) {
+                    if (MarkerDisplay.criticalWarning) {
                         this.searchCriticalWarnings(unit, enemyUnit, enemyWeapon);
                     }
 
                     // Effectiveness warning
-                    if (EFFECTIVE_WARNING) {
+                    if (MarkerDisplay.effectiveWarning) {
                         this.searchEffectivityWarnings(unit, enemyUnit, enemyWeapon);
                     }
 
@@ -60,11 +53,11 @@
 
                 // END ENEMY-ONLY MARKERS
 
-                if (TALK_WARNING) {
+                if (MarkerDisplay.talkWarning) {
                     this.searchTalkWarnings(unit);
                 }
 
-                if (SUPPORT_WARNING) {
+                if (MarkerDisplay.supportWarning) {
                     this.searchSupportWarnings(unit);
                 }
             }

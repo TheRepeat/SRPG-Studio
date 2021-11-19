@@ -1,16 +1,28 @@
-/* Version 2
-   By Repeat and McMagister.
-   Part of the warning markers plugin.
-   Use this file to define which icons are to be used for each type of warning.
+/**
+ * Version 2.5
+ * By Repeat and McMagister.
+ * Part of the Warning Markers plugin.
+ * These markers can be opted in and out of by changing the boolean values inside the MarkerDisplay enum.
+ * 
+ * Use this file to define which icons are to be used for each type of warning.
+ * 
+ * isRuntime: whether the asset to be used is RTP or original.
+ * id: the id of the image file in Icon.
+ * xSrc and ySrc: the positions of the icon to be used within the file, both starting from 0.
+ * 
+ * You can also define CRT_THRESHOLD for the critical warning marker specifically.
+ * 
+ * The default values here are the ones from my placeholder image bundled with this plugin, and can be freely edited.
+ */
 
-   isRuntime: whether the asset to be used is RTP or original.
-   id: the id of the image file in Icon.
-   xSrc and ySrc: the positions of the icon to be used within the file, both starting from 0.
-
-   You can also define CRT_THRESHOLD for the critical warning marker specifically.
-   
-   The default values here are the ones from my placeholder image bundled with this plugin, and can be freely edited.
-*/
+var MarkerDisplay = {
+    effectiveWarning: true,         // if true, enemies with weaponry effective against the selected unit will be marked
+    criticalWarning: true,          // if true, enemies with a high critical rate will be marked
+    talkWarning: true,              // if true, units whom the selected unit can speak to will be marked
+    supportWarning: true,           // if true, units who give support bonuses to the selected unit will be marked
+    sealWarning: true,              // if true, enemies who would seal the selected unit's attack will be marked
+    showBattlePrepOneWays: true     // If true, will show conversations that the unit is a participant of even if they cannot initiate.
+}
 
 var TALK_ICON = {
     isRuntime: false,

@@ -1,23 +1,42 @@
 /**
+ * Version 2.0
  * Expanded Terrain Window, by Repeat.
  * Shows the normal data in the terrain window, with additions:
- *  * HP recovery or damage value (change the value of HEAL_TERRAIN_TEXT or DAMAGE_TERRAIN_TEXT as you please)
+ *  * HP recovery or damage value (change the value of healTerrainText or damageTerrainText as you please)
  *  * Stat bonuses from skills of type "Parameter Bonus" that are granted by the terrain
  * 		- Def and Res parameter bonuses are combined with the default Def/Res display
  *  * Icons of all skills granted by terrain (if they are not hidden)
  * 		- For the most natural feeling, I recommend hiding any stat-boosting skills granted by terrain.
- * 		- If you don't like this, set SHOW_SKILL_ICONS = false
+ * 		- If you don't like this, set showSkillIcons to false
+ *  * Terrain window is hidden if the terrain's name is empty.
+ * 		- If you don't like this, set showEmptyTerrainWindow to false
  *
  * This is plug and play.
  * 
  * Alias notes:
- * 	MapParts.Terrain._getPartsCount is overwritten without an alias
  * 	MapParts.Terrain._drawContent is overwritten without an alias
+ * 	MapParts.Terrain._getPartsCount is overwritten without an alias
  */
 
-HEAL_TERRAIN_TEXT = 'Heal';
-DAMAGE_TERRAIN_TEXT = 'Dmg';
-SHOW_SKILL_ICONS = true; // true = show all skills the terrain grants, false = don't
+var TerrainWindowConfig = {
+	healTerrainText: 'Heal',
+	damageTerrainText: 'Dmg',
+	showSkillIcons: true, 			// true = show all skills the terrain grants, false = don't
+	showEmptyTerrainWindow: true 	// false = hide terrain window if terrain's name is blank, true = don't
+};
+
+(function () {
+	var drawTerrainAlias = MapParts.Terrain._drawMain;
+    MapParts.Terrain._drawMain = function (x, y) {
+        var xCursor = this.getMapPartsX();
+        var yCursor = this.getMapPartsY();
+        var terrain = PosChecker.getTerrainFromPos(xCursor, yCursor);
+
+        if (terrain.getName() !== '' || TerrainWindowConfig.showEmptyTerrainWindow) {
+			drawTerrainAlias.call(this, x, y);
+        }
+    }
+})();
 
 MapParts.Terrain._paramBonusSkillArr = [];
 // The indices in the array correspond to ParamType in constants-enumeratedtype.js
@@ -105,7 +124,7 @@ MapParts.Terrain._getPartsCount = function (terrain) {
 		count++;
 	}
 
-	if (SHOW_SKILL_ICONS && this.hasAnyVisibleSkills(terrain.getSkillReferenceList())) {
+	if (TerrainWindowConfig.showSkillIcons && this.hasAnyVisibleSkills(terrain.getSkillReferenceList())) {
 		count++;
 	}
 
@@ -150,11 +169,11 @@ MapParts.Terrain._drawContent = function (x, y, terrain) {
 
 	if (terrain.getAutoRecoveryValue() !== 0) {
 		y += this.getIntervalY();
-		var text = terrain.getAutoRecoveryValue() > 0 ? HEAL_TERRAIN_TEXT : DAMAGE_TERRAIN_TEXT;
+		var text = terrain.getAutoRecoveryValue() > 0 ? TerrainWindowConfig.healTerrainText : TerrainWindowConfig.damageTerrainText;
 		this._drawKeyword(x, y, text, terrain.getAutoRecoveryValue());
 	}
 
-	if (SHOW_SKILL_ICONS) {
+	if (TerrainWindowConfig.showSkillIcons) {
 		y += this.getIntervalY() + 4;
 		var skillReferenceList = terrain.getSkillReferenceList();
 		for (var i = 0; i < skillReferenceList.getTypeCount(); i++) {

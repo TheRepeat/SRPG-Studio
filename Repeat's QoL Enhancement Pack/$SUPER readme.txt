@@ -10,17 +10,16 @@ If you use my plugins in your own project, it'd be nice if you credited me as Re
 	WHAT ALL IS IN HERE?
 There are a bunch of nice plugins included in this enhancement pack:
 
-Terrain Details, which shows the HP recovery (or damage) of terrain. Modified from Claris's Hide 0 Avoid script.
+Terrain Details, which shows the HP recovery (or damage) of terrain, plus displays skills and other quality of life improvements.
+Modified from Claris's Hide 0 Avoid script.
  1. R-terrain-details.js
 
-Detailed Unit Window, which expands on the unit window in the map view.
-Check out the readme for more info.
+Detailed Unit Window, which expands on the unit hover window in the map view.
  1. 0_unitwindow-config.js
  2. R-unitwindow-large.js
  3. R-unitwindow-med.js
 
 Objective Window, which adds a new window to the map screen that allows you to display custom text.
-Check out its readme, it is VERY important.
  1. R-map-objective-editable.js
  2. R-move-terrain.js
 
@@ -34,7 +33,7 @@ Also adds an icon to units on the unit selection screen in battle prep who have 
 Better No-Animation Combat, which displays attack/accuracy/critical rate even when combat animations are turned off. Comes in two sizes.
  1. R-detailed-easy-battle.js
 
-Intuitive Seals, which hides units' stats on the combat forecast if the unit(s) in question will be sealed by the opponent's skill or weapon.
+Intuitive Seals, which hides battle stats on the combat forecast if the unit will be sealed by the opponent's skill or weapon.
  1. R-intuitive-seal.js
 
 Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
@@ -45,7 +44,7 @@ Uses McMagister's Unit State Animator.
  1. R-drops-items.js
 
 Player Phase Animations, which adds a third choice to the Real Battle config option: show full animations only on player phase, and show map animations on other phases.
-Also lets user reverse the config option by holding Cycle (A/S keys, LB/RB buttons). Think "Hold L to Skip" from 3DS FE.
+Also lets user reverse the config option by holding Cycle (A/S keys, LB/RB buttons). Think "Hold L to Skip" from 3DS Fire Emblem games.
  1. R-player-only-battle.js
 
 Unit Roster, which adds new options to the map commands that allow you to view the full rosters of player, enemy, and ally units on the field, including plenty of information about all of them and allowing you to snap your cursor to a unit by selecting them in the menu.
@@ -79,3 +78,4 @@ UPDATE HISTORY (not comprehensive):
 6/14/2021: added visualize sortie
 8/15/2021: "Hold L to Skip" added to player phase anims
 8/28/2021: warning markers overhaul, cleaning & bugfixes
+12/4/2021: terrain details updated to v2.0

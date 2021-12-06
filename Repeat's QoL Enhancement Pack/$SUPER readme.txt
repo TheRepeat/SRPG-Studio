@@ -19,6 +19,26 @@ Detailed Unit Window, which expands on the unit hover window in the map view.
  2. R-unitwindow-large.js
  3. R-unitwindow-med.js
 
+Forecast and Map Battle Enhancements:
+These are all individual plugins that are grouped together for cleanliness. They DO NOT rely on each other.
+{
+	Danger Skills, which shows icons for an enemy's dangerous skills in the combat forecast. See the file for more info.
+	1. R-danger-skills.js
+
+	Better No-Animation Combat, which displays attack/accuracy/critical rate even when combat animations are turned off. Comes in two sizes.
+	1. R-detailed-easy-battle.js
+
+	Easy Battle Pauses, which lets you customize the length of time to wait between each attack when combat animations are off (the vanilla pause time is really short!).
+	1. R-easy-battle-pauses.js
+
+	Intuitive Seals, which hides battle stats on the combat forecast if the unit will be sealed by the opponent's skill or weapon.
+	1. R-intuitive-seal.js
+
+	Player Phase Animations, which adds a third choice to the Real Battle config option: show full animations only on player phase, and show map animations on other phases.
+	Also lets user reverse the config option by holding Cycle (A/S keys, LB/RB buttons). Think "Hold L to Skip" from 3DS Fire Emblem games.
+	1. R-player-only-battle.js
+}
+
 Objective Window, which adds a new window to the map screen that allows you to display custom text.
  1. R-map-objective-editable.js
  2. R-move-terrain.js
@@ -30,12 +50,6 @@ Also adds an icon to units on the unit selection screen in battle prep who have 
  3. R-warn-markers-values.js
  4. R-prep-talk-markers.js
 
-Better No-Animation Combat, which displays attack/accuracy/critical rate even when combat animations are turned off. Comes in two sizes.
- 1. R-detailed-easy-battle.js
-
-Intuitive Seals, which hides battle stats on the combat forecast if the unit will be sealed by the opponent's skill or weapon.
- 1. R-intuitive-seal.js
-
 Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
  1. R-show-weapontype.js
 
@@ -43,15 +57,8 @@ Item Drop Indicators, which places an icon over enemies that have an item they w
 Uses McMagister's Unit State Animator.
  1. R-drops-items.js
 
-Player Phase Animations, which adds a third choice to the Real Battle config option: show full animations only on player phase, and show map animations on other phases.
-Also lets user reverse the config option by holding Cycle (A/S keys, LB/RB buttons). Think "Hold L to Skip" from 3DS Fire Emblem games.
- 1. R-player-only-battle.js
-
 Unit Roster, which adds new options to the map commands that allow you to view the full rosters of player, enemy, and ally units on the field, including plenty of information about all of them and allowing you to snap your cursor to a unit by selecting them in the menu.
  1. R-unit-roster.js
-
-Danger Skills, which shows icons for an enemy's dangerous skills in the combat forecast. See the file for more info.
- 1. R-danger-skills.js
 
 Visualize Sortie. If a unit is not selected in battle prep, their name and charchip will be grayed out in Manage Items.
  1. R-visualize-sortie.js
@@ -79,3 +86,4 @@ UPDATE HISTORY (not comprehensive):
 8/15/2021: "Hold L to Skip" added to player phase anims
 8/28/2021: warning markers overhaul, cleaning & bugfixes
 12/4/2021: terrain details updated to v2.0
+12/5/2021: added easy battle pauses

@@ -27,15 +27,15 @@ var TerrainWindowConfig = {
 
 (function () {
 	var drawTerrainAlias = MapParts.Terrain._drawMain;
-    MapParts.Terrain._drawMain = function (x, y) {
-        var xCursor = this.getMapPartsX();
-        var yCursor = this.getMapPartsY();
-        var terrain = PosChecker.getTerrainFromPos(xCursor, yCursor);
+	MapParts.Terrain._drawMain = function (x, y) {
+		var xCursor = this.getMapPartsX();
+		var yCursor = this.getMapPartsY();
+		var terrain = PosChecker.getTerrainFromPos(xCursor, yCursor);
 
-        if (terrain.getName() !== '' || TerrainWindowConfig.showEmptyTerrainWindow) {
+		if (terrain.getName() !== '' || TerrainWindowConfig.showEmptyTerrainWindow) {
 			drawTerrainAlias.call(this, x, y);
-        }
-    }
+		}
+	}
 })();
 
 MapParts.Terrain._paramBonusSkillArr = [];

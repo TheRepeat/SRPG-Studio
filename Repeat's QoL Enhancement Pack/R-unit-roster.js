@@ -289,9 +289,9 @@
 			},
 
 			_setScrollData: function () {
-				var playerList = PlayerList.getSortieList();
-				var enemyList = EnemyList.getAliveList();
-				var allyList = AllyList.getAliveList();
+				var playerList = PlayerList.getSortieDefaultList();
+				var enemyList = EnemyList.getAliveDefaultList();
+				var allyList = AllyList.getAliveDefaultList();
 				var list;
 				switch (this._rosterType) {
 					case RosterType.PLAYER:

@@ -22,7 +22,7 @@ var TerrainWindowConfig = {
 	healTerrainText: 'Heal',
 	damageTerrainText: 'Dmg',
 	showSkillIcons: true, 			// true = show all skills the terrain grants, false = don't
-	showEmptyTerrainWindow: true 	// false = hide terrain window if terrain's name is blank, true = don't
+	showEmptyTerrainWindow: false 	// false = hide terrain window if terrain's name is blank, true = don't
 };
 
 (function () {
@@ -32,7 +32,7 @@ var TerrainWindowConfig = {
 		var yCursor = this.getMapPartsY();
 		var terrain = PosChecker.getTerrainFromPos(xCursor, yCursor);
 
-		if (terrain.getName() !== '' || TerrainWindowConfig.showEmptyTerrainWindow) {
+		if (terrain && terrain.getName() !== '' || TerrainWindowConfig.showEmptyTerrainWindow) {
 			drawTerrainAlias.call(this, x, y);
 		}
 	}

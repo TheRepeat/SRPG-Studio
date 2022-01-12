@@ -1,17 +1,18 @@
 /**
- * Version 2.0
+ * Version 2.1
  * Expanded Terrain Window, by Repeat.
  * Shows the normal data in the terrain window, with additions:
+ *  * Avoid bonus is hidden if the value is 0
  *  * HP recovery or damage value (change the value of healTerrainText or damageTerrainText as you please)
  *  * Stat bonuses from skills of type "Parameter Bonus" that are granted by the terrain
  * 		- Def and Res parameter bonuses are combined with the default Def/Res display
  *  * Icons of all skills granted by terrain (if they are not hidden)
- * 		- For the most natural feeling, I recommend hiding any stat-boosting skills granted by terrain.
  * 		- If you don't like this, set showSkillIcons to false
+ * 		- For the most natural feeling, I recommend hiding any stat-boosting skills granted by terrain
  *  * Terrain window is hidden if the terrain's name is empty.
  * 		- If you don't like this, set showEmptyTerrainWindow to false
  *
- * This is plug and play.
+ * Aside from the optional config options, this is plug and play.
  * 
  * Alias notes:
  * 	MapParts.Terrain._drawContent is overwritten without an alias

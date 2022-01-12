@@ -17,6 +17,11 @@
  * Alias notes:
  * 	MapParts.Terrain._drawContent is overwritten without an alias
  * 	MapParts.Terrain._getPartsCount is overwritten without an alias
+ * 
+ * Changelog:
+ * 	v1.0 (4/21/2020): Original upload
+ * 	v2.0 (12/4/2021): skill icons and parambonus display in window
+ * 		- v2.1 (1/12/2022): Fixed crash when using mouse controls
  */
 
 var TerrainWindowConfig = {

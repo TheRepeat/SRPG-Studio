@@ -11,7 +11,6 @@ If you use my plugins in your own project, it'd be nice if you credited me as Re
 There are a bunch of nice plugins included in this enhancement pack:
 
 Terrain Details, which shows the HP recovery (or damage) of terrain, plus displays skills and other quality of life improvements.
-Modified from Claris's Hide 0 Avoid script.
  1. R-terrain-details.js
 
 Detailed Unit Window, which expands on the unit hover window in the map view.
@@ -39,9 +38,11 @@ These are all individual plugins that are grouped together for cleanliness. They
 	1. R-player-only-battle.js
 }
 
-Objective Window, which adds a new window to the map screen that allows you to display custom text.
- 1. R-map-objective-editable.js
- 2. R-move-terrain.js
+Objective Window, which adds a new window to the map screen that allows you to display custom text and custom objective information (like enemy count or turns remaining).
+ 1. R-move-terrain.js
+ 2. R-objective-alias.js
+ 3. R-objective-enum.js
+ 4. R-objective-window.js
 
 Warning Markers, which adds floating icons over dangerous enemies, units that can be spoken to, and supporters.
 Also adds an icon to units on the unit selection screen in battle prep who have Talk events during the chapter.
@@ -62,6 +63,12 @@ Unit Roster, which adds new options to the map commands that allow you to view t
 
 Visualize Sortie. If a unit is not selected in battle prep, their name and charchip will be grayed out in Manage Items.
  1. R-visualize-sortie.js
+
+Flash White On Hit. Modified from a Claris plugin. Units will briefly flash white when taking damage in Easy Battle (=animations off).
+ 1. CL-R-flash-white.js
+
+Always Show Dialogue Arrow. Normally, a "proceed" arrow won't show on the final line of dialogue, which this plugin changes.
+ 1. R-dialogue-arrow-always.js
 
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
@@ -87,3 +94,4 @@ UPDATE HISTORY (not comprehensive):
 8/28/2021: warning markers overhaul, cleaning & bugfixes
 12/4/2021: terrain details updated to v2.0
 12/5/2021: added easy battle pauses
+3/31/2022: post-SoN v0.1 github overhaul, incl. objective window 2.0, flash white, always show dialogue arrow

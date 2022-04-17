@@ -1,6 +1,6 @@
 Warning Markers
 By Repeat
-Version: 2.5
+Version: 3.0
 
 	ABOUT
 This plugin allows for warning markers like later FE games and many GBAFE romhacks use.
@@ -12,6 +12,7 @@ When a player unit is selected, the following units have a marker put over their
   - Specific enemy units or weapons with the custom parameter {warning:true}
   - Allies that grant support bonuses to the selected unit
 In addition, units who can participate in a Talk event will have an icon next to their name on the unit selection screen during battle preparations.
+In R-markers-values.js, these can be toggled as you please inside the MarkerDisplay object.
 
 	TO USE
 Unit State Animator by McMagister is required. If you don't already have it from a different plugin, it's bundled with this one as well.
@@ -38,6 +39,11 @@ Set showBattlePrepOneWays to true or false at your discretion.
 In the future, I want the plugin to enable using different icons for different support types. For example, drawing C/B/A/S icons for the typical Fire Emblem-style support hierarchy, 
 or something less traditional, like numbered support tiers or displaying allies' affinities.
 
+    FURTHER NOTES
+For performance reasons, markers are calculated by groups of units per frame (5 units at a time by default). The number of units to calculate at once can be tweaked 
+in R-markers-values.js, in countLoadPerLoop in the MarkerDisplay object. A higher number will make markers appear faster, but can impact performance.
+If HighPerf=1 in game.ini (i.e. the game is running at 30 FPS), the delay between groups loading is slightly more noticeable, so a higher number may be preferred.
+You can tweak countLoadPerLoop30fps for this purpose.
 
 	UPDATE HISTORY
 12/19/2019: fixed bug where game would crash if a talk partner wasn't on the map
@@ -57,3 +63,4 @@ or something less traditional, like numbered support tiers or displaying allies'
 11/18/2021: moved editable booleans from markers to markers-values and put them in an enum, MarkerDisplay. SHOW_ONE_WAY_CONVOS also moved here and renamed
      * Placeholder image file given a shorter name so it doesn't hide the ID number in Graphics.
      * Might as well call this Version 2.5 since I haven't been keeping up with version numbers lol
+4/17/2022: v3.0. Performance update by Purplemandown. Markers now calculated in groups each frame instead of all at once, and expensive calls are handled immediately instead of case-by-case.

@@ -1,73 +1,98 @@
 /**
+ * Warning Markers v3.0
  * By Repeat.
  * Unit State Animator integration by McMagister.
+ * Performance improvements by Purplemandown.
  * Places floating markers over enemies and allies that fulfill certain criteria.
  * You can also use custom parameter {warning:true} on weapons or units to give warning markers to individuals.
  *  */
 
-(function () {
+ (function () {
 
     var selectionAlias = MapEdit._selectAction;
     MapEdit._selectAction = function (unit) {
         var result = MapEditResult.NONE;
 
-        WarningMarkers.checkForMarkConditions(unit);
+        WarningMarkers.initialize(unit);
+        WarningMarkers.checkForMarkConditions();
 
         result = selectionAlias.call(this, unit);
         return result;
     }
 
     var WarningMarkers = defineObject(BaseObject, {
-        checkForMarkConditions: function (unit) {
-            if (unit !== null && unit.getUnitType() == UnitType.PLAYER && !unit.isWait()) {
-                var enemies = EnemyList.getAliveList();
+        _checkingActive: false,
+        _enemies: null,
+        _unit: null,
+        _currentIndex: 0,
 
-                // ENEMY MARKERS
-                for (var i = 0; i < enemies.getCount(); i++) {
+        initialize: function (unit) {
+            this._unit = unit;
+            this._enemies = EnemyList.getAliveList();
+            this._checkingActive = true;
+            this._currentIndex = 0;
+        },
 
-                    var enemyUnit = enemies.getData(i);
+        checkForMarkConditions: function () {
+            // Only run the check if we are actively checking and haven't finished
+            if (this._checkingActive && this._enemies.getCount() > this._currentIndex + 1) {
+                if (this._unit !== null && this._unit.getUnitType() == UnitType.PLAYER && !this._unit.isWait()) {
+                    // Set data from costly function calls upfront for performance
+                    var unitWeapon = ItemControl.getEquippedWeapon(this._unit);
+                    var cav = AbilityCalculator.getCriticalAvoid(this._unit);
 
-                    if (enemyUnit.isInvisible()) continue;
-                    var enemyWeapon = ItemControl.getEquippedWeapon(enemyUnit);
+                    // Get index max for this pass
+                    var groupCount = DataConfig.isHighPerformance() ? MarkerDisplay.countLoadPerLoop : MarkerDisplay.countLoadPerLoop30fps;
+                    var maxIndex = this._currentIndex + groupCount;
 
-                    if (MarkerDisplay.sealWarning) {
-                        this.searchSealWarnings(unit, enemyUnit, enemyWeapon);
+                    // ENEMY MARKERS
+                    for (var i = this._currentIndex; i < this._enemies.getCount() && i < maxIndex; i++) {
+
+                        var enemyUnit = this._enemies.getData(i);
+
+                        if (enemyUnit.isInvisible()) continue;
+                        var enemyWeapon = ItemControl.getEquippedWeapon(enemyUnit);
+
+                        if (MarkerDisplay.sealWarning) {
+                            this.searchSealWarnings(this._unit, unitWeapon, enemyUnit, enemyWeapon);
+                        }
+
+                        if (enemyUnit.custom.warning) enemyUnit.custom.unitWarning = true;
+
+                        // Unarmed enemies can still have Seal skills and custom warnings. Other enemy markers can be skipped.
+                        if (enemyWeapon === null) continue;
+
+                        if (MarkerDisplay.criticalWarning) {
+                            this.searchCriticalWarnings(cav, enemyUnit, enemyWeapon);
+                        }
+
+                        // Effectiveness warning
+                        if (MarkerDisplay.effectiveWarning) {
+                            this.searchEffectivityWarnings(this._unit, enemyUnit, enemyWeapon);
+                        }
+
+                        if (enemyWeapon.custom.warning) enemyUnit.custom.weapWarning = true;
                     }
 
-                    if (enemyUnit.custom.warning) enemyUnit.custom.unitWarning = true;
+                    this._currentIndex = i;
 
-                    // Unarmed enemies can still have Seal skills and custom warnings. Other enemy markers can be skipped.
-                    if (enemyWeapon === null) continue;
+                    // END ENEMY-ONLY MARKERS
 
-                    if (MarkerDisplay.criticalWarning) {
-                        this.searchCriticalWarnings(unit, enemyUnit, enemyWeapon);
+                    if (MarkerDisplay.talkWarning) {
+                        this.searchTalkWarnings(this._unit);
                     }
 
-                    // Effectiveness warning
-                    if (MarkerDisplay.effectiveWarning) {
-                        this.searchEffectivityWarnings(unit, enemyUnit, enemyWeapon);
+                    if (MarkerDisplay.supportWarning) {
+                        this.searchSupportWarnings(this._unit);
                     }
-
-                    if (enemyWeapon.custom.warning) enemyUnit.custom.weapWarning = true;
                 }
 
-                // END ENEMY-ONLY MARKERS
-
-                if (MarkerDisplay.talkWarning) {
-                    this.searchTalkWarnings(unit);
-                }
-
-                if (MarkerDisplay.supportWarning) {
-                    this.searchSupportWarnings(unit);
-                }
+                UnitStateAnimator.updateIcons();
             }
-
-            UnitStateAnimator.updateIcons();
         },
 
         // Seal warning does account for player unit's Break Seal skills and equipped weapon
-        searchSealWarnings: function (unit, enemyUnit, enemyWeapon) {
-            var unitWeapon = ItemControl.getEquippedWeapon(unit);
+        searchSealWarnings: function (unit, unitWeapon, enemyUnit, enemyWeapon) {
             var hasBreakSealSkill = false;
             var hasSealSkill = false;
 
@@ -91,14 +116,13 @@
         // Critical rate warning
         // The enemy's Crit is compared to the user's Critical Avoid (supports not taken 
         // into consideration) and compared against CRT_THRESHOLD.
-        searchCriticalWarnings: function (unit, enemyUnit, enemyWeapon) {
+        searchCriticalWarnings: function (unitCritAvo, enemyUnit, enemyWeapon) {
             if (!Miscellaneous.isCriticalAllowed(enemyUnit, null)) {
                 var crt = 0;
             } else {
                 var crt = AbilityCalculator.getCritical(enemyUnit, enemyWeapon);
             }
-            var cav = AbilityCalculator.getCriticalAvoid(unit);
-            if ((crt - cav) >= CRT_THRESHOLD) enemyUnit.custom.critWarning = true;
+            if ((crt - unitCritAvo) >= CRT_THRESHOLD) enemyUnit.custom.critWarning = true;
         },
 
         searchEffectivityWarnings: function (unit, enemyUnit, enemyWeapon) {
@@ -180,7 +204,7 @@
             return false;
         },
 
-        // helper function to remove warning custom parameters
+        // helper function to remove warning custom parameters and stop checking for markers
         removeMarkers: function () {
             var enemies = EnemyList.getAliveList();
             var players = PlayerList.getAliveList();
@@ -218,8 +242,18 @@
             }
 
             UnitStateAnimator.updateIcons();
+            // turn off checking
+            this._checkingActive = false;
         }
     })
+
+    // Call every frame on player phase, but logic isn't executed unless _checkActive is true
+    var moveTurnCycleAlias = PlayerTurn.moveTurnCycle;
+    PlayerTurn.moveTurnCycle = function () {
+        var result = moveTurnCycleAlias.call(this);
+        WarningMarkers.checkForMarkConditions();
+        return result;
+    }
 
     // --------------------
     // SPECIAL UPDATE CASES
@@ -232,7 +266,7 @@
     ItemControl.updatePossessionItem = function (unit) {
         equipUpdateAlias.call(this, unit);
         WarningMarkers.removeMarkers();
-        WarningMarkers.checkForMarkConditions(unit);
+        WarningMarkers.initialize(unit);
     };
 
     // ...when checking adjacent spaces for talk partners
@@ -241,7 +275,7 @@
     UnitCommand._appendTalkEvent = function (groupArray) {
         var unit = this.getListCommandUnit();
         WarningMarkers.removeMarkers();
-        WarningMarkers.checkForMarkConditions(unit);
+        WarningMarkers.initialize(unit);
 
         appendTalkEventAlias.call(this, groupArray);
     };
@@ -321,5 +355,4 @@
             this._addIcon(unit, SEALED_ICON_HANDLE);
         }
     }
-
 })();

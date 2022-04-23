@@ -23,7 +23,7 @@ var MarkerDisplay = {
     sealWarning: true,              // if true, enemies who would seal the selected unit's attack will be marked
     showBattlePrepOneWays: true,    // If true, for the Talk display in battle prep, will show conversations that the unit is a participant of even if they cannot initiate.
 	countLoadPerLoop: 5,			// How many enemies to load per frame. Increasing this number will make the markers appear faster, but decreases performance.
-    countLoadPerLoop30fps: 8,       // Ditto, but for High Performance (30 FPS) mode, where the delay between groups is more noticeable.
+    countLoadPerLoop30fps: 8       // Ditto, but for High Performance (30 FPS) mode, where the delay between groups is more noticeable.
 };
 
 var TALK_ICON = {

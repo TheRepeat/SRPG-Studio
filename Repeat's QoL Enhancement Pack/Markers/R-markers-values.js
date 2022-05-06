@@ -1,6 +1,7 @@
 /**
- * Version 3.0
- * By Repeat and McMagister.
+ * Version 3.1
+ * By Repeat.
+ * Unit State Animator integration by McMagister.
  * Part of the Warning Markers plugin.
  * These markers can be opted in and out of by changing the boolean values inside the MarkerDisplay enum.
  * 

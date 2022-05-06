@@ -1,8 +1,10 @@
 /**
- * Warning Markers v3.0
+ * Warning Markers
+ * Version 3.1
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Performance improvements by Purplemandown.
+ * 
  * Places floating markers over enemies and allies that fulfill certain criteria.
  * You can also use custom parameter {warning:true} on weapons or units to give warning markers to individuals.
  *  */

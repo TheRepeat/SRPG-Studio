@@ -1,6 +1,6 @@
 /**
  * Warning Markers
- * Version 3.1
+ * Version 3.2
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Performance improvements by Purplemandown.
@@ -252,7 +252,12 @@
     var moveTurnCycleAlias = PlayerTurn.moveTurnCycle;
     PlayerTurn.moveTurnCycle = function () {
         var result = moveTurnCycleAlias.call(this);
-        WarningMarkers.checkForMarkConditions();
+
+        // compatibility with Suspend plugin
+        if (root.getCurrentSession()) {
+            WarningMarkers.checkForMarkConditions();
+        }
+
         return result;
     }
 
@@ -327,7 +332,7 @@
     }
 
     // Delegate the responsibility of rendering the custom parameters to UnitStateAnimator
-    // Icon data is defined in warn-markers-values.js
+    // Icon data is defined in R-markers-values.js
     var iconUpdaterAlias = UnitStateAnimator._updateIconByUnit;
     UnitStateAnimator._updateIconByUnit = function (unit) {
         iconUpdaterAlias.call(this, unit);

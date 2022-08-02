@@ -1,6 +1,6 @@
 /**
  * Warning Markers
- * Version 3.2
+ * Version 3.3
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Performance improvements by Purplemandown.
@@ -9,7 +9,7 @@
  * You can also use custom parameter {warning:true} on weapons or units to give warning markers to individuals.
  *  */
 
- var WarningMarkers = defineObject(BaseObject, {
+var WarningMarkers = defineObject(BaseObject, {
     _checkingActive: false,
     _enemies: null,
     _unit: null,
@@ -78,6 +78,10 @@
 
             UnitStateAnimator.updateIcons();
         }
+    },
+
+    isCheckingActive: function () {
+        return this._checkingActive;
     },
 
     // Seal warning does account for player unit's Break Seal skills and equipped weapon
@@ -300,10 +304,13 @@
         if (InputControl.isCancelState() || root.isMouseAction(MouseType.RIGHT)) {
             WarningMarkers.removeMarkers();
         }
+
         result = cancelActionAlias.call(this);
-        if (result == MapEditResult.NONE) {
+
+        if (result == MapEditResult.NONE && WarningMarkers.isCheckingActive()) {
             WarningMarkers.removeMarkers();
         }
+
         return result;
     }
 

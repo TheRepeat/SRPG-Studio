@@ -1,4 +1,12 @@
 /**
+ * === IMPORTANT: THIS PLUGIN IS DEPRECATED ===
+ * SapphireSoft eventually added a new feature to SRPG Studio in an update: 
+ * you can now just right-click on a terrain type and click "Ignore Layer" to achieve what this plugin did, and without all the drawbacks.
+ * I can happily say that this plugin is now useless to you.
+ * I'll keep this file on my github for reference/posterity reasons only.
+ * 
+ * == Legacy description ==
+ * 
  * By Repeat.
  * Will not use the terrain data of the transparent layer if that terrain has this custom parameter:
  *      {showBaseTileData:true}

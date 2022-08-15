@@ -54,7 +54,7 @@ Also adds an icon to units on the unit selection screen in battle prep who have 
 Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
  1. R-show-weapontype.js
 
-Item Drop Indicators, which places an icon over enemies that have an item they will drop.
+Item Drop Indicators, which places an icon over enemies who have an item they will drop.
 Uses McMagister's Unit State Animator.
  1. R-drops-items.js
 
@@ -95,3 +95,4 @@ UPDATE HISTORY (not comprehensive):
 12/4/2021: terrain details updated to v2.0
 12/5/2021: added easy battle pauses
 3/31/2022: post-SoN v0.1 github overhaul, incl. objective window 2.0, flash white, always show dialogue arrow
+8/14/2022: item drops v2.0

@@ -1,6 +1,6 @@
 /**
  * Droppable Item Icons
- * v2.0
+ * v2.1
  * By Repeat, using McMagister's Unit State Animator.
  * This plugin will not work without the Unit State Animator plugin.
  * 
@@ -136,6 +136,7 @@ ConfigItem.ItemDrops = defineObject(BaseConfigtItem, {
 
     selectFlag: function (index) {
         root.getExternalData().env.ItemDrops = index;
+        UnitStateAnimator.updateIcons();
     },
 
     getFlagValue: function () {
@@ -159,7 +160,7 @@ ConfigItem.ItemDrops = defineObject(BaseConfigtItem, {
         if (this.getFlagValue() === 1) {
             text = 'not ';
         }
-        return 'If an enemy can drop one of its items, it will ' + text + 'be marked with an icon on the map.';
+        return 'If an enemy will drop an item upon defeat, it will ' + text + 'be marked with an icon on the map.';
     },
 
     getObjectArray: function () {

@@ -225,9 +225,9 @@ MapParts.Objective = defineObject(BaseMapParts, {
 
     _getPositionY: function () {
         var x = LayoutControl.getPixelX(this.getMapPartsX());
-        var dx = root.getGameAreaWidth() / 2;
+        var dx = root.getGameAreaWidth() / 2 + 16; // without the +16, it flickers rapidly if MarkyJoe's smooth scroll plugin is active
         var y = LayoutControl.getPixelY(this.getMapPartsY());
-        var dy = root.getGameAreaHeight() / 2;
+        var dy = root.getGameAreaHeight() / 2 + 16; // ditto
         var yBase = LayoutControl.getRelativeY(10) - 28;
 
         if (y < dy && x > dx) {

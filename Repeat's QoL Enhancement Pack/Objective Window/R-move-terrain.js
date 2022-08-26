@@ -1,6 +1,6 @@
 /*  By Repeat.
     By default, terrain details are shown on the right side of the window.
-    This moves the terrain window to the bottom of the screen instead, to be more like GBA FE.
+    This plugin moves the terrain window to the bottom of the screen instead, to be more like GBA FE.
     Please, hold your applause.
  */
 
@@ -9,9 +9,7 @@
 
     MapParts.Terrain._getPositionX = function() {
         var x = LayoutControl.getPixelX(this.getMapPartsX());
-		var dx = root.getGameAreaWidth() / 2;
-		var y = LayoutControl.getPixelY(this.getMapPartsY());
-		var dy = root.getGameAreaHeight() / 2;
+		var dx = root.getGameAreaWidth() / 2 + 16;
 		var xBase = LayoutControl.getRelativeX(10) - 50;
 		
 		if (x < dx) {
@@ -35,7 +33,7 @@
         var x = LayoutControl.getPixelX(this.getMapPartsX());
 		var dx = root.getGameAreaWidth() / 2;
 		var y = LayoutControl.getPixelY(this.getMapPartsY());
-		var dy = root.getGameAreaHeight() / 2;
+		var dy = root.getGameAreaHeight() / 2 + 16;
         var yBase = LayoutControl.getRelativeY(10) - 28;
 		
 		if (x < dx && y < dy) {

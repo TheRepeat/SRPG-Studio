@@ -70,6 +70,9 @@ Flash White On Hit. Modified from a Claris plugin. Units will briefly flash whit
 Always Show Dialogue Arrow. Normally, a "proceed" arrow won't show on the final line of dialogue, which this plugin changes.
  1. R-dialogue-arrow-always.js
 
+Keybind Display + Rebinding. Displays controls onscreen during normal gameplay and allows players to rebind their controls in-game instead of in game.ini.
+ ?. contains a bunch of js files trust me. Read its readme or suffer
+
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
 
@@ -96,3 +99,4 @@ UPDATE HISTORY (not comprehensive):
 12/5/2021: added easy battle pauses
 3/31/2022: post-SoN v0.1 github overhaul, incl. objective window 2.0, flash white, always show dialogue arrow
 8/14/2022: item drops v2.0
+9/11/2022: keybind display/rebind plugin

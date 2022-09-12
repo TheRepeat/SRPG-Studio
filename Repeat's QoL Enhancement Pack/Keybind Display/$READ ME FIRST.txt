@@ -1,0 +1,38 @@
+Keybind Display / Key Rebinding
+By Repeat
+Version 1.0
+
+	ABOUT
+This plugin has 2 main functions:
+ 1. Display the player's relevant keybinds (controls) onscreen in normal gameplay
+ 2. Allow the player to rebind their controls in-game without needing to consult game.ini externally
+
+
+	HOW TO USE
+This is very nearly plug-and-play. All you need to do is move the "Keybinds" folder, included in this plugin, into your project's Material folder. It contains several image files necessary for the plugin to function. With that done, this plugin should be fully functional.
+
+Optional: you can tweak certain aspects of this plugin to your liking by editing 0_R-keybind-settings.js in a program like Notepad++ or Visual Studio Code.
+
+In-game, players can choose which type of controls to display onscreen during battle: keyboard keys, controller buttons (specifically those of an Xbox 360 controller), or none.
+
+
+	KNOWN ISSUES/MISSING FEATURES
+There is currently a bug with SRPG Studio where, when rebinding keys, the second key bound to an action (and only the second one) will not persist after the game closes. For example, if you bind 'z' and 'enter' to SELECT, both will work UNTIL you close the game and reopen it, at which time only 'z' will be bound. Due to the way I wrote my code, as soon as SapphireSoft fixes the bug, this issue should be gone immediately (no redownload required). Until then, players can work around this issue by reassigning controls in game.ini like before.
+
+You can view the current controller bindings in-game just like keyboard controls, but controller remapping has not yet been added. Whenever it's ready, it will be added in a future update.
+
+Controller button layouts vary from controller to controller. It's impossible to account for every single kind of controller, so I can only make an educated guess on what the buttons actually look like. Therefore, your mileage may vary on how accurate the displayed controller bindings are. I've personally found the default buttons to be accurate to Xbox 360 and Xbox One controllers.
+
+Because, again, I can only really make educated guesses about controller buttons, if you assign an "unusual" button (relative to an Xbox controller) to one of the displayable commands, no image will display for that command.
+
+(I wouldn't get my hopes too high about controller remapping being accurate. It is likely to be just as unavoidably finicky and controller-dependent.)
+
+
+    CLOSING
+If you ever think, "man, this plugin is really cool, I bet it took Repeat multiple weeks of work to make" (great guess!), you are welcome to show your support by playing my fangame Seas of Novis for free and telling me your thoughts on it! https://feuniverse.us/t/15368
+
+Xbox 360 button graphic is an edit of art by Jtheduelist.
+
+
+	UPDATE HISTORY
+9/11/2022: v1.0, initial release

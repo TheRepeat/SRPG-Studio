@@ -156,7 +156,7 @@ MapParts.Keybinds = defineObject(BaseMapParts, {
     },
 
     getPositionX: function () {
-        var topBottomX = root.getGameAreaWidth() / 2 - 128 + this.getKeyPadding();
+        var topBottomX = root.getGameAreaWidth() / 2 - 128 + this.getKeyPadding() + KeybindEditables.xMod;
         var direction = this._direction;
 
         var xOptions = [
@@ -193,7 +193,7 @@ MapParts.Keybinds = defineObject(BaseMapParts, {
     },
 
     getPositionY: function () {
-        var leftRightY = root.getGameAreaWidth() / 2 - 128;
+        var leftRightY = root.getGameAreaWidth() / 2 - 128 + KeybindEditables.yMod;
         var direction = this._direction;
 
         var yOptions = [

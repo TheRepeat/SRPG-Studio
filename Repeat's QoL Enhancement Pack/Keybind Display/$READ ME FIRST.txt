@@ -1,6 +1,6 @@
 Keybind Display / Key Rebinding
 By Repeat
-Version 1.0
+Version 1.1
 
 	ABOUT
 This plugin has 2 main functions:
@@ -36,3 +36,4 @@ Xbox 360 button graphic is an edit of art by Jtheduelist.
 
 	UPDATE HISTORY
 9/11/2022: v1.0, initial release
+9/15/2022: v1.1, moved some missing values into the editable file

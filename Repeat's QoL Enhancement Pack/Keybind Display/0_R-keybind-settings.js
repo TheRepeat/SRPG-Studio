@@ -1,5 +1,6 @@
 /**
- * Onscreen keybind display and key rebinding, by Repeat.
+ * "Onscreen keybind display", by Repeat.
+ * v1.1
  * This file contains user-editable values for this plugin.
  */
 
@@ -8,6 +9,21 @@ var MapKeybindStrings = {
     Range: 'Range',
     Cycle: 'Cycle',
     Check: 'Check'
+};
+var KeybindStrings = {
+    REBINDCOMMAND: 'Game Controls',
+    HEADING: 'Control Reassignment',
+
+    CONFIGNAME: 'Display Keybinds',
+    CONFIGDESC: 'Choose whether to display the current keybinds onscreen during gameplay.',
+    OPTION_PC: 'PC',
+    OPTION_XBOX: '360'
+};
+var BottomHelpText = { // NB: if the string is too long, it is split into multiple lines for you in R-rebind-windows.js (the chunkHelpText function)
+    DEFAULT: 'Select an action to reassign to a new key. You can select up to two keys to assign per command. Press the Cancel key to exit.',
+    BIND1: 'Select a key to bind to this action.',
+    BIND2: '(Optional) Select a second key to bind to this action. Or, click on the empty space to skip assigning a second key.',
+    CLOSE: 'Select an option.'
 };
 var ConfirmWindowStrings = {
     HEADING: 'Confirm your changes?',
@@ -19,18 +35,9 @@ var ChoiceStrings = [
     'Revert',
     'Keep editing'
 ];
-var KeybindStrings = {
-    HEADING: 'Control Reassignment'
-};
-var BottomHelpText = { // NB: if the string is too long, it is split into multiple lines for you in R-rebind-windows.js (the chunkHelpText function)
-    DEFAULT: 'Select an action to reassign to a new key. You can select up to two keys to assign per command. Press the Cancel key to exit.',
-    BIND1: 'Select a key to bind to this action.',
-    BIND2: '(Optional) Select a second key to bind to this action. Or, click on the empty space to skip assigning a second key.',
-    CLOSE: 'Select an option.'
-};
-// Note: Do not edit the order or length of KeybindStringTable (editing the text is fine). 
+// Note: Do not edit the order or length of ActionNameStrings (editing the text is fine). 
 // The order and length must match KeybindList in R-rebinding.js
-var KeybindStringTable = [
+var ActionNameStrings = [
     'Left',
     'Up',
     'Right',
@@ -83,6 +90,8 @@ REBIND_MENU_ROWS = 8;
  * If this description isn't helping you understand, I recommend changing the value a few times and testing it in-game to see the difference for yourself.
  */
 var KeybindEditables = {
-    direction: DirectionType.BOTTOM, // 0-left, 1-top, 2-right, 3-bottom
-    canFlip: true // if true, the display will flip to the opposite side of the screen if the player's cursor would overlap the UI
+    direction: DirectionType.BOTTOM, // 0-left, 1-top, 2-right, 3-bottom (default)
+    canFlip: true, // if true, the display will flip to the opposite side of the screen if the player's cursor would overlap the UI
+    xMod: 0, // if direction is TOP or BOTTOM, this moves the keys left or right. Negative number moves left. 0 is default.
+    yMod: 0 // if direction is LEFT or RIGHT, this moves the displayed keys up or down. Negative number moves up. 0 is default.
 };

@@ -31,14 +31,14 @@ ConfigItem.ShowKeybinds = defineObject(BaseConfigtItem, {
     },
 
     getConfigItemTitle: function () {
-        return 'Display Keybinds';
+        return KeybindStrings.CONFIGNAME;
     },
 
     getObjectArray: function () {
-        return ['PC', '360', StringTable.Select_Off];
+        return [KeybindStrings.OPTION_PC, KeybindStrings.OPTION_XBOX, StringTable.Select_Off];
     },
 
     getConfigItemDescription: function () {
-        return 'Choose whether to display the current keybinds onscreen during gameplay.';
+        return KeybindStrings.CONFIGDESC;
     }
 });

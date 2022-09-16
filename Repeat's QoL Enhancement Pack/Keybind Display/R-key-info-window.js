@@ -28,8 +28,8 @@ var KeyInfoWindow = defineObject(BaseWindow, {
     },
 
     drawWindowContent: function (x, y) {
-        var selectText = KeybindStringTable[KeyTypes.SELECT];
-        var cancelText = KeybindStringTable[KeyTypes.CANCEL];
+        var selectText = ActionNameStrings[KeyTypes.SELECT];
+        var cancelText = ActionNameStrings[KeyTypes.CANCEL];
         var selectObject = KEYBOARD_CONTROLS.Key[this._selectKey];
         var cancelObject = KEYBOARD_CONTROLS.Key[this._cancelKey];
 

@@ -108,7 +108,7 @@ var RebindCommand = defineObject(BaseTitleCommand, {
     },
 
     getCommandName: function () {
-        return 'Game Controls'
+        return KeybindStrings.REBINDCOMMAND;
     },
 
     // This function is required for the command to be added to map commands (i.e. BaseTitleCommand doesn't have this already)
@@ -467,7 +467,7 @@ var RebindScrollbar = defineObject(BaseScrollbar, {
 
             if (i !== KeyTypes.OPTION2 || SHOW_OPTION2) {
                 this.objectSet({
-                    name: KeybindStringTable[i],
+                    name: ActionNameStrings[i],
                     nameinternal: nameinternal,
                     keys: initialBindings ? initialBindings[i] : root.getKeyBinding(nameinternal)
                 });

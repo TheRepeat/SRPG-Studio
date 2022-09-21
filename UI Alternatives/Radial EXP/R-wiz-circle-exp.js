@@ -183,7 +183,7 @@ var ExperienceNumberView2 = defineObject(ExperienceNumberView, {
             TextRenderer.drawText(x + 10, y + 6, 'Max', -1, ColorValue.KEYWORD, font);
         } else {
             NumberRenderer.drawNumber(x, (y + 2), (exp % 100));
-            TextRenderer.drawText(x + 15, y + 6, 'Exp', -1, color, font);
+            TextRenderer.drawText(x + 15, y + 6, StringTable.Status_Experience, -1, color, font);
         }
     },
 

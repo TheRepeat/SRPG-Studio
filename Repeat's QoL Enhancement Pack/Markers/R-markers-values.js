@@ -1,5 +1,5 @@
 /**
- * Version 3.2
+ * Compatible with versions >= 3.2
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Part of the Warning Markers plugin.

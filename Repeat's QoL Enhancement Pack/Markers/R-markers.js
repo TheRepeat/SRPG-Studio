@@ -1,6 +1,6 @@
 /**
  * Warning Markers
- * Version 3.3
+ * Version 3.4
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Performance improvements by Purplemandown.
@@ -9,22 +9,29 @@
  * You can also use custom parameter {warning:true} on weapons or units to give warning markers to individuals.
  *  */
 
-var WarningMarkers = defineObject(BaseObject, {
+ var WarningMarkers = defineObject(BaseObject, {
+    _checkedSupports: false,
+    _checkedTalks: false,
     _checkingActive: false,
+    _currentIndex: 0,
     _enemies: null,
     _unit: null,
-    _currentIndex: 0,
 
     initialize: function (unit) {
-        this._unit = unit;
-        this._enemies = EnemyList.getAliveList();
+        this._checkedSupports = false;
+        this._checkedTalks = false;
         this._checkingActive = true;
         this._currentIndex = 0;
+        this._enemies = EnemyList.getAliveList();
+        this._unit = unit;
     },
 
     checkForMarkConditions: function () {
         // Only run the check if we are actively checking and haven't finished
-        if (this._checkingActive && this._enemies.getCount() >= this._currentIndex + 1) {
+        var checking = this.isCheckingActive();
+        var count = checking ? this._enemies.getCount() || 1 : 0;
+
+        if (checking && count >= this._currentIndex + 1) {
             if (this._unit !== null && this._unit.getUnitType() == UnitType.PLAYER && !this._unit.isWait()) {
                 // Set data from costly function calls upfront for performance
                 var unitWeapon = ItemControl.getEquippedWeapon(this._unit);
@@ -46,9 +53,9 @@ var WarningMarkers = defineObject(BaseObject, {
                         this.searchSealWarnings(this._unit, unitWeapon, enemyUnit, enemyWeapon);
                     }
 
-                    if (enemyUnit.custom.warning) enemyUnit.custom.unitWarning = true;
+                    enemyUnit.custom.unitWarning = enemyUnit.custom.warning;
 
-                    // Unarmed enemies can still have Seal skills and custom warnings. Other enemy markers can be skipped.
+                    // Unarmed enemies could have Seal skills and custom warnings. Other enemy markers can be skipped.
                     if (enemyWeapon === null) continue;
 
                     if (MarkerDisplay.criticalWarning) {
@@ -60,18 +67,20 @@ var WarningMarkers = defineObject(BaseObject, {
                         this.searchEffectivityWarnings(this._unit, enemyUnit, enemyWeapon);
                     }
 
-                    if (enemyWeapon.custom.warning) enemyUnit.custom.weapWarning = true;
+                    enemyUnit.custom.weapWarning = enemyWeapon.custom.warning;
                 }
 
                 this._currentIndex = i;
 
                 // END ENEMY-ONLY MARKERS
 
-                if (MarkerDisplay.talkWarning) {
+                if (MarkerDisplay.talkWarning && !this._checkedTalks) {
+                    this._checkedTalks = true;
                     this.searchTalkWarnings(this._unit);
                 }
 
-                if (MarkerDisplay.supportWarning) {
+                if (MarkerDisplay.supportWarning && !this._checkedSupports) {
+                    this._checkedSupports = true;
                     this.searchSupportWarnings(this._unit);
                 }
             }
@@ -252,7 +261,7 @@ var WarningMarkers = defineObject(BaseObject, {
         return result;
     }
 
-    // Call every frame on player phase, but logic isn't executed unless _checkActive is true
+    // Call every frame on player phase, but logic isn't executed unless _checkingActive is true
     var moveTurnCycleAlias = PlayerTurn.moveTurnCycle;
     PlayerTurn.moveTurnCycle = function () {
         var result = moveTurnCycleAlias.call(this);

@@ -10,10 +10,14 @@ Currently, there are two functionalities of this plugin:
 (If you haven't already, go to Tools > Options > Data and select 'Display id next to data name'. This is absolutely essential.)
 
  (A) Select FX
-Use {selectfx:#} in your unit's custom parameters in the database, where '#' is the ID number of the SFX asset you want your character to use. 
-For example, {selectfx:0} to play the first sound asset.
+Use {selectfx:[#]} in your unit's custom parameters in the database, where '#' is the ID number of an SFX asset you want your character to use. 
+Example: {selectfx:[0]}
 
-(Note that this refers to the IDs in the Original section, not Runtime. If you want to use an RTP sound effect, you'll have to export and import the particular file.)
+You can also have the plugin choose randomly from an array of sfx IDs. 
+If you put more numbers inside the square brackets [], separated by commas, then a random sound effect from that list of sounds will be played on selection.
+Example: {selectfx:[0,1,7]}
+
+(Note that all of this refers to the IDs in the Original section, not Runtime. If you want to use an RTP sound effect, you'll have to export and import the particular file.)
 
 NOTE: Under the default behavior, units will only play their sound effect a single time, until you reset their sfx via event.
 To reset:
@@ -28,6 +32,20 @@ If you want to reset only a single unit, perform the following:
 2. Set the type to Execute Code
 3. Copy the following command into the Code box: JingleControl.resetSingleUnit(unitId);
    Where unitId is a number corresponding to the database ID of the unit you want to reset.
+
+(Optional) Select FX types
+You can change the frequency the select FX will play at. There are three frequencies:
+ * ALWAYSPLAY (0): Sfx plays every single time an able unit is selected.
+ * FIRSTTURNPLAY (1): Sfx plays every time an able unit is selected, but only on turn 1.
+ * PLAYONCE (2): Sfx plays the first time the unit is selected and can be reset with an event command. (This is the default option)
+You can change which type is used by editing SFX_TYPE_DEFAULT in R-selection-actions.js. Or, you can change frequency on a unit-by-unit basis with the unit custom parameter selectfxType.
+Example: {selectfxType: 0} makes the unit always play its sound effect.
+
+A full example of custom parameters:
+{
+    selectfx: [2,6,8,11],
+    selectfxType: 1
+}
 
 
  (B) Select Speech

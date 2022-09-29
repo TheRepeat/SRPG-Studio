@@ -1,65 +1,69 @@
 /**
  * By Repeat.
  * When selected, a unit will say something based on text defined in an Execute Script event.
- * Also, a sound effect will play based on the unit's custom parameter.
- * @param {number} selectfx - the ID number of the sound effect to play.
- * The frequency of how often this sfx plays can be customized by changing the value of SELECT_FX_TYPE below.
+ * Also, a sound effect will play based on the unit's custom parameter selectfx, which should be set to the ID number of the sound effect to play.
+ * Example:
+    {selectfx:1}
+ * 
+ * There are three types of frequencies for sfx to play.
+ *  * ALWAYSPLAY (0): Sfx plays every single time an able unit is selected.
+ *  * FIRSTTURNPLAY (1): Sfx plays every time an able unit is selected, but only on turn 1.
+ *  * PLAYONCE (2): Sfx plays the first time the unit is selected and can be reset with an event command.
+ * You can change which type is used by editing SFX_TYPE_DEFAULT below.
+ * Or, you can change it on a unit-by-unit basis with the unit custom parameter selectfxType.
+ * Example:
+    {selectfxType:0}
  *  */
 
 (function () {
-    /**
-     * ALWAYSPLAY: Sfx plays every single time an able unit is selected.
-     * FIRSTTURNPLAY: Sfx plays every time an able unit is selected, but only on turn 1.
-     * PLAYONCE (default): Sfx plays the first time the unit is selected.
-     * * With the PLAYONCE option, you can:
-     * * use JingleControl.resetUses(); in an Execute Script command to allow the sfx to 
-     *   play again for all units.
-     * * use JingleControl.resetSingleUnit(unitId); in an Execute Script command to allow 
-     *   the sfx to play again for a single unit.
-     */
     var SelectFxEnum = {
         ALWAYSPLAY: 0,
         FIRSTTURNPLAY: 1,
         PLAYONCE: 2
     }
 
-    // Edit this value
-    SELECT_FX_TYPE = SelectFxEnum.PLAYONCE;
+    SFX_TYPE_DEFAULT = SelectFxEnum.PLAYONCE;
 
     var alias1 = MapEdit._selectAction;
     MapEdit._selectAction = function (unit) {
         var able = false;
         var generator = root.getEventGenerator();
+
         if (unit) {
-            switch (SELECT_FX_TYPE) {
-                case SelectFxEnum.ALWAYSPLAY:
-                    able = true;
-                    break;
-                case SelectFxEnum.FIRSTTURNPLAY:
-                    able = root.getCurrentSession().getTurnCount() === 1;
-                    break;
-                case SelectFxEnum.PLAYONCE:
-                    able = !JingleControl.isJingleUsed(unit);
-                    break;
-                default:
-                    break;
+            var conditions = [
+                true,
+                root.getCurrentSession().getTurnCount() === 1,
+                !JingleControl.isJingleUsed(unit)
+            ];
+            var type = unit.custom.selectfxType;
+
+            if (typeof type === 'number') {
+                able = conditions[type];
+            } else {
+                able = conditions[SFX_TYPE_DEFAULT];
             }
         }
+
         if (unit !== null && unit.getUnitType() === UnitType.PLAYER && !unit.isWait() && root.getCurrentScene() === SceneType.FREE) {
-            if (typeof (unit.custom.selectfx) != 'undefined' && able) {
-                var soundHandle = root.createResourceHandle(false, unit.custom.selectfx, 0, 0, 0);
+            var selectfx = unit.custom.selectfx;
+            var speechObj = unit.custom.selectSpeech;
+
+            if (Array.isArray(selectfx) && able) {
+                // pick a random id from the custom parameter array and play it
+                var id = Math.floor(Math.random() * selectfx.length);
+
+                var soundHandle = root.createResourceHandle(false, id, 0, 0, 0);
                 MediaControl.soundPlay(soundHandle);
                 JingleControl.setJingleUsed(unit);
             }
-            if (unit.custom.selectSpeech && !SpeechControl.isSpeechUsed(unit)) {
-                generator.messageShowUnit(unit.custom.selectSpeech.message, unit.custom.selectSpeech.pos, unit);
+            if (typeof speechObj === 'object' && !SpeechControl.isSpeechUsed(unit)) {
+                generator.messageShowUnit(speechObj.message, speechObj.pos, unit);
                 generator.execute();
                 SpeechControl.setSpeechUsed(unit);
             }
 
         }
 
-        result = alias1.call(this, unit);
-        return result;
+        return alias1.call(this, unit);
     }
 })();

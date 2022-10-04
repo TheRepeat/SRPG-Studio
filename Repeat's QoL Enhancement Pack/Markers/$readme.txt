@@ -1,6 +1,6 @@
 Warning Markers
 By Repeat
-Version: 3.4
+Version: 3.5
 
 	ABOUT
 This plugin allows for warning markers like later FE games and many GBAFE romhacks use.
@@ -69,3 +69,4 @@ You can tweak countLoadPerLoop30fps for this purpose.
 6/2/2022: v3.2. Bugfix: game no longer crashes when using Suspend plugin.
 8/1/2022: v3.3. Performance improvement by Purplemandown.
 9/22/2022: v3.4. Bugfix: markers once again show when no enemies are on the field, plus a slight performance improvement and some cleaning.
+10/4/2022: v3.5. Bugfix: talk events where the source unit is "active" now behave correctly.

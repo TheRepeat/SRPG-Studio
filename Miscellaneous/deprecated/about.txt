@@ -1,0 +1,8 @@
+Deprecated (n.)
+ - The discouragement of use of some terminology, feature, design, or practice, typically because it has been superseded or is no longer considered efficient or safe, without completely removing it or prohibiting its use.
+
+This folder is for plugins that are useless now, either because an official SRPG Studio update has implemented the functionality in-engine in a superior way, or because another plugin offers the same functionality but better.
+
+Though all of the plugins in this folder are deprecated, I refrain from deleting them outright so they can still be used educationally or simply for posterity.
+
+It's rare for anything to go in here, but it's always a good thing when it happens!

@@ -1,6 +1,6 @@
 /**
  * Warning Markers
- * Version 3.4
+ * Version 3.5
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Performance improvements by Purplemandown.
@@ -140,10 +140,11 @@
             talkInfo = event.getTalkEventInfo();
             src = talkInfo.getSrcUnit();
             dest = talkInfo.getDestUnit();
+
             if (src === null || dest === null) {
                 continue;
             }
-            if (unit !== src && unit !== dest) {
+            if (!talkInfo.isSrcActive() && unit !== src && unit !== dest) {
                 continue;
             } else if (unit !== src && !talkInfo.isMutual()) {
                 continue;
@@ -154,7 +155,7 @@
             // talk warning
             if (event.isEvent() && event.getExecutedMark() === EventExecutedType.FREE) {
                 var unit2;
-                if (unit === src) {
+                if (unit === src || talkInfo.isSrcActive()) {
                     unit2 = dest;
                 } else {
                     unit2 = src;

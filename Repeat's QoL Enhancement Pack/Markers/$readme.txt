@@ -1,6 +1,6 @@
 Warning Markers
 By Repeat
-Version: 3.5
+Version: 3.6
 
 	ABOUT
 This plugin allows for warning markers like later FE games and many GBAFE romhacks use.
@@ -16,7 +16,7 @@ In R-markers-values.js, these can be toggled as you please inside the MarkerDisp
 
 	TO USE
 Unit State Animator by McMagister is required. If you don't already have it from a different plugin, it's bundled with this one as well.
-MAKER SURE THE UNIT STATE ANIMATOR FILE IS LOADED FIRST. It must be at the TOP of your list of plugins (yes, in Windows Explorer), or this plugin will not work.
+MAKER SURE THE UNIT STATE ANIMATOR FILE IS LOADED FIRST. It must be at the TOP of your list of plugins (yes, alphabetically, in Windows Explorer), or this plugin will not work.
 
 If you haven't already, in SRPG Studio, go into Tools > Options > Data and check "Display id next to data name".
 
@@ -70,3 +70,6 @@ You can tweak countLoadPerLoop30fps for this purpose.
 8/1/2022: v3.3. Performance improvement by Purplemandown.
 9/22/2022: v3.4. Bugfix: markers once again show when no enemies are on the field, plus a slight performance improvement and some cleaning.
 10/4/2022: v3.5. Bugfix: talk events where the source unit is "active" now behave correctly.
+10/5/2022: v3.6 (pog version). Bugfix: same "active" bug again; turns out I only fixed it for two-way conversations yesterday. 
+     * Bugfix: prep talk markers would show even if the destination unit was dead.
+     * Big overhaul of prep talk markers to improve performance. I feel like there's still room for improvement on the cleanliness side.

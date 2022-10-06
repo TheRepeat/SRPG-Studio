@@ -1,11 +1,11 @@
 /**
  * Warning Markers
- * Version 3.5
+ * Version 3.6
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Performance improvements by Purplemandown.
  * 
- * Places floating markers over enemies and allies that fulfill certain criteria.
+ * When a player unit is selected, floating markers will hover over enemies and allies that fulfill certain criteria.
  * You can also use custom parameter {warning:true} on weapons or units to give warning markers to individuals.
  *  */
 
@@ -140,13 +140,14 @@
             talkInfo = event.getTalkEventInfo();
             src = talkInfo.getSrcUnit();
             dest = talkInfo.getDestUnit();
+            var isUnitSrc = talkInfo.isSrcActive() || unit === src;
 
             if (src === null || dest === null) {
                 continue;
             }
-            if (!talkInfo.isSrcActive() && unit !== src && unit !== dest) {
+            if (!isUnitSrc && unit !== dest) {
                 continue;
-            } else if (unit !== src && !talkInfo.isMutual()) {
+            } else if (!isUnitSrc && !talkInfo.isMutual()) {
                 continue;
             } else if (src.getSortieState() !== SortieType.SORTIE || dest.getSortieState() !== SortieType.SORTIE) {
                 continue;
@@ -155,7 +156,7 @@
             // talk warning
             if (event.isEvent() && event.getExecutedMark() === EventExecutedType.FREE) {
                 var unit2;
-                if (unit === src || talkInfo.isSrcActive()) {
+                if (isUnitSrc) {
                     unit2 = dest;
                 } else {
                     unit2 = src;

@@ -1,6 +1,6 @@
 /**
  * Prep talk markers (part of the Markers plugin)
- * Version 3.6+
+ * Version 3.6.1
  * By Repeat. Thanks for the idea bwdyeti :)
  * In the battle prep, when selecting units, units that participate in any talk event have a talk marker next to them.
  * 
@@ -56,6 +56,9 @@ UnitSortieListScrollbar.unitHasTalkMarker = function (unit) {
             continue;
         }
         // skip dead units
+        if (src && src.getAliveState() !== AliveType.ALIVE) {
+            continue;
+        }
         if (dest && dest.getAliveState() !== AliveType.ALIVE) {
             continue;
         }

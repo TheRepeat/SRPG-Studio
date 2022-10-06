@@ -1,6 +1,6 @@
 Warning Markers
 By Repeat
-Version: 3.6
+Version: 3.6.1
 
 	ABOUT
 This plugin allows for warning markers like later FE games and many GBAFE romhacks use.
@@ -73,3 +73,4 @@ You can tweak countLoadPerLoop30fps for this purpose.
 10/5/2022: v3.6 (pog version). Bugfix: same "active" bug again; turns out I only fixed it for two-way conversations yesterday. 
      * Bugfix: prep talk markers would show even if the destination unit was dead.
      * Big overhaul of prep talk markers to improve performance. I feel like there's still room for improvement on the cleanliness side.
+    v3.6.1. Bugfix: prep talk markers won't show if either the src OR dest unit are dead.

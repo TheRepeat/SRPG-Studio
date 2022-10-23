@@ -1,25 +1,27 @@
 	Detailed Unit Window by Repeat
-This plugin changes the Map Unit Window from two sizes to four: Small, Medium, Large, and Extra Large. The small size is the same as vanilla.
+This plugin changes the Map Unit Window from two sizes to five: Small, Medium, Large, Wide, and Extra Large. The small size is the same as vanilla.
 
 
 
-	ABOUT THIS PLUGIN: LARGE/EXTRA LARGE SETTINGS
+	ABOUT THIS PLUGIN: LARGE/WIDE/EXTRA LARGE SETTINGS
 In the in-game Config, the size of the unit window can be changed under Map Unit Window. The larger the setting, the more information is displayed.
 The numbers shown DO take supports and terrain into account, e.g. forests giving extra Avo, or a support giving extra Def/Res.
 
 The Extra Large setting displays 8 useful stats: Atk, Agi, Hit, Avo, Def, Res, Crt, and CAv.
+The Wide setting displays 5: Atk, Hit, Agi, Def, and Res.
 The Large setting of this file trims it down to just the 4 essentials: Atk, Agi, Def, and Res.
 
 All stats are displayed with the name defined in-engine, so change them in Resources > Resource Location > Strings instead
 of in this plugin. The only exception is Critical Avoid (CAv), which  is never named in SRPG Studio.
-If you want to change that name, change CRIT_AVOID_STAT on line 8 of 0_unitwindow-config.js.
+If you want to change that name, change CRIT_AVOID_STAT in 0_unitwindow-config.js.
 
 On the subject of critical avoid, if the unit has a skill that invalidates enemy crits, their critical avoid is given as a hyphen! 
 If you'd rather that hyphen be something else, then you can edit MAX_CAV_TEXT in 0_unitwindow-config.js to the text of choice. (Not a lot can fit in that space, just so you're aware.)
-Or, if you don't like this option and would rather CAv always be displayed as-is, leave CAV_IS_UNIQUE as false in 0_unitwindow-config.js.
+Or, if you don't like this option and would rather CAv always be displayed as-is, set CAV_IS_UNIQUE to false in 0_unitwindow-config.js.
 
-Another option you have is to change ICONS_ONLY on line 9 of the same file to change the functionality! 
+Another option you have is to change ICONS_ONLY in 0_unitwindow-config.js to change how the unit's item(s) are displayed. 
 If you change that line to ICONS_ONLY = true; then instead of displaying the unit's equipped weapon, the icons of the first 5 items in the unit's inventory will be shown instead.
+If the Wide setting is enabled, then 8 items are drawn instead. (If ICONS_ONLY is false, the wide setting will show the equipped weapon plus its durability, if applicable.)
 
 
 	ABOUT: MEDIUM SETTING OPTIONS
@@ -29,10 +31,12 @@ This file displays the unit's name, current HP, and equipped weapon in the unit'
 
 You can toggle between the two versions of this file by opening 0_unitwindow-config.js in a text editor and changing MEDIUM_SHOWS_STATS to true or false.
 
-VERSION 1 (MEDIUM_SHOWS_STATS = true;) of this file shows the unit's Atk and Agi.
-VERSION 2 (MEDIUM_SHOWS_STATS = false;) of this file shows the unit's Level and EXP instead.
+MEDIUM_SHOWS_STATS = true;
+ - This window shows the unit's Atk and Agi
+MEDIUM_SHOWS_STATS = false;
+ - This window shows the unit's Level and EXP instead.
 
-Alternatively, if you just aren't a fan, then simply don't put the unitwindow-medium.js file in your Plugin folder, and the SRPG Studio default version will be used instead.
+Alternatively, if you just aren't a fan of either of these and want to keep the vanilla medium-sized window, then simply don't put the unitwindow-medium.js file in your Plugin folder, and the SRPG Studio default version will be used instead.
 This version of the window shows the unit's name, class, and current HP alongside an HP bar.
 
 I included a comparison image of each version of the medium size to help you make an educated decision :)
@@ -40,14 +44,14 @@ I included a comparison image of each version of the medium size to help you mak
 
 	ABOUT: CUSTOM PARAMETERS
 This plugin can use custom parameters for extra convenience. If you give a weapon the custom parameter {lrgname:'New Name'}, then while that weapon is equipped and 
-the unit window's setting is L or XL, the equipped weapon's name will be displayed as the specified name instead of its name given in-engine.
+the unit window's setting is L, W, or XL, the equipped weapon's name will be displayed as the specified name instead of its name given in-engine.
 Likewise, the same effect occurs for {smallname:'New Name'} when the unit window size is set to M.
 
 This is useful if a weapon has a particularly long name, such that it fits fine in a unit's inventory screen but is too long for the unit window. 
 An example image of how this can be useful is included with this plugin.
 
 As a reminder, if you want to use multiple custom parameters on one thing, you want to put them all within the same pair of curly braces {} and separate them with commas.
-For example, {smallname:'name1',lrgname:'name2'}. The order doesn't matter, obviously.
+For example, {smallname:'name1', lrgname:'name2'}. The order doesn't matter.
 
 
 UPDATE HISTORY:
@@ -74,3 +78,7 @@ UPDATE HISTORY:
 1/4/2021: Added check for skills that invalidate criticals, and a change to CAv's displayed text as a result. 
 10/28/2021: Implemented lag fix by Purplemandown for large unitwindow 
 	   * Added lag fix for medium unitwindow to match
+10/23/2022: Another huge overhaul in the interest of not having such shit code for one of my most popular plugins. Mostly a code cleanup but adds some new niceties:
+       * New "wide" (W) variant that trades some stat display space for lots of inventory display space (borrowed from Seas of Novis)
+       * Units close to leveling up now show a risecursor next to their EXP on larger layouts
+       * 0_unitwindow-config.js now contains the Config selection for easy editing

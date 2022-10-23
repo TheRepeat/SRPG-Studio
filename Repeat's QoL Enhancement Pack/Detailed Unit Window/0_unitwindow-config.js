@@ -1,71 +1,62 @@
-/*  By Repeat.
-    Part of the Detailed Unit Window plugin. 
-    Make sure this plugin loads before the rest of the detailed unit window plugins. It has the 0 in the name 
-    to make sure it gets loaded first.
-*/
+/**
+ * By Repeat.
+ * Part of the detailed unit window plugin.
+ * Contains values the user may want to edit.
+ * 
+ * Make sure this plugin loads before the rest of the detailed unit window plugins. 
+ * It has the 0 in the name to make sure it gets loaded first.
+ * 
+ * Function(s) overridden without an alias:
+ *  * MapPartsCollection._configureMapParts
+ */
 
-(function () {
-    CRIT_AVOID_STAT = "CAv";            // Edit this to change string for Critical Avoid
-    ICONS_ONLY = false;                 // if true, show icons of all items in inventory. If false, show equipped weapon and name.
-    STAT_COLOR = ColorValue.INFO;       // color of the stat names
-    MEDIUM_SHOWS_STATS = true;          // true: atk/as, false: lv/exp. You can remove unitwindow-med.js if you prefer the SRPG Studio default
-    CAV_IS_UNIQUE = false;              // true: invalid-crit skills show MAX_CAV_TEXT instead of calculated CAv value.
-    MAX_CAV_TEXT = StringTable.SignWord_WaveDash;   // units that invalidate critical hits have special text next to CAv (just a hyphen/wavedash by default).
+CRIT_AVOID_STAT = "CAv";            // Edit this to change string for Critical Avoid
+ICONS_ONLY = false;                 // if true, show icons of all items in inventory. If false, show equipped weapon and name.
+STAT_COLOR = ColorValue.INFO;       // color of the stat names
+MEDIUM_SHOWS_STATS = true;          // true: atk/as, false: lv/exp. You can remove unitwindow-med.js if you prefer the SRPG Studio default
+CAV_IS_UNIQUE = false;              // true: prevent-crit skills show MAX_CAV_TEXT instead of calculated critical avoid value.
+MAX_CAV_TEXT = StringTable.SignWord_WaveDash;   // units that invalidate critical hits have special text next to critical avoid (just a hyphen by default).
 
-    // FOR THE MEDIUM SIZE
-    ItemRenderer.drawItemSmall = function (x, y, item, color, font, isDrawLimit) {
-        if (typeof item.custom.smallname !== 'undefined') {
-            this.drawItemAlphaSmall(x, y, item, color, font, isDrawLimit, 255);
-        }
-        else {
-            this.drawItemAlpha(x, y, item, color, font, isDrawLimit, 255);
-        }
-    };
+ConfigItem.UnitMenuStatus = defineObject(BaseConfigtItem, {
+    selectFlag: function (index) {
+        root.getMetaSession().setDefaultEnvironmentValue(8, index);
+    },
 
-    ItemRenderer.drawItemAlphaSmall = function (x, y, item, color, font, isDrawLimit, alpha) {
-        var interval = this._getItemNumberInterval();
-        var iconWidth = GraphicsFormat.ICON_WIDTH + 5;
-        var length = this._getTextLength();
-        var handle = item.getIconResourceHandle();
-        var graphicsRenderParam = StructureBuilder.buildGraphicsRenderParam();
+    getFlagValue: function () {
+        return root.getMetaSession().getDefaultEnvironmentValue(8);
+    },
 
-        graphicsRenderParam.alpha = alpha;
-        GraphicsRenderer.drawImageParam(x, y, handle, GraphicsType.ICON, graphicsRenderParam);
+    getFlagCount: function () {
+        return 5;
+    },
 
-        TextRenderer.drawAlphaText(x + iconWidth, y + ContentLayout.KEYWORD_HEIGHT, item.custom.smallname, length, color, alpha, font);
+    getConfigItemTitle: function () {
+        return StringTable.Config_MapUnitWindow;
+    },
 
-        if (isDrawLimit) {
-            this.drawItemLimit(x + iconWidth + interval, y, item, alpha);
-        }
-    };
-    // END MEDIUM SECTION
+    getConfigItemDescription: function () {
+        return StringTable.Config_MapUnitWindowDescription;
+    },
 
-    // FOR THE LARGE AND EXTRA LARGE WINDOW SIZES
-    ItemRenderer.drawItemLarge = function (x, y, item, color, font, isDrawLimit) {
-        if (!item) return;
-        if (typeof item.custom.lrgname !== 'undefined') {
-            this.drawItemAlphaLarge(x, y, item, color, font, isDrawLimit, 255);
-        }
-        else {
-            this.drawItemAlpha(x, y, item, color, font, isDrawLimit, 255);
-        }
-    };
+    getObjectArray: function () {
+        return ['XL', 'W', 'L', 'M', 'S'];
+    }
+});
 
-    ItemRenderer.drawItemAlphaLarge = function (x, y, item, color, font, isDrawLimit, alpha) {
-        var interval = this._getItemNumberInterval();
-        var iconWidth = GraphicsFormat.ICON_WIDTH + 5;
-        var length = this._getTextLength();
-        var handle = item.getIconResourceHandle();
-        var graphicsRenderParam = StructureBuilder.buildGraphicsRenderParam();
+MapPartsCollection._configureMapParts = function (groupArray) {
+    var n = root.getMetaSession().getDefaultEnvironmentValue(8);
 
-        graphicsRenderParam.alpha = alpha;
-        GraphicsRenderer.drawImageParam(x, y, handle, GraphicsType.ICON, graphicsRenderParam);
+    if (n === 0) {
+        groupArray.appendObject(MapParts.UnitInfoExtraLarge);
+    } else if (n === 1) {
+        groupArray.appendObject(MapParts.UnitInfoWide);
+    } else if (n === 2) {
+        groupArray.appendObject(MapParts.UnitInfoLarge);
+    } else if (n === 3) {
+        groupArray.appendObject(MapParts.UnitInfo);
+    } else {
+        groupArray.appendObject(MapParts.UnitInfoSmall);
+    }
 
-        TextRenderer.drawAlphaText(x + iconWidth, y + ContentLayout.KEYWORD_HEIGHT, item.custom.lrgname, length, color, alpha, font);
-
-        if (isDrawLimit) {
-            this.drawItemLimit(x + iconWidth + interval, y, item, alpha);
-        }
-
-    };
-})();
+    groupArray.appendObject(MapParts.Terrain);
+};

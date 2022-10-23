@@ -154,23 +154,26 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
         // equipped weapon or list of icons in inventory
         if (!ICONS_ONLY) {
             if (!weapon) {
-                TextRenderer.drawText(x, y + 2, '(Unarmed)', length, color, font);
+                TextRenderer.drawText(x, y + 4, '(Unarmed)', length, color, font);
             } else {
                 ItemRenderer.drawItemLarge(x, y, weapon, textui.getColor(), textui.getFont(), false);
             }
         } else {
-            this._drawItemIcons(x, y, unit, 5, length, color, font);
+            this._drawItemIcons(x, y, unit, textui, 5);
         }
     },
 
     // if ICONS_ONLY in 0_unitwindow-config, draw the first n icons in unit inventory
-    _drawItemIcons: function (x, y, unit, itemCount, length, color, font) {
+    _drawItemIcons: function (x, y, unit, textui, itemCount) {
+        var length = this._getTextLength();
+        var color = textui.getColor();
+        var font = textui.getFont();
         var iconWidth = GraphicsFormat.ICON_WIDTH + 5;
         var handle;
         var graphicsRenderParam = StructureBuilder.buildGraphicsRenderParam();
 
         if (!this._handleArr || !this._handleArr.length) {
-            TextRenderer.drawText(x, y + 2, '(No items)', length, color, font);
+            TextRenderer.drawText(x, y + 4, '(No items)', length, color, font);
             return;
         }
 
@@ -218,7 +221,7 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
         } else if (name === CRIT_AVOID_STAT && this._getHasInvalidCritSkill(unit)) {
             TextRenderer.drawKeywordText(x, y - 3, MAX_CAV_TEXT, -1, color, font)
         } else {
-            this._drawSingleStat(x, y - 3, value, font);
+            this._drawStatValue(x, y - 3, value, font);
         }
     },
 
@@ -229,7 +232,7 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
     },
 
     // Main appeal of this is not having to repeat the negative number check for every stat
-    _drawSingleStat: function (x, y, stat, font) {
+    _drawStatValue: function (x, y, stat, font) {
         var xMod = 12;
         if (stat < 0) {
             if (stat <= -10) xMod = 20; // adaptive for double-digit negatives. Rare but I look prescient if I account for em right?

@@ -103,7 +103,7 @@ MapParts.UnitInfoWide = defineObject(BaseLargeUnitInfo, {
 
         if (!ICONS_ONLY) {
             if (!weapon) {
-                TextRenderer.drawText(x, y + 2, '(Unarmed)', length, color, font);
+                TextRenderer.drawText(x, y + 4, '(Unarmed)', length, color, font);
             } else {
                 ItemRenderer.drawItemLarge(x, y, weapon, textui.getColor(), textui.getFont(), false);
                 if (weapon.getLimitMax() > 0) {
@@ -115,7 +115,7 @@ MapParts.UnitInfoWide = defineObject(BaseLargeUnitInfo, {
             }
         } else {
             // draws 8 items, up from 5 on other layouts
-            this._drawItemIcons(x, y, unit, 8, length, color, font);
+            this._drawItemIcons(x, y, unit, textui, 8);
         }
     },
 

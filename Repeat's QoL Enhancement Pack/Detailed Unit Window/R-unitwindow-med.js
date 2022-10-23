@@ -14,6 +14,22 @@
  *  * UnitSimpleRenderer._drawSubInfo
  */
 
+function getIconHandles(unit) {
+    var handleArr = [];
+
+    var i = 0;
+    var activeItem = unit.getItem(0);
+    while (activeItem !== null) {
+        handle = activeItem.getIconResourceHandle();
+        handleArr.push(handle);
+
+        i++;
+        activeItem = unit.getItem(i) !== null ? unit.getItem(i) : null;
+    }
+
+    return handleArr;
+}
+
 MapParts.UnitInfo._unitData = null;
 UnitSimpleWindow._unitData = null;
 
@@ -22,13 +38,14 @@ MapParts.UnitInfo.setUnit = function (unit) {
     if (unit !== null) {
         this._mhp = ParamBonus.getMhp(unit);
         var weapon = ItemControl.getEquippedWeapon(unit);
-        var mt = 0;
+        var atk = 0;
         if (weapon) {
-            mt = AbilityCalculator.getPower(unit, weapon);
+            atk = AbilityCalculator.getPower(unit, weapon);
         }
         this._unitData = {
             agi: AbilityCalculator.getAgility(unit, weapon),
-            mt: mt,
+            atk: atk,
+            handleArr: getIconHandles(unit),
             totalStatus: SupportCalculator.createTotalStatus(unit),
             weapon: weapon
         }
@@ -39,26 +56,19 @@ MapParts.UnitInfo._drawContent = function (x, y, unit, textui) {
     UnitSimpleRenderer.drawContentEx(x, y, unit, textui, this._mhp, this._unitData);
 }
 
-UnitSimpleRenderer.drawContentEx = function (x, y, unit, textui, mhp, unitData) {
-    this._drawFace(x, y, unit, textui);
-    this._drawName(x, y, unit, textui);
-    if (unitData) {
-        this._drawSubInfo(x, y, unit, textui, mhp, unitData);
-    }
-}
-
 // Pass data on Trade/Manage Status screens
 UnitSimpleWindow.setFaceUnitData = function (unit) {
     this._unit = unit;
     this._mhp = ParamBonus.getMhp(unit);
     var weapon = ItemControl.getEquippedWeapon(unit);
-    var mt = 0;
+    var atk = 0;
     if (weapon) {
-        mt = AbilityCalculator.getPower(unit, weapon);
+        atk = AbilityCalculator.getPower(unit, weapon);
     }
     this._unitData = {
         agi: AbilityCalculator.getAgility(unit, weapon),
-        mt: mt,
+        atk: atk,
+        handleArr: getIconHandles(unit),
         totalStatus: SupportCalculator.createTotalStatus(unit),
         weapon: weapon
     }
@@ -68,48 +78,109 @@ UnitSimpleWindow.drawWindowContent = function (x, y) {
     UnitSimpleRenderer.drawContentEx(x, y, this._unit, this.getWindowTextUI(), this._mhp, this._unitData);
 }
 
-UnitSimpleRenderer._drawSubInfo = function (x, y, unit, textui, mhp, unitData) {
-    var length = this._getTextLength();
-    var color = textui.getColor();
-    var statColor = STAT_COLOR;
-    var font = textui.getFont();
+UnitSimpleRenderer.drawContentEx = function (x, y, unit, textui, mhp, unitData) {
+    this._drawFace(x, y, unit, textui);
+    this._drawName(x, y, unit, textui);
+    if (unitData) {
+        this._drawHp(x, y, unit, textui, mhp);
+        this._drawSubInfo(x, y, unit, textui, unitData);
+        this._drawWeaponInfo(x, y, unit, textui, unitData);
+    }
+}
 
-    // wish I had object destructuring
+UnitSimpleRenderer._drawHp = function (x, y, unit, textui, mhp) {
+    x += GraphicsFormat.FACE_WIDTH + this._getInterval();
+    y += 28;
+
+    ContentRenderer.drawHp(x, y, unit.getHp(), mhp);
+}
+
+UnitSimpleRenderer._drawSubInfo = function (x, y, unit, textui, unitData) {
     var agi = unitData.agi;
     var totalStatus = unitData.totalStatus;
-    var weapon = unitData.weapon;
 
     var pwrBonus = 0;
     if (totalStatus) {
         pwrBonus = totalStatus.powerTotal;
     }
-    var atk = unitData.mt + pwrBonus;
-
-    var dx = [0, 44, 60, 98, -60, -20];
+    var atk = unitData.atk + pwrBonus;
 
     x += GraphicsFormat.FACE_WIDTH + this._getInterval();
-    y += 30;
-    ContentRenderer.drawHp(x, y, unit.getHp(), mhp);
-    y += 20;
+    y += 50;
 
     if (!MEDIUM_SHOWS_STATS) {
         ContentRenderer.drawLevelInfo(x, y, unit);
     } else {
-        TextRenderer.drawText(x + dx[0], y + 3, root.queryCommand('attack_capacity'), 64, statColor, font);
-        if (weapon) {
-            NumberRenderer.drawNumber(x + dx[1], y, atk);
+        this._drawCombatStat(x, y, unit, textui, unitData, root.queryCommand('attack_capacity'), atk)
+        this._drawCombatStat(x + 60, y, unit, textui, unitData, root.queryCommand('agility_capacity'), agi)
+    }
+}
+
+UnitSimpleRenderer._drawCombatStat = function (x, y, unit, textui, unitData, name, value) {
+    var font = textui.getFont();
+    var color = textui.getColor();
+
+    TextRenderer.drawText(x, y, name, -1, STAT_COLOR, font);
+    x += 44;
+
+    if (name === root.queryCommand('attack_capacity') && unitData.weapon === null) {
+        TextRenderer.drawKeywordText(x, y - 3, StringTable.SignWord_WaveDash, -1, color, font)
+    } else {
+        this._drawStatValue(x, y - 3, value, font);
+    }
+}
+
+UnitSimpleRenderer._drawStatValue = function (x, y, value, font) {
+    var xMod = 12;
+    if (value < 0) {
+        if (value <= -10) xMod = 20;
+        TextRenderer.drawText(x - xMod, y + 3, ' - ', 64, 0xFFFFFF, font);
+        value *= -1;
+    }
+    NumberRenderer.drawNumber(x, y, value);
+}
+
+UnitSimpleRenderer._drawWeaponInfo = function (x, y, unit, textui, unitData) {
+    var length = this._getTextLength();
+    var color = textui.getColor();
+    var font = textui.getFont();
+    var weapon = unitData.weapon;
+
+    x += GraphicsFormat.FACE_WIDTH + this._getInterval();
+    y += 70;
+
+    // equipped weapon or list of icons in inventory
+    if (!ICONS_ONLY) {
+        if (!weapon) {
+            TextRenderer.drawText(x, y + 4, '(Unarmed)', length, color, font);
         } else {
-            TextRenderer.drawKeywordText(x + dx[1], y, StringTable.SignWord_WaveDash, -1, color, font);
+            ItemRenderer.drawItemLarge(x, y, weapon, textui.getColor(), textui.getFont(), false);
         }
-        TextRenderer.drawText(x + dx[2], y + 3, root.queryCommand('agility_capacity'), 64, statColor, font);
-        NumberRenderer.drawNumber(x + dx[3], y, agi);
+    } else {
+        this._drawItemIcons(x, y, unit, textui, 4, unitData);
+    }
+}
+
+UnitSimpleRenderer._drawItemIcons = function (x, y, unit, textui, itemCount, unitData) {
+    var length = this._getTextLength();
+    var color = textui.getColor();
+    var font = textui.getFont();
+    var iconWidth = GraphicsFormat.ICON_WIDTH + 5;
+    var handle;
+    var graphicsRenderParam = StructureBuilder.buildGraphicsRenderParam();
+    var handleArr = unitData.handleArr;
+
+    if (!handleArr || !handleArr.length) {
+        TextRenderer.drawText(x, y + 4, '(No items)', length, color, font);
+        return;
     }
 
-    y += 21;
+    if (handleArr) {
+        var count = Math.min(handleArr.length, itemCount);
 
-    if (!weapon) {
-        TextRenderer.drawText(x, y + 2, "(Unarmed)", length, color, font);
-    } else {
-        ItemRenderer.drawItemSmall(x, y, weapon, textui.getColor(), textui.getFont(), false);
+        for (var i = 0; i < count; i++) {
+            handle = handleArr[i];
+            GraphicsRenderer.drawImageParam(x + (iconWidth * i), y, handle, GraphicsType.ICON, graphicsRenderParam);
+        }
     }
 }

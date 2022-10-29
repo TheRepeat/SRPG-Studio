@@ -50,7 +50,7 @@
 
             if (Array.isArray(selectfx) && able) {
                 // pick a random id from the custom parameter array and play it
-                var id = Math.floor(rand * selectfx.length);
+                var id = Math.floor(Math.random() * selectfx.length);
 
                 var soundHandle = root.createResourceHandle(false, selectfx[id], 0, 0, 0);
                 MediaControl.soundPlay(soundHandle);

@@ -3,7 +3,7 @@
  * When selected, a unit will say something based on text defined in an Execute Script event.
  * Also, a sound effect will play based on the unit's custom parameter selectfx, which should be set to the ID number of the sound effect to play.
  * Example:
-    {selectfx:1}
+    {selectfx:[1]}
  * 
  * There are three types of frequencies for sfx to play.
  *  * ALWAYSPLAY (0): Sfx plays every single time an able unit is selected.
@@ -50,9 +50,14 @@
 
             if (Array.isArray(selectfx) && able) {
                 // pick a random id from the custom parameter array and play it
-                var id = Math.floor(Math.random() * selectfx.length);
+                // Or, just pick the first id in the array if array length is 1
+                var id = 0;
 
-                var soundHandle = root.createResourceHandle(false, id, 0, 0, 0);
+                if (selectfx.length !== 1) {
+                    id = Math.floor(Math.random() * selectfx.length);
+                }
+
+                var soundHandle = root.createResourceHandle(false, selectfx[id], 0, 0, 0);
                 MediaControl.soundPlay(soundHandle);
                 JingleControl.setJingleUsed(unit);
             }
@@ -67,3 +72,12 @@
         return alias1.call(this, unit);
     }
 })();
+
+// Array.isArray polyfill
+// ありがとう、キューブ!!
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray 
+if (!Array.isArray) {
+    Array.isArray = function (arg) {
+        return Object.prototype.toString.call(arg) === "[object Array]";
+    };
+}

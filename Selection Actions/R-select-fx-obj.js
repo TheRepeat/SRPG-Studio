@@ -13,7 +13,6 @@ var JingleControl = {
         for (i = 0; i < players.getCount(); i++) {
             players.getData(i).custom.jingleUsed=false;
         }
-        
     },
 
     // resets only 1 unit's jingle

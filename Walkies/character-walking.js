@@ -193,6 +193,9 @@ Localization, TL notes, and some new features and fixes: Repeat
 	10. (Addition by Repeat) I want to disable the ability to Run entirely
 		→ Set cannotRun = true.
 
+    11. (Addition by Repeat) I want to hide the phase change graphic and sfx when I start a walk map.
+		→ Set hidePhaseChangeEffect = true.
+
 ■ Commands that can be used with Execute Script
 	Event command: These commands can be used in Execute Script → Execute Code.
 

@@ -354,8 +354,6 @@ var RebindWindow = defineObject(BaseWindow, {
     },
 
     rebind: function (type, key1, key2) {
-        root.log('type ' + type);
-        root.log('new ' + key1 + ',' + key2);
         root.setKeyBinding(type, key1, key2);
 
         this._rebindScrollbar.setScrollData();

@@ -332,6 +332,7 @@ SRPG Studio Version: 1.235
 
 ■ Repeat's modifications
 8/23/2021 Added InputWrapper, Run feature, currentMapMoveSpeed map custom parameter, WalkControl.setFrontUnitByTable() bugfix
+11/9/2022 Added ability to hide phase change visuals and sfx
 
 --------------------------------------------------------------------------*/
 
@@ -403,7 +404,7 @@ var isWalkMapWindowDisp = true;		// Whether to display the face window at the bo
 
 	var isMovingSound = false;	// Play footsteps when moving? (If set to true, it's noisy.)
 	var isUseTurnEnd = false;	// Is the end-of-turn command issued? (For debug, be careful with this)
-
+	var hidePhaseChangeEffect = true; // Will not say "Player Phase" at the start of every walk map
 
 	/**
 	 * InputWrapper class
@@ -442,6 +443,41 @@ var isWalkMapWindowDisp = true;		// Whether to display the face window at the bo
 			return speed;
 		}
 	})
+
+	// Addition by Repeat - don't show phase change graphic on walk maps
+	var changePhaseAlias = TurnMarkFlowEntry._getTurnFrame;
+	TurnMarkFlowEntry._getTurnFrame = function () {
+		var pic = changePhaseAlias.call(this);
+		if (WalkControl.isWalkMap() && hidePhaseChangeEffect) {
+			pic = null;
+		}
+
+		return pic;
+	}
+
+    // Addition by Repeat.
+	// This change prevents the 36-frame "pause" at the start of the map and silences the phase change SFX in walk maps.
+	// Note that this is only aliased if hidePhaseChangeEffect is false. It could be rewritten to still remove the "pause" and 
+	// be aliased, but the phase change SFX would have to play, which I think is unsightly.
+    var changePhaseSfxAlias = TurnMarkFlowEntry._completeMemberData;
+	TurnMarkFlowEntry._completeMemberData = function (turnChange) {
+        if (!hidePhaseChangeEffect) {
+            return changePhaseSfxAlias.call(this, turnChange);
+        }
+
+		if (!this._isTurnGraphicsDisplayable()) {
+			this.doMainAction(false);
+			return EnterResult.NOTENTER;
+		}
+
+		if (!(WalkControl.isWalkMap())) {
+			this._counter.disableGameAcceleration();
+			this._counter.setCounterInfo(36);
+			this._playTurnChangeSound();
+		}
+
+		return EnterResult.OK;
+	}
 
 	//-------------------------------------------
 	// ScriptExecuteEventCommand class

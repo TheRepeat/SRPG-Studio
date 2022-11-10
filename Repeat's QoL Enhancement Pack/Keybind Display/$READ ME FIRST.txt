@@ -17,8 +17,6 @@ In-game, players can choose which type of controls to display onscreen during ba
 
 
 	KNOWN ISSUES/MISSING FEATURES
-There is currently a bug with SRPG Studio where, when rebinding keys, the second key bound to an action (and only the second one) will not persist after the game closes. For example, if you bind 'z' and 'enter' to SELECT, both will work UNTIL you close the game and reopen it, at which time only 'z' will be bound. Due to the way I wrote my code, as soon as SapphireSoft fixes the bug, this issue should be gone immediately (no redownload required). Until then, players can work around this issue by reassigning controls in game.ini like before.
-
 You can view the current controller bindings in-game just like keyboard controls, but controller remapping has not yet been added. Whenever it's ready, it will be added in a future update.
 
 Controller button layouts vary from controller to controller. It's impossible to account for every single kind of controller, so I can only make an educated guess on what the buttons actually look like. Therefore, your mileage may vary on how accurate the displayed controller bindings are. I've personally found the default buttons to be accurate to Xbox 360 and Xbox One controllers.

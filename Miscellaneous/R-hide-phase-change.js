@@ -24,9 +24,9 @@
     }
 })();
 
-// This change prevents the 36-frame "pause" at the start of the map and silences the phase change SFX in walk maps.
-// Note that this isn't aliased (alias.call(this, turnChange)). It could be rewritten to still remove the "pause" and 
-// be aliased, but the phase change SFX would have to play, which I think is unsightly.
+// This change prevents the 36-frame "pause" during phase changes and silences the phase change SFX.
+// Note that this isn't aliased. It could be rewritten to still remove the "pause" and be aliased, 
+// but the phase change SFX would have to play, which I think is unsightly.
 TurnMarkFlowEntry._completeMemberData = function (turnChange) {
     var mapInfo = root.getCurrentSession().getCurrentMapInfo();
 

@@ -1,6 +1,6 @@
 /**
  * "Onscreen keybind display", by Repeat.
- * v1.1
+ * v1.2
  * This file contains user-editable values for this plugin.
  */
 
@@ -22,12 +22,21 @@ var KeybindStrings = {
 var BottomHelpText = { // NB: if the string is too long, it is split into multiple lines for you in R-rebind-windows.js (the chunkHelpText function)
     DEFAULT: 'Select an action to reassign to a new key. You can select up to two keys to assign per command. Press the Cancel key to exit.',
     BIND1: 'Select a key to bind to this action.',
-    BIND2: '(Optional) Select a second key to bind to this action. Or, click on the empty space to skip assigning a second key.',
+    BIND2: '(Optional) Select a second key to bind to this action. Or, select the empty space to skip assigning a second key.',
+    RCLICK: 'Choose whether to bind the right mouse button to this action.',
     CLOSE: 'Select an option.'
 };
 var ConfirmWindowStrings = {
     HEADING: 'Confirm your changes?',
     DESC: 'Select Confirm to lock in your changes, or select Revert to undo your changes and close the window.'
+};
+var RclickWindowStrings = {
+    HEADING: 'Additionally bind the right mouse button to this action?',
+    DESC: '(Edits to mouse controls require the game to be closed and reopened to take effect.)',
+    CHOICES: {
+        YES: StringTable.QuestionWindow_DefaultCase1,
+        NO: StringTable.QuestionWindow_DefaultCase2 + ' (choose a key instead)'
+    }
 };
 // Note: Do not edit the order or length of ChoiceStrings (editing the text is fine)
 var ChoiceStrings = [

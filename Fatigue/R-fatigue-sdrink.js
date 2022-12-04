@@ -87,16 +87,12 @@ var SDrinkItemAvailability = defineObject(BaseItemAvailability, {
 });
 
 var SDrinkItemUse = defineObject(BaseItemUse, {
-
     _unit: null,
     _noticeView: null,
-    _keyword: '',
 
     enterMainUseCycle: function (itemUseParent) {
         var itemTargetInfo = itemUseParent.getItemTargetInfo();
-        var item = itemTargetInfo.item;
         this._unit = itemTargetInfo.targetUnit;
-        this._keyword = item.custom.teachArt;
 
         FatigueControl.resetFatigue(this._unit);
 

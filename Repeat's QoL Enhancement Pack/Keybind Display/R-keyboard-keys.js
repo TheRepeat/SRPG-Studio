@@ -66,6 +66,14 @@ var KEYBOARD_CONTROLS = {
     }
 };
 
+var MOUSE_CONTROLS = {
+    Folder: 'Keybinds',
+    Image: 'mouse.png',
+    Key: {
+        rclick: [GraphicsFormat.ICON_WIDTH * 0, GraphicsFormat.ICON_HEIGHT * 0]
+    }
+}
+
 var XBOX_CONTROLS = {
     Folder: 'Keybinds',
     Image: 'xbox.png',

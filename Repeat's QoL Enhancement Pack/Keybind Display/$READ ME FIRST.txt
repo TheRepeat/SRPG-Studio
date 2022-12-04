@@ -1,6 +1,6 @@
 Keybind Display / Key Rebinding
 By Repeat
-Version 1.1
+Version 1.2
 
 	ABOUT
 This plugin has 2 main functions:
@@ -23,7 +23,7 @@ Controller button layouts vary from controller to controller. It's impossible to
 
 Because, again, I can only really make educated guesses about controller buttons, if you assign an "unusual" button (relative to an Xbox controller) to one of the displayable commands, no image will display for that command.
 
-(I wouldn't get my hopes too high about controller remapping being accurate. It is likely to be just as unavoidably finicky and controller-dependent.)
+(I wouldn't get my hopes too high about controller remapping being accurate. It is likely to be just as unavoidably finicky and controller-dependent. Pretty much the whole reason I've procrastinated on implementing it.)
 
 
     CLOSING
@@ -35,3 +35,4 @@ Xbox 360 button graphic is an edit of art by Jtheduelist.
 	UPDATE HISTORY
 9/11/2022: v1.0, initial release
 9/15/2022: v1.1, moved some missing values into the editable file
+12/4/2022: v1.2, fixed game crash on unbinding Select/Cancel; added rclick as a binding option for SYSTEM and SKIP

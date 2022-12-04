@@ -30,8 +30,8 @@ var KeyInfoWindow = defineObject(BaseWindow, {
     drawWindowContent: function (x, y) {
         var selectText = ActionNameStrings[KeyTypes.SELECT];
         var cancelText = ActionNameStrings[KeyTypes.CANCEL];
-        var selectObject = KEYBOARD_CONTROLS.Key[this._selectKey];
-        var cancelObject = KEYBOARD_CONTROLS.Key[this._cancelKey];
+        var selectObject = KEYBOARD_CONTROLS.Key[this._selectKey] || KEYBOARD_CONTROLS.Key['none'];
+        var cancelObject = KEYBOARD_CONTROLS.Key[this._cancelKey] || KEYBOARD_CONTROLS.Key['none'];
 
         if (this._type === MiniWindowType.DETAIL) {
             cancelText += ' (' + ChoiceStrings[ChoiceType.CLOSE] + ')';

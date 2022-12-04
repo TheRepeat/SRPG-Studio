@@ -1,5 +1,6 @@
 /**
  * By Repeat.
+ * v1.2
  * Adds new UI to the title screen, allowing players to rebind their controls in-game.
  * 
  * Controller rebinding is not in scope for the initial release of this plugin.
@@ -71,7 +72,8 @@ var KeybindList = [
 var RebindState = {
     NONE: 0,
     FIRST: 1,
-    SECOND: 2
+    RCLICK: 2,
+    SECOND: 3
 };
 
 var RebindCommand = defineObject(BaseTitleCommand, {
@@ -126,14 +128,17 @@ var RebindWindow = defineObject(BaseWindow, {
     _keyboardScrollbar: null,
     _keyboardScrollbar2: null,
     _pic: null,
+    _rclickChoiceWindow: null,
     _rebindState: RebindState.NONE,
     _rebindScrollbar: null,
     _selectedBinds: [],
     _showChoiceWindow: false,
+    _showRclickChoiceWindow: false,
     _showImage: false,
 
     initialize: function () {
         this._pic = root.getMaterialManager().createImage(KEYBOARD_CONTROLS.Folder, KEYBOARD_CONTROLS.Image);
+
         var picColumns = this._pic.getWidth() / GraphicsFormat.ICON_WIDTH;
         var picRows = this._pic.getHeight() / GraphicsFormat.ICON_HEIGHT;
 
@@ -153,28 +158,6 @@ var RebindWindow = defineObject(BaseWindow, {
         this._keyboardScrollbar2.setScrollFormation(picColumns, picRows);
         this._keyboardScrollbar2.setScrollData(this._pic, REBIND_CURSORS.Cursor1);
         this._keyboardScrollbar2.setActive(false);
-    },
-
-    _createChoiceWindow: function () {
-        var dataObject = {
-            heading: '',
-            description: ''
-        };
-
-        dataObject.heading = ConfirmWindowStrings.HEADING;
-        dataObject.description = ConfirmWindowStrings.DESC;
-        dataObject.choices = ChoiceStrings;
-
-        this._choiceWindow = createWindowObject(RebindChoiceWindow, this);
-        this._choiceWindow.setScrollbar(dataObject);
-
-        this._createKeyInfoWindow(MiniWindowType.DETAIL, this._choiceWindow.getWindowWidth())
-    },
-
-    _createKeyInfoWindow: function (type, width) {
-        // this is initialized here instead of when the window opens so that the latest controls are displayed
-        this._miniWindow = createWindowObject(KeyInfoWindow, this);
-        this._miniWindow.init(type, width);
     },
 
     moveWindowContent: function () {
@@ -202,11 +185,94 @@ var RebindWindow = defineObject(BaseWindow, {
             this._keyboardScrollbar.moveInput();
         } else if (this._rebindState === RebindState.SECOND) {
             this._keyboardScrollbar2.moveInput();
+        } else if (this._rebindState === RebindState.RCLICK) {
+            this._moveRclickChoiceWindow();
         } else if (!this._showChoiceWindow) {
             this._rebindScrollbar.moveInput();
         }
 
         return MoveResult.CONTINUE;
+    },
+
+    drawWindowContent: function (x, y) {
+        this._rebindScrollbar.drawScrollbar(x, y);
+        if (this._showImage) {
+            this._drawImage(x, y);
+        }
+
+        if (this._showChoiceWindow) {
+            this._drawChoiceWindow(x, y);
+        }
+
+        if (this._rebindState === RebindState.RCLICK) {
+            this._rclickChoiceWindow.drawWindow(x, y + 32);
+        }
+    },
+
+    _createChoiceWindow: function () {
+        var dataObject = {
+            heading: '',
+            description: ''
+        };
+
+        dataObject.heading = ConfirmWindowStrings.HEADING;
+        dataObject.description = ConfirmWindowStrings.DESC;
+        dataObject.choices = ChoiceStrings;
+
+        this._choiceWindow = createWindowObject(RebindChoiceWindow, this);
+        this._choiceWindow.setScrollbar(dataObject);
+
+        this._createKeyInfoWindow(MiniWindowType.DETAIL, this._choiceWindow.getWindowWidth());
+    },
+
+    _createRclickChoiceWindow: function () {
+        var dataObject = {
+            heading: '',
+            description: ''
+        };
+
+        dataObject.heading = RclickWindowStrings.HEADING;
+        dataObject.description = RclickWindowStrings.DESC;
+        dataObject.choices = RclickWindowStrings.CHOICES;
+
+        this._rclickChoiceWindow = createWindowObject(RclickChoiceWindow, this);
+        this._rclickChoiceWindow.setScrollbar(dataObject);
+    },
+
+    _createKeyInfoWindow: function (type, width) {
+        // this is initialized here instead of when the window opens so that the latest controls are displayed
+        this._miniWindow = createWindowObject(KeyInfoWindow, this);
+        this._miniWindow.init(type, width);
+    },
+
+    _moveRclickChoiceWindow: function () {
+        if (this._rclickChoiceWindow.moveWindowContent() !== MoveResult.CONTINUE) {
+            if (this._rclickChoiceWindow.getChoice()) {
+                this._rclickChoiceWindow = null;
+                var selectedType = this._rebindScrollbar.getObject().nameinternal
+
+                this._showImage = false;
+                this._keyboardScrollbar.setForceSelect(-1)
+                this._rebindScrollbar.setActive(true);
+                this._keyboardScrollbar.setActive(false);
+                this._keyboardScrollbar2.setActive(false);
+                
+                this.rebind(selectedType, this._selectedBinds[0], 'rclick');
+    
+                this.getParentInstance().setHelpText(BottomHelpText.DEFAULT);
+                this.changeState(RebindState.NONE);
+            } else {
+                this._rclickChoiceWindow = null;
+    
+                this._keyboardScrollbar.setForceSelect(this._keyboardScrollbar.getIndex());
+                this._keyboardScrollbar.setActive(false);
+                this._keyboardScrollbar2.setForceSelect(-1);
+                this._keyboardScrollbar2.setActive(true);
+    
+                this.getParentInstance().setHelpText(BottomHelpText.BIND2);
+                this.changeState(RebindState.SECOND);
+            }
+        }
     },
 
     _moveChoiceWindow: function () {
@@ -231,6 +297,19 @@ var RebindWindow = defineObject(BaseWindow, {
         return MoveResult.CONTINUE;
     },
 
+    _drawImage: function (x, y) {
+        this._pic.draw(x, y);
+        this._keyboardScrollbar.drawScrollbar(x, y);
+        this._keyboardScrollbar2.drawScrollbar(x, y);
+
+        this._miniWindow.drawWindow(x, y + this._pic.getHeight() + 8);
+    },
+
+    _drawChoiceWindow: function (x, y) {
+        this._choiceWindow.drawWindow(x, y);
+        this._miniWindow.drawWindow(x, y + this._choiceWindow.getWindowHeight());
+    },
+
     resetBindings: function () {
         var binds = this._initialBindings;
 
@@ -238,17 +317,6 @@ var RebindWindow = defineObject(BaseWindow, {
             if (binds[i]) {
                 root.setKeyBinding(KeybindList[i], binds[i][0], binds[i][1]);
             }
-        }
-    },
-
-    drawWindowContent: function (x, y) {
-        this._rebindScrollbar.drawScrollbar(x, y);
-        if (this._showImage) {
-            this._drawImage(x, y);
-        }
-
-        if (this._showChoiceWindow) {
-            this._drawChoiceWindow(x, y);
         }
     },
 
@@ -286,19 +354,6 @@ var RebindWindow = defineObject(BaseWindow, {
         return arr;
     },
 
-    _drawImage: function (x, y) {
-        this._pic.draw(x, y);
-        this._keyboardScrollbar.drawScrollbar(x, y);
-        this._keyboardScrollbar2.drawScrollbar(x, y);
-
-        this._miniWindow.drawWindow(x, y + this._pic.getHeight() + 8);
-    },
-
-    _drawChoiceWindow: function (x, y) {
-        this._choiceWindow.drawWindow(x, y);
-        this._miniWindow.drawWindow(x, y + this._choiceWindow.getWindowHeight());
-    },
-
     // "what happens when I click something?"
     _manageSelections: function () {
         if (InputControl.isSelectAction()) {
@@ -318,18 +373,31 @@ var RebindWindow = defineObject(BaseWindow, {
                 this.changeState(RebindState.FIRST);
             } else if (this._rebindState === RebindState.FIRST) { // upon selecting the first key
                 var selectedIndex = this._keyboardScrollbar.getIndex();
+                var actionIndex = this._rebindScrollbar.getIndex();
+                var continueToBind2 = !this.isSkipOrSystemAction(actionIndex);
+
+                // assign first keybind
                 this._selectedBinds[0] = this._keyboardScrollbar.getObject().name;
 
-                // freezes first keyboard on the key it selected and switches to keyboard2
+                // freezes first keyboard on the key it selected and switches to keyboard2 or rclick choice
                 this._keyboardScrollbar.setForceSelect(selectedIndex);
                 this._keyboardScrollbar.setActive(false);
-                this._keyboardScrollbar2.setForceSelect(-1);
-                this._keyboardScrollbar2.setActive(true);
 
-                this.getParentInstance().setHelpText(BottomHelpText.BIND2);
-                this.changeState(RebindState.SECOND);
-            } else { // upon selecting the second key (closes the image, rebinds controls, returns to the rebind scrollbar)
+                if (continueToBind2) {
+                    this._keyboardScrollbar2.setForceSelect(-1);
+                    this._keyboardScrollbar2.setActive(true);
+
+                    this.getParentInstance().setHelpText(BottomHelpText.BIND2);
+                    this.changeState(RebindState.SECOND);
+                } else {
+                    this._createRclickChoiceWindow();
+
+                    this.getParentInstance().setHelpText(BottomHelpText.RCLICK);
+                    this.changeState(RebindState.RCLICK)
+                }
+            } else if (this._rebindState === RebindState.SECOND) { // upon selecting the second key (closes the image, rebinds controls, returns to the rebind scrollbar)
                 this._showImage = false;
+                // assign second keybind
                 this._selectedBinds[1] = this._keyboardScrollbar2.getObject().name;
 
                 this._keyboardScrollbar.setForceSelect(-1)
@@ -377,6 +445,15 @@ var RebindWindow = defineObject(BaseWindow, {
 
     changeState: function (newState) {
         this._rebindState = newState;
+    },
+
+    isSkipOrSystemAction: function (index) {
+        if (SHOW_OPTION2) {
+            return index === 10 || index === 11;
+        } else {
+            return index === 9 || index === 10;
+        }
+        // this is so stupid dude
     },
 
     getWindowWidth: function () {
@@ -454,9 +531,11 @@ var KeyboardScrollbar = defineObject(BaseScrollbar, {
 // when i get around to it i'll prolly need 2 scrollbars on different pages, one for kb/one for conch
 var RebindScrollbar = defineObject(BaseScrollbar, {
     _pic: null,
+    _mousePic: null,
 
     setScrollData: function (initialBindings) {
         this._pic = root.getMaterialManager().createImage(KEYBOARD_CONTROLS.Folder, KEYBOARD_CONTROLS.Image);
+        this._mousePic = root.getMaterialManager().createImage(MOUSE_CONTROLS.Folder, MOUSE_CONTROLS.Image);
 
         this.resetScrollData();
 
@@ -492,7 +571,7 @@ var RebindScrollbar = defineObject(BaseScrollbar, {
             this.drawKey(x, y, key1);
         }
 
-        if (KEYBOARD_CONTROLS.Key[key2]) {
+        if (KEYBOARD_CONTROLS.Key[key2] || MOUSE_CONTROLS.Key[key2]) {
             x += GraphicsFormat.ICON_WIDTH + 8;
 
             TextRenderer.drawText(x, y + 8, ',', length, color, font);
@@ -504,9 +583,17 @@ var RebindScrollbar = defineObject(BaseScrollbar, {
 
     drawKey: function (x, y, key) {
         var pic = this._pic;
-        var keyObject = KEYBOARD_CONTROLS.Key[key] ? KEYBOARD_CONTROLS.Key[key] : KEYBOARD_CONTROLS.Key.defaultKey;
-        var xSlice = keyObject[0];
-        var ySlice = keyObject[1];
+        var keyDimensions;
+
+        if (key === 'rclick') {
+            keyDimensions = MOUSE_CONTROLS.Key[key];
+            pic = this._mousePic;
+        } else {
+            keyDimensions = KEYBOARD_CONTROLS.Key[key] ? KEYBOARD_CONTROLS.Key[key] : KEYBOARD_CONTROLS.Key.defaultKey;
+        }
+
+        var xSlice = keyDimensions[0];
+        var ySlice = keyDimensions[1];
 
         pic.drawParts(x, y, xSlice, ySlice, GraphicsFormat.ICON_WIDTH, GraphicsFormat.ICON_HEIGHT);
     },

@@ -33,7 +33,7 @@ var RebindChoiceWindow = defineObject(BaseWindow, {
 
     openWindow: function () {
         this._choiceScrollbar.setActive(true);
-        this._choiceScrollbar.setIndex(2); // initialize the cursor on "keep editing" to help prevent misclicks
+        this._choiceScrollbar.setIndex(ChoiceType.CLOSE); // initialize the cursor on "keep editing" to help prevent misclicks
     },
 
     closeWindow: function () {
@@ -48,14 +48,6 @@ var RebindChoiceWindow = defineObject(BaseWindow, {
             return MoveResult.END;
         }
 
-        /**
-         * Note for posterity:
-         * There used to be a bug where this condition would be reached as soon as the window opened, closing it instantly
-         * and making this whole window worthless (and the rebind window inescapable). I fixed it when I moved the choice window 
-         * logic to its own move function, _moveChoiceWindow, which *returns* MoveResult.END instead of breaking and continuing 
-         * when cancel is pressed.
-         * Not the first time I've run into this bug nor will it be the last, so I'm writing it down here so I can remember how I beat this.
-         */
         if (InputControl.isCancelAction()) {
             this._choice = ChoiceType.CLOSE;
             return MoveResult.END;
@@ -109,7 +101,6 @@ var RebindChoiceWindow = defineObject(BaseWindow, {
         return 80 + buffer;
     },
 
-    // I feel like nobody's actually gonna use a description but w/e
     splitDescString: function (str) {
         var chunkedStringArr = str.match(/.{1,52}(\s|$)/g);
         this._stringChunks = chunkedStringArr.length;

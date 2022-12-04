@@ -4,9 +4,6 @@
  */
 
  var TopRebindWindow = defineObject(BaseWindow, {
-    _pic: null,
-    _selectKey: null,
-    _cancelKey: null,
 
     drawWindowContent: function (x, y) {
         var font = root.getBaseData().getFontList().getDataFromId(1); // "Title" font
@@ -31,9 +28,6 @@
 });
 
 var BottomRebindWindow = defineObject(BaseWindow, {
-    _pic: null,
-    _selectKey: null,
-    _cancelKey: null,
     _text: '',
 
     setHelpText: function (text) {

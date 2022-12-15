@@ -73,6 +73,9 @@ Always Show Dialogue Arrow. Normally, a "proceed" arrow won't show on the final 
 Keybind Display + Rebinding. Displays controls onscreen during normal gameplay and allows players to rebind their controls in-game instead of in game.ini.
  ?. contains a bunch of js files trust me. Read its readme or suffer
 
+Faster Healing. Replaces the slow vanilla healing animation with a much quicker (and less annoying) one.
+ 1. R-faster-healing.js
+
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
 

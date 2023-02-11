@@ -19,7 +19,7 @@ var UnitWindowValues = {
     MaxCrtAvoidText: StringTable.SignWord_WaveDash   // units that invalidate critical hits have special text next to critical avoid (just a hyphen by default).
 };
 
-// If you don't want any of these videos, set the value to false instead of true
+// If you only want some of the window sizes, set the value to false instead of true
 var UnitWindowAllowedTypes = {
     XL: true,
     W: true,

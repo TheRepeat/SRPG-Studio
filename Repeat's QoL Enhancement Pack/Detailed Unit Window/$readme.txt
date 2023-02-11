@@ -1,6 +1,8 @@
 	Detailed Unit Window by Repeat
 This plugin changes the Map Unit Window from two sizes to five: Small, Medium, Large, Wide, and Extra Large. The small size is the same as vanilla.
 
+You can opt in and out of which sizes you want your game to use by editing UnitWindowAllowedTypes in 0_unitwindow-editables.js. All 5 sizes are displayed by default.
+
 
 
 	ABOUT THIS PLUGIN: LARGE/WIDE/EXTRA LARGE SETTINGS
@@ -13,15 +15,15 @@ The Large setting of this file trims it down to just the 4 essentials: Atk, Agi,
 
 All stats are displayed with the name defined in-engine, so change them in Resources > Resource Location > Strings instead
 of in this plugin. The only exception is Critical Avoid (CAv), which  is never named in SRPG Studio.
-If you want to change that name, change CRIT_AVOID_STAT in 0_unitwindow-config.js.
+If you want to change that name, change CriticalAvoidStat in 0_unitwindow-editables.js.
 
 On the subject of critical avoid, if the unit has a skill that invalidates enemy crits, their critical avoid is given as a hyphen! 
-If you'd rather that hyphen be something else, then you can edit MAX_CAV_TEXT in 0_unitwindow-config.js to the text of choice. (Not a lot can fit in that space, just so you're aware.)
-Or, if you don't like this option and would rather CAv always be displayed as-is, set CAV_IS_UNIQUE to false in 0_unitwindow-config.js.
+If you'd rather that hyphen be something else, then you can edit MaxCrtAvoidText in 0_unitwindow-editables.js to the text of choice. (Not a lot can fit in that space, just so you're aware.)
+Or, if you don't like this option and would rather CAv always be displayed as-is, set CAV_IS_UNIQUE to false in 0_unitwindow-editables.js.
 
-Another option you have is to change ICONS_ONLY in 0_unitwindow-config.js to change how the unit's item(s) are displayed. 
-If you change that line to ICONS_ONLY = true; then instead of displaying the unit's equipped weapon, the icons of the first 5 items in the unit's inventory will be shown instead.
-If the Wide setting is enabled, then 8 items are drawn instead. (If ICONS_ONLY is false, the wide setting will show the equipped weapon plus its durability, if applicable.)
+Another option you have is to change IconsOnly in 0_unitwindow-editables.js to change how the unit's item(s) are displayed. 
+If you change that line to IconsOnly = true; then instead of displaying the unit's equipped weapon, the icons of the first 5 items in the unit's inventory will be shown instead.
+If the Wide setting is enabled, then 8 items are drawn instead. (If IconsOnly is false, the wide setting will show the equipped weapon plus its durability, if applicable.)
 
 
 	ABOUT: MEDIUM SETTING OPTIONS
@@ -31,9 +33,9 @@ This file displays the unit's name, current HP, and equipped weapon in the unit'
 
 You can toggle between the two versions of this file by opening 0_unitwindow-config.js in a text editor and changing MEDIUM_SHOWS_STATS to true or false.
 
-MEDIUM_SHOWS_STATS = true;
+MediumShowsStats = true;
  - This window shows the unit's Atk and Agi
-MEDIUM_SHOWS_STATS = false;
+MediumShowsStats = false;
  - This window shows the unit's Level and EXP instead.
 
 Alternatively, if you just aren't a fan of either of these and want to keep the vanilla medium-sized window, then simply don't put the unitwindow-medium.js file in your Plugin folder, and the SRPG Studio default version will be used instead.
@@ -82,3 +84,6 @@ UPDATE HISTORY:
        * New "wide" (W) variant that trades some stat display space for lots of inventory display space (borrowed from Seas of Novis)
        * Units close to leveling up now show a risecursor next to their EXP on larger layouts
        * 0_unitwindow-config.js now contains the Config selection for easy editing
+2/11/2023: Reorganized the files. The config code is separate from the editable files now, for easier editing.
+       * Compatibility added for the "unknown HP" plugin
+       * Each variant of the unit window can now be opted in and out of. The config choice is removed if you opt for 1 or 0 options

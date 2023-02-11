@@ -123,7 +123,28 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
     },
 
     _drawHp: function (x, y, unit, textui) {
-        ContentRenderer.drawHp(x, y, unit.getHp(), this._mhp);
+        // Compatibility with "show HP as ???" plugin
+        if(typeof Miscellaneous.isUnknownHp !== 'undefined' && Miscellaneous.isUnknownHp(unit)) {
+            this.drawUnknownHp(x, y);
+        } else {
+            ContentRenderer.drawHp(x, y, unit.getHp(), this._mhp);
+        }
+    },
+
+    drawUnknownHp: function (x, y) {
+        var textHp = root.queryCommand('hp_param');
+        var textSlash = '/';
+        var dx = [0, 34, 60, 88];
+        var unknown = '???';
+        
+        var textui = root.queryTextUI('default_window');
+        var color = textui.getColor();
+        var font = textui.getFont();
+        
+        TextRenderer.drawSignText(x + dx[0], y, textHp);
+        TextRenderer.drawKeywordText(x + dx[1], y, unknown, -1, color, font);
+        TextRenderer.drawSignText(x + dx[2], y, textSlash);
+        TextRenderer.drawKeywordText(x + dx[3], y, unknown, -1, color, font);
     },
 
     _drawLvInfo: function (x, y, unit, textui) {
@@ -152,7 +173,7 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
         var weapon = this._weapon;
 
         // equipped weapon or list of icons in inventory
-        if (!ICONS_ONLY) {
+        if (!UnitWindowValues.IconsOnly) {
             if (!weapon) {
                 TextRenderer.drawText(x, y + 4, '(Unarmed)', length, color, font);
             } else {
@@ -163,7 +184,7 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
         }
     },
 
-    // if ICONS_ONLY in 0_unitwindow-config, draw the first n icons in unit inventory
+    // if IconsOnly in 0_unitwindow-editables, draw the first n icons in unit inventory
     _drawItemIcons: function (x, y, unit, textui, itemCount) {
         var length = this._getTextLength();
         var color = textui.getColor();
@@ -191,7 +212,7 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
 
     // CAv is displayed differently if unit has an Invalid Critical skill.
     _getHasInvalidCritSkill: function (unit) {
-        if (!CAV_IS_UNIQUE) return;
+        if (!UnitWindowValues.CrtAvoidIsUnique) return;
 
         var hasInvalidCritSkill = false;
         var skillArr = SkillControl.getDirectSkillArray(unit, SkillType.INVALID, '')
@@ -213,13 +234,13 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
         var font = textui.getFont();
         var color = textui.getColor();
 
-        TextRenderer.drawText(x, y, name, -1, STAT_COLOR, font);
+        TextRenderer.drawText(x, y, name, -1, UnitWindowValues.StatColor, font);
         x += 44;
 
         if (this._statDependsOnWeapon(name) && this._weapon === null) {
             TextRenderer.drawKeywordText(x, y - 3, StringTable.SignWord_WaveDash, -1, color, font)
-        } else if (name === CRIT_AVOID_STAT && this._getHasInvalidCritSkill(unit)) {
-            TextRenderer.drawKeywordText(x, y - 3, MAX_CAV_TEXT, -1, color, font)
+        } else if (name === UnitWindowValues.CriticalAvoidStat && this._getHasInvalidCritSkill(unit)) {
+            TextRenderer.drawKeywordText(x, y - 3, UnitWindowValues.MaxCrtAvoidText, -1, color, font)
         } else {
             this._drawStatValue(x, y - 3, value, font);
         }
@@ -264,10 +285,6 @@ var BaseLargeUnitInfo = defineObject(MapParts.UnitInfo, {
 
     _getWindowHeight: function () {
         return 128 + this.getSpaceHeight();
-    },
-
-    _getConfigOption: function () {
-        return ConfigItem.UnitMenuStatus.getFlagValue();
     }
 });
 

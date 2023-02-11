@@ -13,7 +13,7 @@ MapParts.UnitInfoExtraLarge = defineObject(BaseLargeUnitInfo, {
 
             root.queryCommand('def_param'),
             root.queryCommand('mdf_param'),
-            CRIT_AVOID_STAT,
+            UnitWindowValues.CriticalAvoidStat,
             root.queryCommand('avoid_capacity')
         ];
 
@@ -101,7 +101,7 @@ MapParts.UnitInfoWide = defineObject(BaseLargeUnitInfo, {
         var font = textui.getFont();
         var weapon = this._weapon;
 
-        if (!ICONS_ONLY) {
+        if (!UnitWindowValues.IconsOnly) {
             if (!weapon) {
                 TextRenderer.drawText(x, y + 4, '(Unarmed)', length, color, font);
             } else {

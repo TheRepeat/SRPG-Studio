@@ -3,7 +3,7 @@
  * Changes the layout of the medium (M) setting for the detailed unit window.
  * Shows the unit's equipped weapon instead of the HP bar and class.
  * 
- * Depending on the value of MEDIUM_SHOWS_STATS, displays either the unit's Atk and Agi or the unit's Lv and EXP.
+ * Depending on the value of MediumShowsStats, displays either the unit's Atk and Agi or the unit's Lv and EXP.
  * 
  * Functions overridden without an alias:
  *  * MapParts.UnitInfo.setUnit
@@ -92,7 +92,28 @@ UnitSimpleRenderer._drawHp = function (x, y, unit, textui, mhp) {
     x += GraphicsFormat.FACE_WIDTH + this._getInterval();
     y += 28;
 
-    ContentRenderer.drawHp(x, y, unit.getHp(), mhp);
+    // Compatibility with "show HP as ???" plugin
+    if (typeof Miscellaneous.isUnknownHp !== 'undefined' && Miscellaneous.isUnknownHp(unit)) {
+        this.drawUnknownHp(x, y);
+    } else {
+        ContentRenderer.drawHp(x, y, unit.getHp(), mhp);
+    }
+}
+
+UnitSimpleRenderer.drawUnknownHp = function (x, y) {
+    var textHp = root.queryCommand('hp_param');
+    var textSlash = '/';
+    var dx = [0, 34, 60, 88];
+    var unknown = '???';
+
+    var textui = root.queryTextUI('default_window');
+    var color = textui.getColor();
+    var font = textui.getFont();
+
+    TextRenderer.drawSignText(x + dx[0], y, textHp);
+    TextRenderer.drawKeywordText(x + dx[1], y, unknown, -1, color, font);
+    TextRenderer.drawSignText(x + dx[2], y, textSlash);
+    TextRenderer.drawKeywordText(x + dx[3], y, unknown, -1, color, font);
 }
 
 UnitSimpleRenderer._drawSubInfo = function (x, y, unit, textui, unitData) {
@@ -108,7 +129,7 @@ UnitSimpleRenderer._drawSubInfo = function (x, y, unit, textui, unitData) {
     x += GraphicsFormat.FACE_WIDTH + this._getInterval();
     y += 50;
 
-    if (!MEDIUM_SHOWS_STATS) {
+    if (!UnitWindowValues.MediumShowsStats) {
         ContentRenderer.drawLevelInfo(x, y, unit);
     } else {
         this._drawCombatStat(x, y, unit, textui, unitData, root.queryCommand('attack_capacity'), atk)
@@ -120,7 +141,7 @@ UnitSimpleRenderer._drawCombatStat = function (x, y, unit, textui, unitData, nam
     var font = textui.getFont();
     var color = textui.getColor();
 
-    TextRenderer.drawText(x, y, name, -1, STAT_COLOR, font);
+    TextRenderer.drawText(x, y, name, -1, UnitWindowValues.StatColor, font);
     x += 44;
 
     if (name === root.queryCommand('attack_capacity') && unitData.weapon === null) {
@@ -150,7 +171,7 @@ UnitSimpleRenderer._drawWeaponInfo = function (x, y, unit, textui, unitData) {
     y += 70;
 
     // equipped weapon or list of icons in inventory
-    if (!ICONS_ONLY) {
+    if (!UnitWindowValues.IconsOnly) {
         if (!weapon) {
             TextRenderer.drawText(x, y + 4, '(Unarmed)', length, color, font);
         } else {

@@ -90,6 +90,11 @@ MapPartsCollection._configureMapParts = function (groupArray) {
         }
     }
 
-    groupArray.appendObject(partsArr[n]);
+    if (partsArr[n]) {
+        groupArray.appendObject(partsArr[n]);
+    } else if (partsArr[0]) {
+        groupArray.appendObject(partsArr[0]);
+    }
+
     groupArray.appendObject(MapParts.Terrain);
 };

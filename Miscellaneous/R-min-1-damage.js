@@ -1,7 +1,7 @@
 /**
  * By Repeat.
  * Modifies the damage calculator so that the minimum damage a unit can take is 1.
- * If a unit or the unit's class has the custom parameter zeroDamage, then the minimum will be 0.
+ * If a unit, the unit's class, or the unit's equipped weapon has the custom parameter zeroDamage, then the minimum will be 0.
  * Custom parameter example:
     {zeroDamage:true}
  * If the unit gets a crit while dealing the minimum damage, the damage dealt will still multiply by the critical coefficient.

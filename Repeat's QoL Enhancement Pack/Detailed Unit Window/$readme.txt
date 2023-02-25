@@ -31,15 +31,15 @@ This affects the Medium setting of the unit window. This window also shows up wh
 
 This file displays the unit's name, current HP, and equipped weapon in the unit's hover window.
 
-You can toggle between the two versions of this file by opening 0_unitwindow-config.js in a text editor and changing MEDIUM_SHOWS_STATS to true or false.
+You can toggle between the two versions of this file by opening 0_unitwindow-editables.js in a text editor and changing MediumShowsStats to true or false.
 
 MediumShowsStats = true;
  - This window shows the unit's Atk and Agi
 MediumShowsStats = false;
  - This window shows the unit's Level and EXP instead.
 
-Alternatively, if you just aren't a fan of either of these and want to keep the vanilla medium-sized window, then simply don't put the unitwindow-medium.js file in your Plugin folder, and the SRPG Studio default version will be used instead.
-This version of the window shows the unit's name, class, and current HP alongside an HP bar.
+Alternatively, if you just aren't a fan of either of these and want to keep the vanilla medium-sized window, then simply don't put the R-unitwindow-med.js file in your Plugin folder, and the SRPG Studio default version will be used instead.
+The vanilla version of the window shows the unit's name, class, and current HP alongside an HP bar.
 
 I included a comparison image of each version of the medium size to help you make an educated decision :)
 

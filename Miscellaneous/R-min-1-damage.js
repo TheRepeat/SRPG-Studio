@@ -59,7 +59,8 @@ DamageCalculator.calculateDamage = function (active, passive, weapon, isCritical
 // in which case it'll floor at 0.
 DamageCalculator.validValue = function (active, passive, weapon, damage, isCritical) {
     var cls = passive.getClass();
-    var damageFloorsAtZero = cls.custom.zeroDamage || passive.custom.zeroDamage;
+    var weapon = ItemControl.getEquippedWeapon(passive);
+    var damageFloorsAtZero = cls.custom.zeroDamage || passive.custom.zeroDamage || (weapon && weapon.custom.zeroDamage);
     var minDamage = damageFloorsAtZero ? 0 : DefineControl.getMinDamage();
 
     if (damage < minDamage) {

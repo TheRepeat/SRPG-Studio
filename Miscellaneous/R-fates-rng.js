@@ -2,7 +2,7 @@
  * By Repeat.
  * Changes hit calculations to use (a close approximation of) Fates RNG, aka Hybrid RN, aka 1.5RN.
  * Tl;dr it's 1RN at or below 50 hit and is a less extreme version of 2RN above 50.
- * I love 1RN, but I'm receptive to feedback about iffy hit rates so this is the most I'll compromise.
+ * I'm a 1RN kind of guy, but I'm receptive to feedback about iffy hit rates so this is the most I'll compromise.
  * (Personally, I think adding ways to improve displayed hit is more interesting than making your hit rates inaccurate)
  * 
  * Technically, *real* hybrid RN uses a much more complicated formula than what I have in this plugin, based on 
@@ -25,7 +25,7 @@ AttackEvaluator.HitCritical.calculateHit = function (virtualActive, virtualPassi
     if (hit > 50) {
         trueHit = hit + hit * (-2 / 15 * Math.sin(hit * (Math.PI / 50)));
 
-        if (trueHit > DefineControl.getMaxHitPercent()){
+        if (trueHit > DefineControl.getMaxHitPercent()) {
             trueHit = DefineControl.getMaxHitPercent();
         }
     }

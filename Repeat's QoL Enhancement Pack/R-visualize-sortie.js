@@ -25,7 +25,7 @@
 		y += 10;
 		unitRenderParam.alpha = alpha;
 
-		if (unit.getSortieState() !== SortieType.SORTIE) {
+		if (root.getCurrentScene() !== SceneType.REST && unit.getSortieState() !== SortieType.SORTIE) {
 			color = 0xAEAEAE;
 			range = createRangeObject(x - 50, y + 30, length, 40);
 			TextRenderer.drawRangeAlphaText(range, TextFormat.CENTER, unit.getName(), length, color, alpha, font);

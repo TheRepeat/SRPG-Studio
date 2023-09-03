@@ -16,8 +16,8 @@
 var SingleSaveConfig = {
     postSaveHangtime: 40, // number of frames to wait after saving before screen closes (60=1 second)
     useUniqueSfxOnSave: false, // should selecting "Yes" to save use unique sfx?
-    saveSfxIsRtp: false, // if yes to useUniqueSaveSfx, is the sound file Runtime or Original?
-    saveSfxId: 0 // if yes to useUniqueSaveSfx, specify the ID of the sound effect to use
+    saveSfxIsRtp: false, // if yes to useUniqueSfxOnSave, is the sound file Runtime or Original?
+    saveSfxId: 0 // if yes to useUniqueSfxOnSave, specify the ID of the sound effect to use
 };
 
 LoadSaveMode.SAVECOMPLETE = 2;

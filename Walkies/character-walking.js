@@ -189,6 +189,8 @@ Localization, TL notes, and some new features and fixes: Repeat
 
 	9. I want to disable character switching with the C key
 		→ Set canTargetChange = false.
+		→ (Addition by Repeat) In Map Information → Custom Parameters, use custom parameter canTargetChange to enable or disable character switching for individual maps.
+			Ex: {canTargetChange:true}
 
 	10. (Addition by Repeat) I want to disable the ability to Run entirely
 		→ Set cannotRun = true.
@@ -345,6 +347,7 @@ SRPG Studio Version: 1.235
 //-------------------------------------------------------
 var MapChipSize = 32;				// Map chip size (32 by default)
 var isWalkMapWindowDisp = true;		// Whether to display the face window at the bottom left of the walking map
+var canTargetChange = false;	// If true, player can switch units by pressing C
 
 (function () {
 
@@ -384,8 +387,6 @@ var isWalkMapWindowDisp = true;		// Whether to display the face window at the bo
 	/* End Place Events section */
 
 	var isAutoEventSilent = false;	// Silent mode. Whether to reduce the automatic event check of the walking map (true: reduce false: normal)
-
-	var canTargetChange = true;	// If true, player can switch units by pressing C.
 
 	var isScrollBGOnlyWalk = true;	// Whether to consider map scrolling in fog display
 	// * true: consider only walking map
@@ -2641,7 +2642,7 @@ var isWalkMapWindowDisp = true;		// Whether to display the face window at the bo
 					// Show map command when X key is pressed
 					result = this._cancelAction(unit);
 				} else if (InputWrapper.isUnitSwitchAction()) {
-					if (canTargetChange) {
+					if (WalkControl.canTargetChange()) {
 						// The unit is switched when the C key is pressed or the wheel is down.
 						this._changeTarget(true);
 					}
@@ -4042,6 +4043,18 @@ var WalkControl = {
 
 		// In walking mode, if the current unit is deleted, the unit is switched.
 		playerTurnObject.findNextUnit();
+	},
+
+	canTargetChange: function () {
+		var canChange = canTargetChange;
+		var mapInfo = root.getCurrentSession().getCurrentMapInfo();
+		var mapChangeValue = mapInfo.custom.canTargetChange;
+
+		if (typeof mapChangeValue === 'boolean') {
+			canChange = mapChangeValue;
+		}
+
+		return canChange;
 	},
 
 	// Set the unit with the specified ID as the first unit

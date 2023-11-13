@@ -93,7 +93,7 @@ REBIND_MENU_ROWS = 8;
  * What's meant by "default"? It's where the keybind display will render MOST of the time.
  * For example, "direction: DirectionType.BOTTOM" means that the controls will default to the bottom of the screen.
  * However, if the player's cursor strays too close to the bottom of the screen, the controls will flip to the top of the screen.
- * DirectionType.TOP does the opposite: it defaults to the top, unless the cursor is too close to the bottom.
+ * DirectionType.TOP does the opposite: it defaults to the top, unless the cursor is too close to the top.
  * DirectionType.LEFT and DirectionType.RIGHT follow the same pattern, flipping to the opposite side depending on the position of the cursor.
  * 
  * If this description isn't helping you understand, I recommend changing the value a few times and testing it in-game to see the difference for yourself.

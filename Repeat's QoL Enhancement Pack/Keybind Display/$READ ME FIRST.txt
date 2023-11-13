@@ -16,8 +16,19 @@ Optional: you can tweak certain aspects of this plugin to your liking by editing
 In-game, players can choose which type of controls to display onscreen during battle: keyboard keys, controller buttons (specifically those of an Xbox 360 controller), or none.
 
 
+	ALL OF MY ICONS AREN'T 24PX SO IT'S ALL MESSED UP! IT'S ALL OVER FOR ME!!
+You'll need to override GraphicsFormat.ICON_HEIGHT and GraphicsFormat.ICON_WIDTH from constants-enumeratedtype.js, preferably by putting them in their own plugin file so it won't get overridden by an update. (If you're working with nonstandard icon sizes, you'll probably have to update these values eventually anyway.)
+
+Example of what such a file could look like:
+
+GraphicsFormat.ICON_HEIGHT=32;
+GraphicsFormat.ICON_WIDTH=32;
+
+(that's it, 2 lines)
+
+
 	KNOWN ISSUES/MISSING FEATURES
-You can view the current controller bindings in-game just like keyboard controls, but controller remapping has not yet been added. Whenever it's ready, it will be added in a future update.
+You can view the current controller bindings in-game just like keyboard controls, but controller remapping has not yet been added. Whenever (if ever) it's ready, it will be added in a future update.
 
 Controller button layouts vary from controller to controller. It's impossible to account for every single kind of controller, so I can only make an educated guess on what the buttons actually look like. Therefore, your mileage may vary on how accurate the displayed controller bindings are. I've personally found the default buttons to be accurate to Xbox 360 and Xbox One controllers.
 

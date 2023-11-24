@@ -1,5 +1,5 @@
 /**
- * Droppable Item Icons
+ * Icons for Droppable Items
  * v2.1
  * By Repeat, using McMagister's Unit State Animator.
  * This plugin will not work without the Unit State Animator plugin.

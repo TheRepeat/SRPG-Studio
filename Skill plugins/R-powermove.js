@@ -13,7 +13,7 @@
    NOTE: This plugin allows either ALL weapon types or ONLY ONE weapon type, nothing in between.
    You can make multiples of the skill with different custom params if you want it to behave more specifically.
 
-   If you don't want all weapons to use Powermove, then give a weapon the custom parameter {noPowermove:true} to prevent
+   If you want Powermove to not apply to a certain weapon, then give that weapon the custom parameter {noPowermove:true} to prevent
    it from taking advantage of the Powermove skill.
 
    Naturally, if you want to use all three custom parameters together, just encase them all in the same curly braces {} and
@@ -29,25 +29,21 @@
     var alias2 = DamageCalculator.calculateAttackPower;
     DamageCalculator.calculateAttackPower = function (active, passive, weapon, isCritical, totalStatus, trueHitValue) {
         var pow = alias2.call(this, active, passive, weapon, isCritical, totalStatus, trueHitValue);
+        var able = true;
         var skill = SkillControl.getPossessionCustomSkill(active, 'Powermove');
 
-        // Unit is presumed able to use it unless user specifies only one weapon type can use it
-        // First check is against weapon's noPowermove custom parameter. Won't do other checks if able===false.
-        var able = !weapon.custom.noPowermove;
-        if (able && skill && typeof skill.custom.weapontype !== 'undefined' && typeof skill.custom.weaponcategory !== 'undefined') {
-            weaponType = root.getBaseData().getWeaponTypeList(skill.custom.weaponcategory).getDataFromId(skill.custom.weapontypes);
+        if (!skill || weapon.custom.noPowermove) {
+            return pow;
+        }
+
+        var boost = skill.custom.boost || 1;
+
+        if (skill && typeof skill.custom.weapontype !== 'undefined' && typeof skill.custom.weaponcategory !== 'undefined') {
+            var weaponType = root.getBaseData().getWeaponTypeList(skill.custom.weaponcategory).getDataFromId(skill.custom.weapontype);
+
             able = weapon.isWeaponTypeMatched(weaponType);
         }
 
-        if (skill && able) {
-            if (typeof skill.custom.boost !== 'undefined') {
-                pow += active.getMostResentMov() * skill.custom.boost;
-            }
-            else {
-                pow += active.getMostResentMov();
-            }
-        }
-
-        return pow;
+        return able ? pow + (active.getMostResentMov() * boost) : pow;
     }
 })();

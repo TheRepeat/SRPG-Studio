@@ -18,6 +18,7 @@
         //transfer the unit parameter to the unit render param.
         unitRenderParam.FlashWhiteCL = unit.custom.FlashWhiteCL;
         unitRenderParam.flashWhiteAlphaCounter = unit.custom.flashWhiteAlphaCounter;
+
         if (unit.custom.flashWhiteAlphaCounter > 0) {
             unit.custom.flashWhiteAlphaCounter -= 8;
         }

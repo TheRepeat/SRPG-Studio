@@ -1,5 +1,6 @@
 /**
  * By Repeat.
+ * This plugin adds a skill to turn all attacks brave (brave meaning the number of attacks per round is multiplied, e.g. Fire Emblem's Brave Swords.)
  * Custom skill type, keyword: 'brave'
  * Custom parameters:
  *  (number) attackCount - number of attacks to perform.
@@ -27,23 +28,17 @@
         }
         if (skill && skill.custom.attackCount) {
             if (skill.custom.isInitOnly) {
-                var ableUnit = root.getCurrentScene() === SceneType.FREE ? isUnitsOwnPhase(active) : false;
+                var turnMatch = unit.getUnitType() === root.getCurrentSession().getTurnType();
+                var ableUnit = root.getCurrentScene() === SceneType.FREE ? turnMatch : false;
+
                 if (!ableUnit) {
                     return count;
                 }
             }
+
             count = skill.custom.attackCount;
         }
 
         return count;
     }
-
-    isUnitsOwnPhase = function (unit) {
-        var isPlayersPhase = root.getCurrentSession().getTurnType() === TurnType.PLAYER && unit.getUnitType() === UnitType.PLAYER;
-        var isAllysPhase = root.getCurrentSession().getTurnType() === TurnType.ALLY && unit.getUnitType() === UnitType.ALLY
-        var isEnemysPhase = root.getCurrentSession().getTurnType() === TurnType.ENEMY && unit.getUnitType() === UnitType.ENEMY
-        
-        return isPlayersPhase || isAllysPhase || isEnemysPhase;
-    }
-
 })();

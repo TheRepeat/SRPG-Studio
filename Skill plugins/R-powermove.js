@@ -72,9 +72,9 @@ weapontype:1
     // precludes scenario where you move->see forecast->cancel move->attack a unit without moving -
     // would store the runDistance from the move if it weren't for this
     var alias4 = SimulateMove.noMove;
-    SimulateMove.noMove = function(unit) {
-		alias4.call(this, unit);
+    SimulateMove.noMove = function (unit) {
+        alias4.call(this, unit);
 
         unit.custom.runDistance = null;
-	}
+    }
 })();

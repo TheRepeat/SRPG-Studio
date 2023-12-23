@@ -11,11 +11,12 @@
     var calculatorAlias = DamageCalculator.calculateAttackPower;
     DamageCalculator.calculateAttackPower = function (active, passive, weapon, isCritical, totalStatus, trueHitValue) {
         var pow = calculatorAlias.call(this, active, passive, weapon, isCritical, totalStatus, trueHitValue)
-
         var skill = SkillControl.getPossessionCustomSkill(active, 'weightPower');
+
         if (skill) {
             pow += weapon.getWeight();
         }
+
         return pow;
     }
 })();

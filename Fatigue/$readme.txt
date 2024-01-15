@@ -27,6 +27,9 @@ By default, every weapon and staff costs 1 Fatigue to use. With custom parameter
 Example:
 {fatigueCost:5}
 
+If you want fatigue to be disabled for a particular difficulty, give that difficulty the custom parameter noFatigue and the Fatigue stat will not increment nor display.
+Example:
+{noFatigue:true}
 
 	S DRINK ITEMS
 To create an S Drink item:

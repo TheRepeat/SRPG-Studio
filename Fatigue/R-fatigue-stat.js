@@ -46,6 +46,8 @@ UnitParameter.FATIGUE = defineObject(BaseUnitParameter, {
     },
 
     isParameterDisplayable: function (unitStatusType) {
-        return FatigueConfig.ShowFatigueStat && unitStatusType === UnitStatusType.UNITMENU;
+        return FatigueControl.isFatigueDifficulty() &&
+            FatigueConfig.ShowFatigueStat &&
+            unitStatusType === UnitStatusType.UNITMENU;
     }
 });

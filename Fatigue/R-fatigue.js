@@ -71,7 +71,7 @@ UnitCommand.Steal.endCommandAction = function () {
 // object to do all the fatigue manipulation
 var FatigueControl = defineObject(BaseObject, {
     incrementFatigue: function (unit, item) {
-        if (unit.getUnitType() === UnitType.PLAYER) {
+        if (this.isFatigueDifficulty() && unit.getUnitType() === UnitType.PLAYER) {
             var oldVal = RealBonus.getFatigue(unit);
             var newVal = this.getNewValue(unit, item, oldVal);
 
@@ -119,5 +119,15 @@ var FatigueControl = defineObject(BaseObject, {
 
     resetFatigue: function (unit) {
         UnitParameter.FATIGUE.setUnitValue(unit, 0);
+    },
+
+    isFatigueDifficulty: function () {
+        var difficulty = root.getMetaSession().getDifficulty();
+
+        if (difficulty.custom.noFatigue) {
+            return false;
+        }
+
+        return true;
     }
 })

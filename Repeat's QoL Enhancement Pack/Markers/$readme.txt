@@ -45,6 +45,10 @@ in R-markers-values.js, in countLoadPerLoop in the MarkerDisplay object. A highe
 If HighPerf=1 in game.ini (i.e. the game is running at 30 FPS), the delay between groups loading is slightly more noticeable, so a higher number may be preferred.
 You can tweak countLoadPerLoop30fps for this purpose.
 
+For prep talk markers, there may be scenarios where the markers show and you don't want them to. Say, you didn't kill a recruitable character, but you didn't recruit them either, 
+and they would've had a conversation next map. In a scenario like that, you'll want to add a condition to the talk event itself to prevent the prep talk marker from showing.
+
+
 	UPDATE HISTORY
 12/19/2019: fixed bug where game would crash if a talk partner wasn't on the map
 1/9/2020: fixed bug where states were not properly removed when switching units' sortie positions in battle preparations

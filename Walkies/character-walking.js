@@ -193,10 +193,13 @@ Localization, TL notes, and some new features and fixes: Repeat
 			Ex: {canTargetChange:true}
 
 	10. (Addition by Repeat) I want to disable the ability to Run entirely
-		→ Set cannotRun = true.
+		→ Set cannotRun = true
 
     11. (Addition by Repeat) I want to hide the phase change graphic and sfx when I start a walk map.
-		→ Set hidePhaseChangeEffect = true.
+		→ Set hidePhaseChangeEffect = true
+
+	12. (Addition by Repeat) I want to Run using the SYSTEM key (X by default) instead of the  LSWITCH/RSWITCH keys (A and S by default).
+		→ Set runWithSystem = true
 
 ■ Commands that can be used with Execute Script
 	Event command: These commands can be used in Execute Script → Execute Code.
@@ -367,6 +370,7 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 
 	var MoveSpeed = 3;				// Default speed ​​of movement, from 0 to 3 (3 is slowest)
 	var cannotRun = false;			// If true, Running is disabled completely.
+	var runWithSystem = false;		// If true, Run is executed by holding the SYSTEM key instead of one of the the LSWITCH/RSWITCH keys
 
 	/* Place Events section */
 	var isSearchTalk = false;		// Detect Talk Events on the tile you're standing on?
@@ -410,6 +414,12 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 	var isUseTurnEnd = false;	// Is the end-of-turn command issued? (For debug, be careful with this)
 	var hidePhaseChangeEffect = true; // Will not say "Player Phase" at the start of every walk map
 
+	// Addition by Repeat - helper function to check if Cycle Idle Units (A/S key by default) is being held
+	// Different from isLeft/RightPadAction because it excludes the scroll wheel, which cannot be "held"
+	InputControl.isCycleState = function () {
+		return root.isInputState(InputType.BTN5) || root.isInputState(InputType.BTN6);
+	}
+
 	/**
 	 * InputWrapper class
 	 * By Repeat.
@@ -431,10 +441,21 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 
 		isRunState: function () {
 			var mapInfo = root.getCurrentSession().getCurrentMapInfo();
+
 			if (cannotRun || mapInfo.custom.cannotRun) {
-				return;
+				return false;
 			}
-			return InputControl.isSystemState();
+
+			var running = runWithSystem ?
+				InputControl.isSystemState() :
+				InputControl.isCycleState();
+
+			// invert result if autorun is on
+			if (!ConfigItem.Autorun.isDisabled()) {
+				running = !running;
+			}
+
+			return running;
 		},
 
 		getMovementSpeed: function () {

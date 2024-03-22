@@ -24,6 +24,8 @@ boost:2,
 weaponcategory:0,
 weapontype:1
 }
+ * 
+ * The AI can use powermove too, and will consider maximizing their damage with it. Beware.
  */
 
 (function () {
@@ -77,4 +79,60 @@ weapontype:1
 
         unit.custom.runDistance = null;
     }
+
+    // Gives AI the ability to use powermove
+    var alias5 = AIScorer.Weapon._getDamage;
+    AIScorer.Weapon._getDamage = function (unit, combination) {
+        var skill = SkillControl.getPossessionCustomSkill(unit, 'Powermove');
+
+        if (!skill) {
+            return alias5.call(this, unit, combination);
+        }
+
+        var targetUnit = combination.targetUnit;
+        var x = targetUnit.getMapX();
+        var y = targetUnit.getMapY();
+		var goalIndex = CurrentMap.getIndex(x, y);
+
+		var simulator = root.getCurrentSession().createMapSimulator();
+		simulator.startSimulation(unit, CurrentMap.getWidth() * CurrentMap.getHeight());
+        
+        var moveCource = CourceBuilder.createExtendCource(unit, goalIndex, simulator);
+
+        unit.custom.runDistance = moveCource.length;
+
+        // need to call calculateDamage AFTER runDistance is set
+        // so the alias must be called here instead of, say, assigning to a variable at the start
+		return alias5.call(this, unit, combination);
+    }
+
+    var alias6 = CombinationSelector._configureScorerSecond
+    CombinationSelector._configureScorerSecond = function(groupArray) {
+		alias6.call(this, groupArray);
+
+        groupArray.appendObject(AIScorer.Distance);
+	}
 })();
+
+// If the point is further from the unit's starting position, score it higher (if they have the skill).
+// The enemy will want to move to positions that deal as much powermove damage as possible.
+AIScorer.Distance = defineObject(BaseAIScorer, {
+    getScore: function(unit, combination) {
+        var skill = SkillControl.getPossessionCustomSkill(unit, 'Powermove');
+
+        if (!skill) {
+            return 0;
+        }
+
+		var score = 0;
+		var index = combination.posIndex;
+		var simulator = root.getCurrentSession().createMapSimulator();
+		simulator.startSimulation(unit, CurrentMap.getWidth() * CurrentMap.getHeight());
+        
+        var moveCource = CourceBuilder.createExtendCource(unit, index, simulator);
+		
+		score += moveCource.length;
+		
+		return score;
+	}
+});

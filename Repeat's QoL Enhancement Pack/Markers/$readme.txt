@@ -78,3 +78,4 @@ and they would've had a conversation next map. In a scenario like that, you'll w
      * Bugfix: prep talk markers would show even if the destination unit was dead.
      * Big overhaul of prep talk markers to improve performance. I feel like there's still room for improvement on the cleanliness side.
     v3.6.1. Bugfix: prep talk markers won't show if either the src OR dest unit are dead.
+4/16/2024: v3.7. Markers are removed when combat starts. If applicable, markers show again at the start of canto.

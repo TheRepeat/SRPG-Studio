@@ -1,6 +1,6 @@
 /**
  * Warning Markers
- * Version 3.6
+ * Version 3.7
  * By Repeat.
  * Unit State Animator integration by McMagister.
  * Performance improvements by Purplemandown.
@@ -9,7 +9,7 @@
  * You can also use custom parameter {warning:true} on weapons or units to give warning markers to individuals.
  *  */
 
- var WarningMarkers = defineObject(BaseObject, {
+var WarningMarkers = defineObject(BaseObject, {
     _checkedSupports: false,
     _checkedTalks: false,
     _checkingActive: false,
@@ -275,6 +275,16 @@
 
         return result;
     }
+    
+    // Do the same when cantoing
+    var cantoStartAlias = RepeatMoveFlowEntry._prepareMemberData;
+    RepeatMoveFlowEntry._prepareMemberData = function (playerTurn) {
+        cantoStartAlias.call(this, playerTurn);
+
+		var unit = playerTurn.getTurnTargetUnit();
+        WarningMarkers.initialize(unit);
+        WarningMarkers.checkForMarkConditions();
+    }
 
     // --------------------
     // SPECIAL UPDATE CASES
@@ -349,6 +359,14 @@
         return mapEndAlias.call(this, battleResultScene);
     }
 
+    // ...when combat starts
+    var combatStartAlias = PreAttack._pushFlowEntriesStart
+    PreAttack._pushFlowEntriesStart = function (straightFlow) {
+        combatStartAlias.call(this, straightFlow);
+
+        straightFlow.pushFlowEntry(RemoveMarkersFlowEntry);
+    }
+
     // Delegate the responsibility of rendering the custom parameters to UnitStateAnimator
     // Icon data is defined in R-markers-values.js
     var iconUpdaterAlias = UnitStateAnimator._updateIconByUnit;
@@ -391,3 +409,11 @@
         }
     }
 })();
+
+var RemoveMarkersFlowEntry = defineObject(BaseFlowEntry, {
+    enterFlowEntry: function (preAttack) {
+        WarningMarkers.removeMarkers();
+
+        return EnterResult.NOTENTER;
+    }
+});

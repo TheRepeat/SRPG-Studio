@@ -80,7 +80,7 @@ weapontype:1
         unit.custom.runDistance = null;
     }
 
-    // Gives AI the ability to use powermove
+    // Initializes powermove info for enemies with the skill
     var alias5 = AIScorer.Weapon._getDamage;
     AIScorer.Weapon._getDamage = function (unit, combination) {
         var skill = SkillControl.getPossessionCustomSkill(unit, 'Powermove');
@@ -89,17 +89,11 @@ weapontype:1
             return alias5.call(this, unit, combination);
         }
 
-        var targetUnit = combination.targetUnit;
-        var x = targetUnit.getMapX();
-        var y = targetUnit.getMapY();
-		var goalIndex = CurrentMap.getIndex(x, y);
-
-		var simulator = root.getCurrentSession().createMapSimulator();
-		simulator.startSimulation(unit, CurrentMap.getWidth() * CurrentMap.getHeight());
-        
-        var moveCource = CourceBuilder.createExtendCource(unit, goalIndex, simulator);
-
-        unit.custom.runDistance = moveCource.length;
+        // Initialize runDistance.
+        // It won't be factored into the calculation but prevents a bug where enemies that don't move are treated as if they've moved 1 tile.
+        // Also, at this point the enemy doesn't even know what tile they're going to move to, so it can't actually know how much damage it'll do.
+        // Simply initializing this value and then properly setting it in SimulateMove._saveMostResentMov is the best option here.
+        unit.custom.runDistance = 0;
 
         // need to call calculateDamage AFTER runDistance is set
         // so the alias must be called here instead of, say, assigning to a variable at the start

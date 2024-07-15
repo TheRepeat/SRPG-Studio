@@ -230,7 +230,7 @@ MapParts.Keybinds = defineObject(BaseMapParts, {
         return yOptions[newDirection];
     },
 
-    // 0: keyboard, 1: xbox, 2: mouse. see ConfigItem.KeybindsType
+    // 0: keyboard, 1: xbox, 2: off. see ConfigItem.KeybindsType
     getConfigOption: function () {
         return ConfigItem.ShowKeybinds.getFlagValue();
     },

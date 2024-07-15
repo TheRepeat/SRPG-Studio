@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * v1.2
+ * v1.3
  * Adds new UI to the title screen, allowing players to rebind their controls in-game.
  * 
  * Controller rebinding is not in scope for the initial release of this plugin.

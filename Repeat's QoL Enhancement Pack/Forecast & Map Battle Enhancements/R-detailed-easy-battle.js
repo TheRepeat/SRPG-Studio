@@ -58,6 +58,7 @@
 
     EasyAttackWindow.setEasyAttackUnit = function (unit, arr) {
         this._unit = unit;
+        this._weapon = ItemControl.getEquippedWeapon(unit);
         this._statusArray = arr;
         this._isAnimation = false;
         this._gaugeBar = createObject(GaugeBar);
@@ -142,9 +143,8 @@
     }
 
     EasyAttackWindow._drawWeapon = function (x, y, color, font) {
-        var unit = this._unit;
-        if (ItemControl.getEquippedWeapon(unit) !== null) {
-            ItemRenderer.drawItem(x, y, ItemControl.getEquippedWeapon(unit), color, font, false);
+        if (this._weapon !== null) {
+            ItemRenderer.drawItem(x, y, this._weapon, color, font, false);
         }
         else {
             TextRenderer.drawKeywordText(x, y, StringTable.SignWord_WaveDash, -1, color, font);

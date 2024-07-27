@@ -3627,6 +3627,50 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 
 		// Checks for a different Fog of War plugin (tl note: wow)
 		this.checkAndExecuteNewFog();
+
+		if (typeof MyWeatherGenerator !== 'undefined') {
+			MyWeatherGenerator.drawWeatherGenerator();
+
+			this.drawDebugWeather();
+		}
+	}
+
+	MapLayer.drawDebugWeather = function() {
+		if (ENABLE_WEATHER_DEBUG) {
+			var textY = 0;
+			var textX = 2;
+			var font = root.queryTextUI("default_window").getFont();
+			var color = 0xFFFFFF;
+			
+			TextRenderer.drawText(textX,textY,"FPS: " + root.getFPS(), -1, color, font)
+			textY += 16;
+			TextRenderer.drawText(textX,textY,"Weather Object Count: " + MyWeatherGenerator._rainArray.length, -1, color, font)
+			textY += 16;
+			cacheString = "Weather Cache: "
+			count = MyWeatherGenerator._imageCache.length
+			for (i = 0; i < count; i++) {
+				cacheString += MyWeatherGenerator._imageCache[i].name;
+				if (i == count - 1) {" "} else {cacheString += ", "}
+			}
+			TextRenderer.drawText(textX,textY,cacheString, -1, color, font)
+			textY += 16;
+			if (MyWeatherGenerator._weatherType != null) {
+				TextRenderer.drawText(textX,textY,"Current Weather: " + MyWeatherGenerator._weatherType.getName(), -1, color, font)
+				textY += 16;
+				TextRenderer.drawText(textX,textY,"Spawn Rate: " + MyWeatherGenerator._weatherType.getSpawnRate(), -1, color, font)
+				textY += 16;
+				TextRenderer.drawText(textX,textY,"Max Limit: " + MyWeatherGenerator._weatherType.getMaxCount(), -1, color, font)
+				textY += 16;
+				TextRenderer.drawText(textX,textY,"Wind Multiplier: " + MyWeatherGenerator._weatherType.getWindMultiplier(), -1, color, font)
+				textY += 16;
+			}
+			TextRenderer.drawText(textX,textY,"Wind Current: " + MyWeatherGenerator._windCurrent, -1, color, font)
+			textY += 16;
+			TextRenderer.drawText(textX,textY,"No. Of Weather Types: " + MyWeatherGenerator._weatherArray.length, -1, color, font)
+			textY += 16;
+			TextRenderer.drawText(textX,root.getWindowHeight() - 36,"PRESS OPTION 2 (DEFAULT: SHIFT) TO TOGGLE WEATHER", -1, color, font)
+			TextRenderer.drawText(textX,root.getWindowHeight() - 20,"To turn off this debug stuff, go to weather-config.js", -1, color, font)
+		}
 	}
 
 

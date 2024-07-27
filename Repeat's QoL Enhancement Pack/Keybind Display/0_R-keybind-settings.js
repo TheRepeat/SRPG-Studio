@@ -1,14 +1,24 @@
 /**
  * "Onscreen keybind display", by Repeat.
- * v1.2
+ * v1.3
  * This file contains user-editable values for this plugin.
  */
+
+var ShowTitleKeybinds = {
+    NAV: true,
+    SELECT: true,
+    CANCEL: true,
+    FULLSCREEN: true
+};
 
 var MapKeybindStrings = {
     Select: 'Select',
     Range: 'Range',
     Cycle: 'Cycle',
-    Check: 'Check'
+    Check: 'Check',
+    Nav: 'Cursor',
+    Fullscreen: 'Fullscreen',
+    Cancel: 'Cancel'
 };
 var KeybindStrings = {
     REBINDCOMMAND: 'Game Controls',

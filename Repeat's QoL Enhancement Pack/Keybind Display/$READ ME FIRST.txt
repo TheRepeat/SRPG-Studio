@@ -1,6 +1,6 @@
 Keybind Display / Key Rebinding
 By Repeat
-Version 1.2
+Version 1.3
 
 	ABOUT
 This plugin has 2 main functions:
@@ -47,3 +47,4 @@ Xbox 360 button graphic is an edit of art by Jtheduelist.
 9/11/2022: v1.0, initial release
 9/15/2022: v1.1, moved some missing values into the editable file
 12/4/2022: v1.2, fixed game crash on unbinding Select/Cancel; added rclick as a binding option for SYSTEM and SKIP
+7/15/2024: v1.3, added keybind display to the title screen

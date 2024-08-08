@@ -39,6 +39,7 @@ These are all individual plugins that are grouped together for cleanliness. They
 }
 
 Objective Window, which adds a new window to the map screen that allows you to display custom text and custom objective information (like enemy count or turns remaining).
+Latest version: 3.0
  1. R-move-terrain.js
  2. R-objective-alias.js
  3. R-objective-enum.js
@@ -46,9 +47,10 @@ Objective Window, which adds a new window to the map screen that allows you to d
 
 Warning Markers, which adds floating icons over dangerous enemies, units that can be spoken to, and supporters.
 Also adds an icon to units on the unit selection screen in battle prep who have Talk events during the chapter.
- 1. 0_mcmagister-unit-state-animator.js
- 2. R-warn-markers.js
- 3. R-warn-markers-values.js
+Latest version: 3.7
+ 1. 0_mcmagister-unit-state-animator.js (credit to McMagister for graciously letting me include a copy of their plugin with my markers plugin)
+ 2. R-markers.js
+ 3. R-markers-values.js
  4. R-prep-talk-markers.js
 
 Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
@@ -71,6 +73,7 @@ Always Show Dialogue Arrow. Normally, a "proceed" arrow won't show on the final 
  1. R-dialogue-arrow-always.js
 
 Keybind Display + Rebinding. Displays controls onscreen during normal gameplay and allows players to rebind their controls in-game instead of in game.ini.
+Latest version: 1.3
  ?. contains a bunch of js files trust me. Read its readme or suffer
 
 Faster Healing. Replaces the slow vanilla healing animation with a much quicker (and less annoying) one.
@@ -103,3 +106,4 @@ UPDATE HISTORY (not comprehensive):
 3/31/2022: post-SoN v0.1 github overhaul, incl. objective window 2.0, flash white, always show dialogue arrow
 8/14/2022: item drops v2.0
 9/11/2022: keybind display/rebind plugin
+8/7/2024: objective window v3.0

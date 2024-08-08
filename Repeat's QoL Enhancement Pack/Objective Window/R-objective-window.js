@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * Objective Window v2.0.
+ * Objective Window v2.1.
  * 
  * Directions:
  * Call Execute Script -> select Execute Code
@@ -38,7 +38,6 @@
 */
 
 MapParts.Objective = defineObject(BaseMapParts, {
-    _objectiveStr: '',
     _type: ObjectiveType.NORMAL,
     _count: 1,
     _enemiesLeft: 0,
@@ -85,7 +84,7 @@ MapParts.Objective = defineObject(BaseMapParts, {
 
     // user input
     changeObjective: function (text, type, value1, value2) {
-        this._objectiveStr = text;
+        this.setMapString(text);
 
         if (type) {
             this._type = type;
@@ -116,6 +115,12 @@ MapParts.Objective = defineObject(BaseMapParts, {
         }
     },
 
+    setMapString: function (text) {
+        var map = root.getCurrentSession().getCurrentMapInfo();
+
+        map.custom.objectiveStr = text;
+    },
+
     setCustomMapValue: function (newVal, type) {
         var map = root.getCurrentSession().getCurrentMapInfo();
 
@@ -143,7 +148,7 @@ MapParts.Objective = defineObject(BaseMapParts, {
         var x = this._getPositionX(text);
         var y = this._getPositionY();
 
-        if (this._objectiveStr !== '') {
+        if (text !== '') {
             this._drawMain(x, y);
         }
     },
@@ -210,7 +215,9 @@ MapParts.Objective = defineObject(BaseMapParts, {
     },
 
     _getText: function () {
-        return this._objectiveStr;
+        var map = root.getCurrentSession().getCurrentMapInfo();
+
+        return map.custom.objectiveStr || '';
     },
 
     _getTextLength: function (text) {
@@ -248,9 +255,11 @@ MapParts.Objective = defineObject(BaseMapParts, {
 
     _getWindowWidth: function (text) {
         var textPadding = 50 - text.length;
+
         if (textPadding < 10) {
             textPadding = 10;
         }
+
         return text.length * 7.5 + textPadding;
     },
 

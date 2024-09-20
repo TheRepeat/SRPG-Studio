@@ -1,11 +1,17 @@
 /**
  * By Repeat.
- * v1.3
+ * v1.4
  * Adds new UI to the title screen, allowing players to rebind their controls in-game.
  * 
  * Controller rebinding is not in scope for the initial release of this plugin.
  * It's hardly worth making anyway, but I guess I'll have to do it eventually.
  */
+
+REBIND_CURSOR_1 = null;
+REBIND_CURSOR_2 = null;
+KEYBOARD_IMAGE = null;
+GAMEPAD_IMAGE = null;
+MOUSE_IMAGE = null;
 
 (function () {
     // Add command to title screen
@@ -23,6 +29,18 @@
 
         groupArray.insertObject(RebindCommand, Math.floor(groupArray.length / 2));
     };
+
+    var alias3 = SetupControl.setup;
+    SetupControl.setup = function () {
+        alias3.call(this);
+
+        KEYBOARD_IMAGE = root.getMaterialManager().createImage(KEYBOARD_CONTROLS.Folder, KEYBOARD_CONTROLS.Image);
+        GAMEPAD_IMAGE = root.getMaterialManager().createImage(XBOX_CONTROLS.Folder, XBOX_CONTROLS.Image);
+        MOUSE_IMAGE = root.getMaterialManager().createImage(MOUSE_CONTROLS.Folder, MOUSE_CONTROLS.Image);
+
+        REBIND_CURSOR_1 = root.getMaterialManager().createImage(REBIND_CURSORS.Folder, REBIND_CURSORS.Cursor0);
+        REBIND_CURSOR_2 = root.getMaterialManager().createImage(REBIND_CURSORS.Folder, REBIND_CURSORS.Cursor1);
+    }
 })();
 
 var KeyboardLayout = [
@@ -137,7 +155,7 @@ var RebindWindow = defineObject(BaseWindow, {
     _showImage: false,
 
     initialize: function () {
-        this._pic = root.getMaterialManager().createImage(KEYBOARD_CONTROLS.Folder, KEYBOARD_CONTROLS.Image);
+        this._pic = KEYBOARD_IMAGE;
 
         var picColumns = this._pic.getWidth() / GraphicsFormat.ICON_WIDTH;
         var picRows = this._pic.getHeight() / GraphicsFormat.ICON_HEIGHT;
@@ -151,12 +169,12 @@ var RebindWindow = defineObject(BaseWindow, {
 
         this._keyboardScrollbar = createScrollbarObject(KeyboardScrollbar, this);
         this._keyboardScrollbar.setScrollFormation(picColumns, picRows);
-        this._keyboardScrollbar.setScrollData(this._pic, REBIND_CURSORS.Cursor0);
+        this._keyboardScrollbar.setScrollData(this._pic, false);
         this._keyboardScrollbar.setActive(false);
 
         this._keyboardScrollbar2 = createScrollbarObject(KeyboardScrollbar, this);
         this._keyboardScrollbar2.setScrollFormation(picColumns, picRows);
-        this._keyboardScrollbar2.setScrollData(this._pic, REBIND_CURSORS.Cursor1);
+        this._keyboardScrollbar2.setScrollData(this._pic, true);
         this._keyboardScrollbar2.setActive(false);
     },
 
@@ -256,19 +274,19 @@ var RebindWindow = defineObject(BaseWindow, {
                 this._rebindScrollbar.setActive(true);
                 this._keyboardScrollbar.setActive(false);
                 this._keyboardScrollbar2.setActive(false);
-                
+
                 this.rebind(selectedType, this._selectedBinds[0], 'rclick');
-    
+
                 this.getParentInstance().setHelpText(BottomHelpText.DEFAULT);
                 this.changeState(RebindState.NONE);
             } else {
                 this._rclickChoiceWindow = null;
-    
+
                 this._keyboardScrollbar.setForceSelect(this._keyboardScrollbar.getIndex());
                 this._keyboardScrollbar.setActive(false);
                 this._keyboardScrollbar2.setForceSelect(-1);
                 this._keyboardScrollbar2.setActive(true);
-    
+
                 this.getParentInstance().setHelpText(BottomHelpText.BIND2);
                 this.changeState(RebindState.SECOND);
             }
@@ -481,12 +499,12 @@ var RebindWindow = defineObject(BaseWindow, {
 // This is the scrollbar where you choose the new key(s).
 // Most of this is invisible, just overlaid on an image drawn elsewhere. Movie magic.
 var KeyboardScrollbar = defineObject(BaseScrollbar, {
-    _cursorFile: null,
+    _isSecondCursor: null,
     _pic: null,
 
-    setScrollData: function (pic, cursorFile) {
+    setScrollData: function (pic, isSecondCursor) {
         this._pic = pic;
-        this._cursorFile = cursorFile; // use the primary or secondary cursor? (there are 2 keyboard scrollbars drawn at once)
+        this._isSecondCursor = isSecondCursor; // use the primary or secondary cursor? (there are 2 keyboard scrollbars drawn at once)
 
         var picColumns = this._pic.getWidth() / GraphicsFormat.ICON_WIDTH;
         var picRows = this._pic.getHeight() / GraphicsFormat.ICON_HEIGHT;
@@ -514,7 +532,7 @@ var KeyboardScrollbar = defineObject(BaseScrollbar, {
 
     // switches between a blue and yellow cursor depending on whether bind 1 or bind 2 is being edited
     getCursorPicture: function () {
-        var pic = root.getMaterialManager().createImage(REBIND_CURSORS.Folder, this._cursorFile);
+        var pic = this._isSecondCursor ? REBIND_CURSOR_2 : REBIND_CURSOR_1
         return pic;
     },
 
@@ -534,8 +552,8 @@ var RebindScrollbar = defineObject(BaseScrollbar, {
     _mousePic: null,
 
     setScrollData: function (initialBindings) {
-        this._pic = root.getMaterialManager().createImage(KEYBOARD_CONTROLS.Folder, KEYBOARD_CONTROLS.Image);
-        this._mousePic = root.getMaterialManager().createImage(MOUSE_CONTROLS.Folder, MOUSE_CONTROLS.Image);
+        this._pic = KEYBOARD_IMAGE;
+        this._mousePic = MOUSE_IMAGE;
 
         this.resetScrollData();
 

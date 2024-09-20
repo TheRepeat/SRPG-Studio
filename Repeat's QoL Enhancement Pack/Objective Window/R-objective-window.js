@@ -1,155 +1,254 @@
 /**
  * By Repeat.
- * Objective Window v2.0.
+ * Objective Window v3.0.
  * 
  * Directions:
  * Call Execute Script -> select Execute Code
-        MapParts.Objective.changeObjective(text, type, value1, value2)
+        setObjective(text, type, value1, value2)
          * Arguments type, value1, and value2 are optional. See below.
 
  * Supports extra UI for certain types of objectives if the second argument, "type", is included.
  * Types (arg 2):
  * 0: NORMAL, just show text. This is the default and doesn't need the "type" argument.
  * 1: ROUT, checks remaining enemies on the field
- * 2: TURNS, requires third argument, value1, to know what number to count down from
+ * 2: TURNS, requires 3rd argument, value1, to know what number to count down from
  * 3: ESCAPE, checks remaining players on the field
  * 4: KILLS, count increases with each death. Third argument, value1, determines what deaths it counts
+ *      Valid values for value1, the 3rd argument:
  *      0 (default): all deaths count
  *      1: only enemy deaths count
  *      2: only player deaths count (ominous)
  *      3: only ally deaths count
+ *      (Refer to the values of KillCountType.)
  * 5: CUSTOM: a custom number is displayed based on value1. Fourth argument, value2, decides what the number means.
+ *      Valid values for value2, the 4th argument:
  *      0 (default): set custom number equal to the third argument.
  *      1: add third argument to the current custom number.
  *      2: subtract third argument from the current custom number.
+ *      (Refer to the values of CustomArgType.)
  * 
  * You can edit the strings such as "Last Turn" in R-objective-enum.js.
  * 
  * Examples:
-        MapParts.Objective.changeObjective('Seize throne');
-        MapParts.Objective.changeObjective('Rout the enemy', 1);
-        MapParts.Objective.changeObjective('Defend for 12 turns', 2, 12);
-        MapParts.Objective.changeObjective('Kill lots of enemies', 4, 1);
+        setObjective('Seize throne');
+        setObjective('Rout the enemy', 1);
+        setObjective('Defend for 12 turns', 2, 12);
+        setObjective('Kill lots of enemies', 4, 1);
 
-        MapParts.Objective.changeObjective('Seize multiple thrones', 5, 4); 
+        setObjective('Seize all thrones', 5, 4); 
             -> shows "Count: 4" below text
-        MapParts.Objective.changeObjective('Seize multiple thrones', 5, 1, 2); 
-            -> subtracts 1, now shows "Count: 3" below text
+        setObjective('Seize all thrones', 5, 1, 2); 
+            -> subtracts 1: now shows "Count: 3" below text
 */
 
+// shorthand function for user input
+function setObjective(text, type, value1, value2) {
+    MapParts.Objective.changeObjective(text, type, value1, value2);
+}
+
 MapParts.Objective = defineObject(BaseMapParts, {
-    _objectiveStr: '',
-    _type: ObjectiveType.NORMAL,
     _count: 1,
-    _enemiesLeft: 0,
-    _turnsLeft: 0,
-    _playersLeft: 0,
-    _kills: 0,
-    _killType: 0,
-    _customValue: 0,
+
+    initialize: function () {
+        this._count = this.getCount();
+    },
+
+    getCount: function () {
+        if (this.getMapValue('type')) {
+            return 2;
+        }
+
+        return 1;
+    },
 
     // updates at the end of every unit action
     updateUnitCount: function () {
-        this._enemiesLeft = EnemyList.getAliveList().getCount();
-        this._playersLeft = PlayerList.getSortieList().getCount();
+        this.setMapValue('enemiesLeft', EnemyList.getAliveList().getCount());
+        this.setMapValue('playerCount', PlayerList.getSortieList().getCount());
 
         this.updateKillCounter();
     },
 
     // updates at the start of every player phase
     updateTurnsLeft: function () {
-        if (this._turnsLeft > 0) {
-            this._turnsLeft--;
+        var turnsLeft = this.getMapValue('turnsLeft');
+
+        if (turnsLeft > 0) {
+            turnsLeft--;
         }
+
+        this.setMapValue('turnsLeft', turnsLeft);
     },
 
     updateKillCounter: function () {
-        var playerDeaths = PlayerList.getDeathList().getCount();
+        var playerDeaths = PlayerList.getDeathList().getCount(); // <- does this work right? test if this includes player deaths from previous maps
         var enemyDeaths = EnemyList.getDeathList().getCount();
         var allyDeaths = AllyList.getDeathList().getCount();
-        switch (this._killType) {
+        var kills = 0;
+
+        switch (this.getMapValue('killType')) {
             case KillCountType.ALL:
-                this._kills = playerDeaths + enemyDeaths + allyDeaths;
+                kills = playerDeaths + enemyDeaths + allyDeaths;
                 break;
             case KillCountType.ENEMYONLY:
-                this._kills = enemyDeaths;
+                kills = enemyDeaths;
                 break;
             case KillCountType.PLAYERONLY:
-                this._kills = playerDeaths;
+                kills = playerDeaths;
                 break;
             case KillCountType.ALLYONLY:
-                this._kills = allyDeaths;
+                kills = allyDeaths;
                 break;
         }
+
+        this.setMapValue('kills', kills);
     },
 
-    // user input
     changeObjective: function (text, type, value1, value2) {
-        this._objectiveStr = text;
-
         if (type) {
-            this._type = type;
+            this.setMapValue('type', type);
             this._count = 2;
         } else {
+            this.setMapValue('type', ObjectiveType.NORMAL);
             this._count = 1;
-            this._type = ObjectiveType.NORMAL;
         }
+
+        this.setMapValue('string', text);
 
         if (value1) {
             // it'd be cleaner to reuse the same property for all, something like _value1, but that's less readable so I won't
             switch (type) {
                 case ObjectiveType.TURNS:
-                    this._turnsLeft = value1;
+                    this.setMapValue('turnsLeft', value1);
+
                     break;
                 case ObjectiveType.KILLS:
-                    this._killType = value1;
+                    this.setMapValue('killType', value1);
+
                     break;
                 case ObjectiveType.CUSTOM:
                     var type = 0;
+
                     if (value2) {
                         type = value2;
                     }
+
                     this.setCustomMapValue(value1, type);
+
                     break;
             }
 
         }
     },
 
+
+    /**
+     * 
+     * @param {String} parameterSubstring the value to follow objective__ in the map custom parameter
+     * Valid values:
+     *   string - main string
+     *   type - what kind of objective. int value from the ObjectiveType enum
+     *   enemiesLeft - rout
+     *   turnsLeft - survive
+     *   playerCount - escape
+     *   kills - FE10 3-F
+     *   killType - whose deaths are we trackin here? int value from the KillCountType enum
+     *   customValue - numerical value for custom objectives
+     * @param {*} value the value to set for the thing being tracked. could be a string or a number, depending on the substring (ily javascript)
+     */
+    setMapValue: function (parameterSubstring, value) {
+        var validValues = [
+            'string',
+            'type',
+            'enemiesLeft',
+            'turnsLeft',
+            'playerCount',
+            'kills',
+            'killType',
+            'customValue'
+        ];
+
+        if (validValues.indexOf(parameterSubstring) !== '-1') {
+            var map = root.getCurrentSession().getCurrentMapInfo();
+            var mapParameter = 'objective__' + parameterSubstring;
+
+            map.custom[mapParameter] = value;
+        } else {
+            root.msg('invalid value for the setter: ' + parameterSubstring);
+        }
+    },
+
+    /**
+     * 
+     * @param {String} parameterSubstring the value to follow objective__ in the map custom parameter
+     * Valid values:
+     *   string - objective text
+     *   type - what kind of objective. int value from the ObjectiveType enum
+     *   enemiesLeft - rout
+     *   turnsLeft - survive
+     *   playerCount - escape
+     *   kills - FE10 3-F
+     *   killType - whose deaths are we trackin here? int value from the KillCountType enum
+     *   customValue - numerical value for custom objectives
+     */
+    getMapValue: function (parameterSubstring) {
+        var validValues = [
+            'string',
+            'type',
+            'enemiesLeft',
+            'turnsLeft',
+            'playerCount',
+            'kills',
+            'killType',
+            'customValue'
+        ];
+
+        if (validValues.indexOf(parameterSubstring) !== '-1') {
+            var map = root.getCurrentSession().getCurrentMapInfo();
+            var mapParameter = 'objective__' + parameterSubstring;
+            var defaultValue = parameterSubstring === 'string' ? '' : 0;
+
+            return map.custom[mapParameter] || defaultValue;
+        } else {
+            root.msg('invalid value for the getter: ' + parameterSubstring);
+        }
+    },
+
     setCustomMapValue: function (newVal, type) {
-        var map = root.getCurrentSession().getCurrentMapInfo();
+        var customValue = this.getMapValue('customValue');
 
         // treat as 0 if not already valid
-        if (!map.custom.customObjectiveValue) {
-            map.custom.customObjectiveValue = 0;
+        if (!customValue) {
+            customValue = 0;
         }
 
         switch (type) {
             case CustomArgType.SET:
-                map.custom.customObjectiveValue = newVal;
+                customValue = newVal;
                 break;
             case CustomArgType.ADD:
-                map.custom.customObjectiveValue += newVal;
+                customValue += newVal;
                 break;
             case CustomArgType.SUB:
-                map.custom.customObjectiveValue -= newVal;
+                customValue -= newVal;
                 break;
         }
-        this._customValue = map.custom.customObjectiveValue;
+
+        this.setMapValue('customValue', customValue);
     },
 
     drawMapParts: function () {
-        var text = this._getText();
+        var text = this.getMapValue('string');
         var x = this._getPositionX(text);
         var y = this._getPositionY();
 
-        if (this._objectiveStr !== '') {
+        if (text !== '') {
             this._drawMain(x, y);
         }
     },
 
     _drawMain: function (x, y) {
-        var text = this._getText();
+        var text = this.getMapValue('string');
         var width = this._getWindowWidth(text);
         var height = this._getWindowHeight();
         var textui = this._getWindowTextUI();
@@ -163,23 +262,23 @@ MapParts.Objective = defineObject(BaseMapParts, {
 
         y += this._getWindowYPadding() * 1.5;
 
-        switch (this._type) {
+        switch (this.getMapValue('type')) {
             case ObjectiveType.NORMAL:
                 break;
             case ObjectiveType.ROUT:
-                this._drawBottomSection(x, y, this._enemiesLeft, ObjectiveStrings.LEFT);
+                this._drawBottomSection(x, y, this.getMapValue('enemiesLeft'), ObjectiveStrings.LEFT);
                 break;
             case ObjectiveType.TURNS:
-                this._drawBottomSection(x, y, this._turnsLeft, ObjectiveStrings.LEFT);
+                this._drawBottomSection(x, y, this.getMapValue('turnsLeft'), ObjectiveStrings.LEFT);
                 break;
             case ObjectiveType.ESCAPE:
-                this._drawBottomSection(x, y, this._playersLeft, ObjectiveStrings.LEFT);
+                this._drawBottomSection(x, y, this.getMapValue('playerCount'), ObjectiveStrings.LEFT);
                 break;
             case ObjectiveType.KILLS:
-                this._drawBottomSection(x, y, this._kills, ObjectiveStrings.KILLS);
+                this._drawBottomSection(x, y, this.getMapValue('kills'), ObjectiveStrings.KILLS);
                 break;
             case ObjectiveType.CUSTOM:
-                this._drawBottomSection(x, y, this._customValue, ObjectiveStrings.CUSTOM);
+                this._drawBottomSection(x, y, this.getMapValue('customValue'), ObjectiveStrings.CUSTOM);
                 break;
         };
     },
@@ -199,7 +298,7 @@ MapParts.Objective = defineObject(BaseMapParts, {
         var color = textui.getColor();
         var length = -1;
 
-        if (this._type !== ObjectiveType.TURNS || this._turnsLeft > 1) {
+        if (this.getMapValue('type') !== ObjectiveType.TURNS || this.getMapValue('turnsLeft') > 1) {
             TextRenderer.drawText(x, y, text, length, color, font)
             x += this._getWindowXPadding() * 3;
             NumberRenderer.drawRightNumber(x, y - 3, value);
@@ -210,7 +309,7 @@ MapParts.Objective = defineObject(BaseMapParts, {
     },
 
     _getText: function () {
-        return this._objectiveStr;
+        return this.getMapValue('string');
     },
 
     _getTextLength: function (text) {
@@ -248,9 +347,11 @@ MapParts.Objective = defineObject(BaseMapParts, {
 
     _getWindowWidth: function (text) {
         var textPadding = 50 - text.length;
+
         if (textPadding < 10) {
             textPadding = 10;
         }
+
         return text.length * 7.5 + textPadding;
     },
 

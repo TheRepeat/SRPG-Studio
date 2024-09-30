@@ -149,10 +149,10 @@ TitleScene._drawKeybind = function (x, y, key, text) {
 }
 
 TitleScene.getKeyboardImg = function () {
-    return root.getMaterialManager().createImage(KEYBOARD_CONTROLS.Folder, KEYBOARD_CONTROLS.Image);
+    return KEYBOARD_IMAGE;
 }
 TitleScene.getGamepadImg = function () {
-    return root.getMaterialManager().createImage(XBOX_CONTROLS.Folder, XBOX_CONTROLS.Image);
+    return GAMEPAD_IMAGE;
 }
 TitleScene.getNavigationKeybindStrings = function () {
     // in DirectionType order, ltrb

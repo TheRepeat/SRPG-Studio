@@ -1,6 +1,6 @@
 /**
  * "Onscreen keybind display", by Repeat.
- * v1.3
+ * v1.4
  * This file contains user-editable values for this plugin.
  */
 

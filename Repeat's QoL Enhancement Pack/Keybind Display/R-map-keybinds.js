@@ -121,11 +121,11 @@ MapParts.Keybinds = defineObject(BaseMapParts, {
     },
 
     getPic: function () {
-        return root.getMaterialManager().createImage(KEYBOARD_CONTROLS.Folder, KEYBOARD_CONTROLS.Image);
+        return KEYBOARD_IMAGE;
     },
 
     getGamepadPic: function () {
-        return root.getMaterialManager().createImage(XBOX_CONTROLS.Folder, XBOX_CONTROLS.Image);
+        return GAMEPAD_IMAGE;
     },
 
     getKeybindStrings: function () {

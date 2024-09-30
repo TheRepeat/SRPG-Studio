@@ -18,7 +18,7 @@ var KeyInfoWindow = defineObject(BaseWindow, {
     _width: 400,
 
     init: function (type, width) {
-        this._pic = root.getMaterialManager().createImage(KEYBOARD_CONTROLS.Folder, KEYBOARD_CONTROLS.Image);
+        this._pic = KEYBOARD_IMAGE;
         this._type = type;
         this._width = width;
 

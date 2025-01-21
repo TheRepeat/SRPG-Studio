@@ -121,13 +121,9 @@
             return;
         }
 
-        if (this._iS_LARGEFace) {
-            destWidth = this._faceWidth;
-            destHeight = this._faceHeight;
-            if (pic.iS_LARGEImage()) {
-                srcWidth = destWidth;
-                srcHeight = destHeight;
-            }
+        if (IS_LARGE === true && pic.isLargeImage()) {
+            srcWidth = root.getLargeFaceWidth();
+            srcHeight = root.getLargeFaceHeight();
         }
 
         xSrc = handle.getSrcX();

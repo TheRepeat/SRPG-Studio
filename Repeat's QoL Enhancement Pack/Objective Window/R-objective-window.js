@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * Objective Window v3.0.
+ * Objective Window v3.1.
  * 
  * Directions:
  * Call Execute Script -> select Execute Code

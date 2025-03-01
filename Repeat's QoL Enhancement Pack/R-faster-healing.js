@@ -12,6 +12,9 @@
  * 
  * Keep in mind that the length of the healing animation will still factor into how long the whole healing process takes.
  * i.e., if you use a shorter animation for HP recovery, this plugin will be more effective.
+ * 
+ * Changelog:
+ *  * 2/28/2025 - Fixed animation hang when Damage Popup config option is Off 
  *
  * Functions overridden without an alias:
  *  * (not a function but) RecoveryBall is overridden entirely instead of simply adding functions to it, for cleanliness
@@ -28,15 +31,18 @@ SHOW_POPUP_DURING_ANIME = false;
     HpRecoveryEventCommand._prepareEventCommandMemberData = function () {
         alias1.call(this);
 
-        if (EnvironmentControl.isDamagePopup()) {
-            this._setupRecoveryPopup();
-        }
+        this._isPopupAllowed = EnvironmentControl.isDamagePopup();
 
-        this._popupDone = false;
+        if (this._isPopupAllowed) {
+            this._setupRecoveryPopup();
+
+            this._popupDone = false;
+        }
     }
 })();
 
 var RecoveryBall = defineObject(DamageBall, {
+    _hangTime: null,
     _hangTimeCounter: null,
     _incrementAmount: null,
     _isSteady: false,
@@ -112,6 +118,7 @@ var HpRecoveryMode = {
 
 HpRecoveryEventCommand._recoveryPopup = null;
 HpRecoveryEventCommand._popupDone = null;
+HpRecoveryEventCommand._isPopupAllowed = null;
 HpRecoveryEventCommand._setupRecoveryPopup = function () {
     var effect = createObject(DamagePopupEffect);
     var dx = Math.floor((DamagePopup.WIDTH - GraphicsFormat.CHARCHIP_WIDTH) / 2);
@@ -142,7 +149,7 @@ HpRecoveryEventCommand.moveEventCommandCycle = function () {
     var mode = this.getCycleMode();
     var result = MoveResult.CONTINUE;
 
-    if (SHOW_POPUP_DURING_ANIME) {
+    if (SHOW_POPUP_DURING_ANIME && this._isPopupAllowed) {
         result = this._movePopupAndAnime();
     } else {
         if (mode === HpRecoveryMode.ANIME) {
@@ -160,7 +167,7 @@ HpRecoveryEventCommand.drawEventCommandCycle = function () {
     var mode = this.getCycleMode();
 
 
-    if (SHOW_POPUP_DURING_ANIME) {
+    if (SHOW_POPUP_DURING_ANIME && this._isPopupAllowed) {
         this._drawPopupAndAnime();
     } else {
         if (mode === HpRecoveryMode.ANIME) {
@@ -188,7 +195,13 @@ HpRecoveryEventCommand._moveAnime = function () {
 
     if (isNextMode) { // only changes are in this if
         this.mainEventCommand(); // heal right before the popup (a little bit more satisfying imo)
-        this.changeCycleMode(HpRecoveryMode.POPUP);
+
+        if (this._isPopupAllowed) {
+            // skip popup if the damage popup config item is off
+            this.changeCycleMode(HpRecoveryMode.POPUP);
+        } else {
+            return MoveResult.END;
+        }
     }
 
     return MoveResult.CONTINUE;

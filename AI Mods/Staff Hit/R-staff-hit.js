@@ -64,7 +64,6 @@
 
 				return EnterResult.NOTENTER;
 			}
-
 		} else {
 			return alias2.call(this, itemUseParent);
 		}
@@ -95,7 +94,6 @@
 
 				return EnterResult.NOTENTER;
 			}
-
 		} else {
 			return alias3.call(this, itemUseParent);
 		}
@@ -115,7 +113,6 @@
 		var trueHit = getStaffTrueHit(baseHit, unit, combination.targetUnit);
 
 		score += trueHit;
-
 
 		return score;
 	}
@@ -273,7 +270,6 @@ BaseItemAI.getItemScore = function (unit, combination) {
 
 	if (!item.custom.usesAcc) {
 		return AIValue.MIN_SCORE;
-
 	}
 
 	var baseHit = item.custom.hitValue;

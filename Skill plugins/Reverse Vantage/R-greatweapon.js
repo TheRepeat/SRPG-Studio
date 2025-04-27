@@ -29,16 +29,17 @@
             return roundCount;
         }
 
-       return 1;
+        return 1;
     }
 
     var alias3 = NormalAttackOrderBuilder._isDefaultPriority;
     NormalAttackOrderBuilder._isDefaultPriority = function (virtualActive, virtualPassive) {
-		var active = virtualActive.unitSelf;
+        var active = virtualActive.unitSelf;
         var isDefaultPriority = alias3.call(this, virtualActive, virtualPassive);
 
         if (this._attackInfo.isCounterattack) {
             var skill = SkillControl.getPossessionCustomSkill(active, 'Greatweapon');
+
             if (skill) {
                 return false;
             }

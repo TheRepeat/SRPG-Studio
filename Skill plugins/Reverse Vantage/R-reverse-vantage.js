@@ -8,14 +8,14 @@
 (function () {
     var alias1 = NormalAttackOrderBuilder._isDefaultPriority;
     NormalAttackOrderBuilder._isDefaultPriority = function (virtualActive, virtualPassive) {
-		var active = virtualActive.unitSelf;
-		var passive = virtualPassive.unitSelf;
+        var active = virtualActive.unitSelf;
         var isDefaultPriority = alias1.call(this, virtualActive, virtualPassive);
 
         if (this._attackInfo.isCounterattack) {
             // If the opponent can counterattack, check if they have the custom skill.
             // If the attacker has no skill of preemptive attack, and the opponent has it instead, the opponent launches an attack.
             var skill = SkillControl.getPossessionCustomSkill(active, 'reverseVantage');
+
             if (skill) {
                 return false;
             }

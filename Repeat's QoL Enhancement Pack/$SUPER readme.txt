@@ -79,6 +79,9 @@ Latest version: 1.3
 Faster Healing. Replaces the slow vanilla healing animation with a much quicker (and less annoying) one.
  1. R-faster-healing.js
 
+Show Difficulty on Save/Load. On the save/load screen, the save file's difficulty mode is also displayed over the map preview. Also fixes the misalignment of the colons in the Play Time display.
+ 1. R-show-save-difficulty.js
+
 The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
 This collection is just to keep all of these enhancements together.
 
@@ -107,3 +110,4 @@ UPDATE HISTORY (not comprehensive):
 8/14/2022: item drops v2.0
 9/11/2022: keybind display/rebind plugin
 8/7/2024: objective window v3.0
+5/27/2025: added show save difficulty

@@ -10,8 +10,9 @@
     NormalAttackOrderBuilder._isDefaultPriority = function (virtualActive, virtualPassive) {
         var isDefaultPriority = alias1.call(this, virtualActive, virtualPassive);
         var difficulty = root.getMetaSession().getDifficulty();
+        var isEnemyPhase = root.getCurrentSession().getTurnType() === TurnType.ENEMY;
 
-        if (!difficulty.custom.reverseMode) {
+        if (!difficulty.custom.reverseMode || isEnemyPhase) {
             return isDefaultPriority;
         }
 

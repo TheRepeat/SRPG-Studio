@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * Objective Window v3.0.
+ * Objective Window v3.1.
  * 
  * Directions:
  * Call Execute Script -> select Execute Code
@@ -47,20 +47,6 @@ function setObjective(text, type, value1, value2) {
 }
 
 MapParts.Objective = defineObject(BaseMapParts, {
-    _count: 1,
-
-    initialize: function () {
-        this._count = this.getCount();
-    },
-
-    getCount: function () {
-        if (this.getMapValue('type')) {
-            return 2;
-        }
-
-        return 1;
-    },
-
     // updates at the end of every unit action
     updateUnitCount: function () {
         this.setMapValue('enemiesLeft', EnemyList.getAliveList().getCount());
@@ -107,10 +93,8 @@ MapParts.Objective = defineObject(BaseMapParts, {
     changeObjective: function (text, type, value1, value2) {
         if (type) {
             this.setMapValue('type', type);
-            this._count = 2;
         } else {
             this.setMapValue('type', ObjectiveType.NORMAL);
-            this._count = 1;
         }
 
         this.setMapValue('string', text);
@@ -137,10 +121,8 @@ MapParts.Objective = defineObject(BaseMapParts, {
 
                     break;
             }
-
         }
     },
-
 
     /**
      * 
@@ -323,10 +305,12 @@ MapParts.Objective = defineObject(BaseMapParts, {
     },
 
     _getPositionY: function () {
+        var xBuffer = GraphicsFormat.MAPCHIP_WIDTH + 1;
+        var yBuffer = GraphicsFormat.MAPCHIP_HEIGHT + 1;
         var x = LayoutControl.getPixelX(this.getMapPartsX());
-        var dx = root.getGameAreaWidth() / 2 + 16; // without the +16, it flickers rapidly if MarkyJoe's smooth scroll plugin is active
+        var dx = root.getGameAreaWidth() / 2 + xBuffer; // without the exta buffer, it flickers rapidly if MarkyJoe's smooth scroll plugin is active
         var y = LayoutControl.getPixelY(this.getMapPartsY());
-        var dy = root.getGameAreaHeight() / 2 + 16; // ditto
+        var dy = root.getGameAreaHeight() / 2 + yBuffer; // ditto
         var yBase = LayoutControl.getRelativeY(10) - 28;
 
         if (y < dy && x > dx) {
@@ -346,17 +330,16 @@ MapParts.Objective = defineObject(BaseMapParts, {
     },
 
     _getWindowWidth: function (text) {
-        var textPadding = 50 - text.length;
+        var textui = this._getWindowTextUI();
+        var font = textui.getFont();
 
-        if (textPadding < 10) {
-            textPadding = 10;
-        }
-
-        return text.length * 7.5 + textPadding;
+        return TextRenderer.getTextWidth(text, font) + 40;
     },
 
     _getWindowHeight: function () {
-        return 30 + (this.getIntervalY() * this._count);
+        var count = this.getMapValue('type') ? 2 : 1;
+
+        return 30 + (this.getIntervalY() * count);
     },
 
     _getWindowTextUI: function () {

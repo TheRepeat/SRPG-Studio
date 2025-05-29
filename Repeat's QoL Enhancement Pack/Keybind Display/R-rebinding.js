@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * v1.4
+ * v1.5
  * Adds new UI to the title screen, allowing players to rebind their controls in-game.
  * 
  * Controller rebinding is not in scope for the initial release of this plugin.
@@ -306,6 +306,9 @@ var RebindWindow = defineObject(BaseWindow, {
                 case ChoiceType.CLOSE:
                     this._rebindScrollbar.setActive(true);
                     break;
+                case ChoiceType.RESTORE:
+                    this.restoreDefaultBindings();
+                    return MoveResult.END;
             }
 
             this.getParentInstance().setHelpText(BottomHelpText.DEFAULT);
@@ -334,6 +337,16 @@ var RebindWindow = defineObject(BaseWindow, {
         for (var i = 0; i < KeybindList.length; i++) {
             if (binds[i]) {
                 root.setKeyBinding(KeybindList[i], binds[i][0], binds[i][1]);
+            }
+        }
+    },
+
+    restoreDefaultBindings: function () {
+        for (var i = 0; i < KeybindList.length; i++) {
+            var currentBind = DefaultKeybinds[KeybindList[i]];
+
+            if (currentBind) {
+                root.setKeyBinding(KeybindList[i], currentBind[0], currentBind[1]);
             }
         }
     },

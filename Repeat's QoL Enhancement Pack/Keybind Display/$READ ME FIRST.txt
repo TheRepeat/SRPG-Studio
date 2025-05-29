@@ -1,6 +1,6 @@
 Keybind Display / Key Rebinding
 By Repeat
-Version 1.4
+Version 1.5
 
 	ABOUT
 This plugin has 2 main functions:
@@ -12,6 +12,8 @@ This plugin has 2 main functions:
 This is very nearly plug-and-play. All you need to do is move the "Keybinds" folder, included in this plugin, into your project's Material folder. It contains several image files necessary for the plugin to function. With that done, this plugin should be fully functional.
 
 Optional: you can tweak certain aspects of this plugin to your liking by editing 0_R-keybind-settings.js in a program like Notepad++ or Visual Studio Code.
+
+You can also edit your own "default" controls in 0_default-keybinds.js to have an option for players to reset their choices back to your intended control scheme. If you don't change the file, the defaults match SRPG Studio's default keybinds.
 
 In-game, players can choose which type of controls to display onscreen during battle: keyboard keys, controller buttons (specifically those of an Xbox 360 controller), or none.
 
@@ -38,7 +40,7 @@ Because, again, I can only really make educated guesses about controller buttons
 
 
     CLOSING
-If you ever think, "man, this plugin is really cool, I bet it took Repeat multiple weeks of work to make" (great guess!), you are welcome to show your support by playing my fangame Seas of Novis for free and telling me your thoughts on it! https://feuniverse.us/t/15368
+If you ever think, "man, this plugin is really cool, I bet it took Repeat multiple weeks of work to make" (great guess!), then please support my own original game, "Understanding", when it releases!
 
 Xbox 360 button graphic is an edit of art by Jtheduelist.
 
@@ -49,3 +51,4 @@ Xbox 360 button graphic is an edit of art by Jtheduelist.
 12/4/2022: v1.2, fixed game crash on unbinding Select/Cancel; added rclick as a binding option for SYSTEM and SKIP
 7/15/2024: v1.3, added keybind display to the title screen
 9/20/2024: v1.4, improved performance when drawing key graphics
+5/28/2025: v1.5, added "restore defaults" functionality

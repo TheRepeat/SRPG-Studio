@@ -5,13 +5,16 @@
  *  1. Confirm choices (closes this & rebind windows)
  *  2. Revert choices (closes this & resets keybinds to previous)
  *  3. Continue editing (just closes this)
+ *  4. Restore defaults (closes this & resets keybinds to the contents of 0_default-keybinds.js)
+ * 
  * None of that logic is in this file - it only needs to say which option was chosen.
  */
 
 var ChoiceType = {
     CONFIRM: 0,
     REVERT: 1,
-    CLOSE: 2
+    CLOSE: 2,
+    RESTORE: 3
 };
 
 var RebindChoiceWindow = defineObject(BaseWindow, {
@@ -26,7 +29,7 @@ var RebindChoiceWindow = defineObject(BaseWindow, {
         this._choices = dataObject.choices;
         this._choiceScrollbar = createScrollbarObject(ChoiceScrollbar, this);
 
-        this._choiceScrollbar.setScrollFormation(3, 1);
+        this._choiceScrollbar.setScrollFormation(2, 2);
         this._choiceScrollbar.setScrollData(this._choices);
         this._choiceScrollbar.setActive(false);
     },
@@ -98,7 +101,7 @@ var RebindChoiceWindow = defineObject(BaseWindow, {
         if (this._data.description) {
             buffer = (this._stringChunks - 1) * 16 + 32;
         }
-        return 80 + buffer;
+        return 104 + buffer;
     },
 
     splitDescString: function (str) {
@@ -154,7 +157,7 @@ var ChoiceScrollbar = defineObject(BaseScrollbar, {
     },
 
     selectOption: function (index) {
-        this._choice = index; // 0, 1, 2 - see the enum at the top
+        this._choice = index; // refers to a value from ChoiceType enum at the top
     },
 
     getChoiceMade: function () {
@@ -168,10 +171,10 @@ var ChoiceScrollbar = defineObject(BaseScrollbar, {
     drawDescriptionLine: function (x, y) { },
 
     getObjectWidth: function () {
-        return 128;
+        return 160;
     },
 
     getObjectHeight: function () {
-        return 16;
+        return 24;
     }
 });

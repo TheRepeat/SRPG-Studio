@@ -1,6 +1,6 @@
 /**
  * "Onscreen keybind display", by Repeat.
- * v1.4
+ * v1.5
  * This file contains user-editable values for this plugin.
  */
 
@@ -50,9 +50,10 @@ var RclickWindowStrings = {
 };
 // Note: Do not edit the order or length of ChoiceStrings (editing the text is fine)
 var ChoiceStrings = [
-    'Confirm',
-    'Revert',
-    'Keep editing'
+    'Confirm selections',
+    'Revert to previous',
+    'Keep editing',
+    'Restore defaults'
 ];
 // Note: Do not edit the order or length of ActionNameStrings (editing the text is fine). 
 // The order and length must match KeybindList in R-rebinding.js

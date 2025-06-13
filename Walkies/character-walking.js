@@ -53,7 +53,7 @@ Localization, TL notes, and some new features and fixes: Repeat
 
 ■ Keyboard Controls
 	Arrow keys: Move up / down / left / right
-	Z key:
+	Z key (SELECT):
 		* When standing neutrally: Check for any place events at your feet
 			(Place event: Custom-> Treasure chest-> Village-> Store-> Information)
 		* When facing a direction:
@@ -62,12 +62,9 @@ Localization, TL notes, and some new features and fixes: Repeat
 			Then check the adjacent tile being faced 
 				(conversation event → place event: custom → treasure chest → door → information)
 
-	X key: Show map commands
-		* Addition by Repeat: hold X while moving to run, doubling your movement speed.
-			Note that this is tied to the SYSTEM key, not the CANCEL key, just like other types of speedup in SRPG Studio.
-			It's only by coincidence that the X key is also bound to SYSTEM with default controls,
-			(which is why I don't like default controls lol, I recommend putting it on the D key in game.ini)
-	C key: Switch the controlled unit (when switching, the unit stands neutrally) 
+	X key (CANCEL): Show map commands
+	A or S key (LSWITCH/RSWITCH): Addition by Repeat. Hold while moving to run, doubling your movement speed.
+	C key (OPTION): Switch the controlled unit (when switching, the unit stands neutrally) 
 		* This can be disabled. See Customization section, step 9.
 
 	The lead unit moves 32 pixels at a time, e.g. the default size of one tile. 
@@ -76,12 +73,13 @@ Localization, TL notes, and some new features and fixes: Repeat
 	Movement cost is ignored, of course, but the lead unit cannot walk on terrain that's impassible by their class.
 		(Flying units can go over rivers, etc. Be sure to be careful with your terrain types.)
 
-	Place events of type Wait execute as soon as the lead unit steps on the event (it doesn't execute if you 
-		check with the Z key)
+	Place events of type Wait execute as soon as the lead unit steps on the event (it doesn't wait to execute until you check 
+		with Z, unlike other event types)
 
 	TL note regarding controls:
 		* Z key refers to the default Select action
-		* X key refers to the default Cancel action (except regarding Run, which is the System state)
+		* X key refers to the default Cancel action
+		* A/S key refer to the default Switch actions (cycling idle units)
 		* C key refers to the default Option action (e.g. the action that you check units' inventories with)
 	So everything still works on controllers, and controls will reflect any remappings in game.ini.
 	The plugin author refers to them as Z, X and C, but this explains what is meant by those.
@@ -105,7 +103,7 @@ Localization, TL notes, and some new features and fixes: Repeat
 	2. I want to change the sound effect when switching the lead unit (I want to use a different RTP sound effect)
 		→ Change the value of use_ChgSE_ID settings to a different RTP sound effect ID (default value is 11).
 		(If set to -1, no sound effect will play when switching characters)
-		
+
 	** IMPORTANT TL NOTE: to see IDs in SRPG Studio, go to Tools → Options → Data and check "Display id next to data name"
 
 	2b I want to change the sound effect when switching the lead unit (I want to make it my own sound effect)
@@ -195,11 +193,18 @@ Localization, TL notes, and some new features and fixes: Repeat
 	10. (Addition by Repeat) I want to disable the ability to Run entirely
 		→ Set cannotRun = true
 
-    11. (Addition by Repeat) I want to hide the phase change graphic and sfx when I start a walk map.
+	11. (Addition by Repeat) I want to hide the phase change graphic and sfx when I start a walk map.
 		→ Set hidePhaseChangeEffect = true
 
 	12. (Addition by Repeat) I want to Run using the SYSTEM key (X by default) instead of the  LSWITCH/RSWITCH keys (A and S by default).
 		→ Set runWithSystem = true
+		(I recommend binding SYSTEM to a different key instead, like D, if you do this)
+
+	13. (Addition by Repeat) I want to display the Item command, where I can use the walking unit's items.
+		→ Set MapItemCommandIndex to a number greater than -1.
+		The number corresponds to the index in the list of commands, starting from the top, except for 0 which puts the command last in the list.
+		E.g. MapItemCommandIndex = 2 puts the Item command at the second index.
+		If you want to hide this command, set MapItemCommandIndex = -1
 
 ■ Commands that can be used with Execute Script
 	Event command: These commands can be used in Execute Script → Execute Code.
@@ -363,10 +368,12 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 	var isRTP_ChgSE = true;			// Use RTP SFX when switching units with C? (false=original instead of RTP)
 	var use_ChgSE_ID = 11;			// ID of sound effect to use（default: 11, RTP "Use Item" sound）
 
-	var MapStockCommandIndex = 1;	// Stock command position (0: bottom, value of 1 or more: value from top)
-	// * If -1, the stock command won't show.
-	var MapUnitMarshalIndex = -1;	// Position of unit rearrangement (0: bottom, value of 1 or more: value from top) 
-	// * If it is -1, unit rearrangement will not be issued
+	var MapStockCommandIndex = 1;	// Convoy command position (0: bottom, value of 1 or more: value from top)
+	// * If -1, the Convoy command won't show.
+	var MapUnitMarshalIndex = -1;	// Position of Manage Units (0: bottom, value of 1 or more: value from top) 
+	// * If it is -1, the Manage command won't show.
+	var MapItemCommandIndex = -1;	// position of the Item command (0: bottom, value of 1 or more: value from top)
+	// * If -1, the Item command won't show.
 
 	var MoveSpeed = 3;				// Default speed ​​of movement, from 0 to 3 (3 is slowest)
 	var cannotRun = false;			// If true, Running is disabled completely.
@@ -480,15 +487,15 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 		return pic;
 	}
 
-    // Addition by Repeat.
+	// Addition by Repeat.
 	// This change prevents the 36-frame "pause" at the start of the map and silences the phase change SFX in walk maps.
 	// Note that this is only aliased if hidePhaseChangeEffect is false. It could be rewritten to still remove the "pause" and 
 	// be aliased, but the phase change SFX would have to play, which I think is unsightly.
-    var changePhaseSfxAlias = TurnMarkFlowEntry._completeMemberData;
+	var changePhaseSfxAlias = TurnMarkFlowEntry._completeMemberData;
 	TurnMarkFlowEntry._completeMemberData = function (turnChange) {
-        if (!hidePhaseChangeEffect) {
-            return changePhaseSfxAlias.call(this, turnChange);
-        }
+		if (!hidePhaseChangeEffect) {
+			return changePhaseSfxAlias.call(this, turnChange);
+		}
 
 		if (!this._isTurnGraphicsDisplayable()) {
 			this.doMainAction(false);
@@ -3006,62 +3013,92 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 	//-------------------------------------------
 	// MapCommandByUnit class
 	//-------------------------------------------
-	var MapCommandByUnit = defineObject(MapCommand,
-		{
-			configureCommands: function (groupArray) {
-				var index;
+	var MapCommandByUnit = defineObject(MapCommand, {
+		configureCommands: function (groupArray) {
+			var index;
 
-				MapCommand.configureCommands.call(this, groupArray);
+			MapCommand.configureCommands.call(this, groupArray);
 
-				// Remove End Turn command if isUseTurnEnd is not true
-				if (isUseTurnEnd !== true) {
-					var i, commandLayout;
+			// Remove End Turn command if isUseTurnEnd is not true
+			if (isUseTurnEnd !== true) {
+				var i, commandLayout;
 
-					i = groupArray.length - 1;
-					for (; i >= 0; i--) {
-						commandLayout = groupArray[i].getCommandLayout();
-						if (commandLayout == null) {
-							continue;
-						}
-
-						if (commandLayout.getCommandActionType() === CommandActionType.TURNEND) {
-							groupArray.splice(i, 1);
-						}
-					}
-				}
-
-				// If the index of the stock command is 0, it's at the bottom (if the index is negative, it's not in the list)
-				if (MapStockCommandIndex === 0) {
-					groupArray.appendObject(MapCommand.Stock);
-				}
-				// If the index of the stock command > 0, it's set at the top of the list.
-				else if (MapStockCommandIndex > 0) {
-					index = MapStockCommandIndex - 1;
-
-					if (index > groupArray.length - 1) {
-						index = groupArray.length - 1;
+				i = groupArray.length - 1;
+				for (; i >= 0; i--) {
+					commandLayout = groupArray[i].getCommandLayout();
+					if (commandLayout == null) {
+						continue;
 					}
 
-					groupArray.insertObject(MapCommand.Stock, index);
-				}
-
-				// If the index of the Manage command is 0, it is the bottom (if the index is negative, it's not in the list)
-				if (MapUnitMarshalIndex === 0) {
-					groupArray.appendObject(MapCommandUnitMarshal);
-				}
-				// If the index of the Manage command > 0, it's set at the top of the list.
-				else if (MapUnitMarshalIndex > 0) {
-					index = MapUnitMarshalIndex - 1;
-
-					if (index > groupArray.length - 1) {
-						index = groupArray.length - 1;
+					if (commandLayout.getCommandActionType() === CommandActionType.TURNEND) {
+						groupArray.splice(i, 1);
 					}
-
-					groupArray.insertObject(MapCommandUnitMarshal, index);
 				}
 			}
+
+			// If the index of the stock command is 0, it's at the bottom (if the index is negative, it's not in the list)
+			if (MapStockCommandIndex === 0) {
+				groupArray.appendObject(MapCommand.Stock);
+			}
+			// If the index of the stock command > 0, it's set at the top of the list.
+			else if (MapStockCommandIndex > 0) {
+				index = MapStockCommandIndex - 1;
+
+				if (index > groupArray.length - 1) {
+					index = groupArray.length - 1;
+				}
+
+				groupArray.insertObject(MapCommand.Stock, index);
+			}
+
+			// If the index of the Item command is 0, it's at the bottom (if the index is negative, it's not in the list)
+			if (MapItemCommandIndex === 0) {
+				groupArray.appendObject(MapCommand.WalkItem);
+			}
+			// If the index of the Item command > 0, it's set at the top of the list.
+			else if (MapItemCommandIndex > 0) {
+				index = MapItemCommandIndex - 1;
+
+				if (index > groupArray.length - 1) {
+					index = groupArray.length - 1;
+				}
+
+				groupArray.insertObject(MapCommand.WalkItem, index);
+			}
+
+			// If the index of the Manage command is 0, it is the bottom (if the index is negative, it's not in the list)
+			if (MapUnitMarshalIndex === 0) {
+				groupArray.appendObject(MapCommandUnitMarshal);
+			}
+			// If the index of the Manage command > 0, it's set at the top of the list.
+			else if (MapUnitMarshalIndex > 0) {
+				index = MapUnitMarshalIndex - 1;
+
+				if (index > groupArray.length - 1) {
+					index = groupArray.length - 1;
+				}
+
+				groupArray.insertObject(MapCommandUnitMarshal, index);
+			}
+		},
+
+		_moveOpen: function () {
+			var object = this._commandScrollbar.getObject();
+			var result = MoveResult.CONTINUE;
+
+			if (object.moveCommand() !== MoveResult.CONTINUE) {
+				// Addition by Repeat: check for getExitCommand added so certain items being used will close the MapCommand menu entirely
+				if (typeof object.getExitCommand === 'function' && object.getExitCommand()) {
+					result = MoveResult.END;
+				} else {
+					this._commandScrollbar.setActive(true);
+					this.changeCycleMode(ListCommandManagerMode.TITLE);
+				}
+			}
+
+			return result;
 		}
-	);
+	});
 
 	//-------------------------------------------
 	// MapCommand.Stock class
@@ -3635,41 +3672,41 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 		}
 	}
 
-	MapLayer.drawDebugWeather = function() {
+	MapLayer.drawDebugWeather = function () {
 		if (ENABLE_WEATHER_DEBUG) {
 			var textY = 0;
 			var textX = 2;
 			var font = root.queryTextUI("default_window").getFont();
 			var color = 0xFFFFFF;
-			
-			TextRenderer.drawText(textX,textY,"FPS: " + root.getFPS(), -1, color, font)
+
+			TextRenderer.drawText(textX, textY, "FPS: " + root.getFPS(), -1, color, font)
 			textY += 16;
-			TextRenderer.drawText(textX,textY,"Weather Object Count: " + MyWeatherGenerator._rainArray.length, -1, color, font)
+			TextRenderer.drawText(textX, textY, "Weather Object Count: " + MyWeatherGenerator._rainArray.length, -1, color, font)
 			textY += 16;
 			cacheString = "Weather Cache: "
 			count = MyWeatherGenerator._imageCache.length
 			for (i = 0; i < count; i++) {
 				cacheString += MyWeatherGenerator._imageCache[i].name;
-				if (i == count - 1) {" "} else {cacheString += ", "}
+				if (i == count - 1) { " " } else { cacheString += ", " }
 			}
-			TextRenderer.drawText(textX,textY,cacheString, -1, color, font)
+			TextRenderer.drawText(textX, textY, cacheString, -1, color, font)
 			textY += 16;
 			if (MyWeatherGenerator._weatherType != null) {
-				TextRenderer.drawText(textX,textY,"Current Weather: " + MyWeatherGenerator._weatherType.getName(), -1, color, font)
+				TextRenderer.drawText(textX, textY, "Current Weather: " + MyWeatherGenerator._weatherType.getName(), -1, color, font)
 				textY += 16;
-				TextRenderer.drawText(textX,textY,"Spawn Rate: " + MyWeatherGenerator._weatherType.getSpawnRate(), -1, color, font)
+				TextRenderer.drawText(textX, textY, "Spawn Rate: " + MyWeatherGenerator._weatherType.getSpawnRate(), -1, color, font)
 				textY += 16;
-				TextRenderer.drawText(textX,textY,"Max Limit: " + MyWeatherGenerator._weatherType.getMaxCount(), -1, color, font)
+				TextRenderer.drawText(textX, textY, "Max Limit: " + MyWeatherGenerator._weatherType.getMaxCount(), -1, color, font)
 				textY += 16;
-				TextRenderer.drawText(textX,textY,"Wind Multiplier: " + MyWeatherGenerator._weatherType.getWindMultiplier(), -1, color, font)
+				TextRenderer.drawText(textX, textY, "Wind Multiplier: " + MyWeatherGenerator._weatherType.getWindMultiplier(), -1, color, font)
 				textY += 16;
 			}
-			TextRenderer.drawText(textX,textY,"Wind Current: " + MyWeatherGenerator._windCurrent, -1, color, font)
+			TextRenderer.drawText(textX, textY, "Wind Current: " + MyWeatherGenerator._windCurrent, -1, color, font)
 			textY += 16;
-			TextRenderer.drawText(textX,textY,"No. Of Weather Types: " + MyWeatherGenerator._weatherArray.length, -1, color, font)
+			TextRenderer.drawText(textX, textY, "No. Of Weather Types: " + MyWeatherGenerator._weatherArray.length, -1, color, font)
 			textY += 16;
-			TextRenderer.drawText(textX,root.getWindowHeight() - 36,"PRESS OPTION 2 (DEFAULT: SHIFT) TO TOGGLE WEATHER", -1, color, font)
-			TextRenderer.drawText(textX,root.getWindowHeight() - 20,"To turn off this debug stuff, go to weather-config.js", -1, color, font)
+			TextRenderer.drawText(textX, root.getWindowHeight() - 36, "PRESS OPTION 2 (DEFAULT: SHIFT) TO TOGGLE WEATHER", -1, color, font)
+			TextRenderer.drawText(textX, root.getWindowHeight() - 20, "To turn off this debug stuff, go to weather-config.js", -1, color, font)
 		}
 	}
 

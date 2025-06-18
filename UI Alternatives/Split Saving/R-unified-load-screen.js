@@ -151,17 +151,19 @@ var UnifiedLoadScreen = defineObject(LoadSaveScreenEx, {
         // debug_drawRange(x2, y2, this._battleSaveScrollbar.getObjectWidth(), this._battleSaveScrollbar.getObjectHeight() * this.getVisibleSaveFileCount());
 
         if (this._loadMode === LoadMode.BATTLE && MouseControl.isHovering(range1)) {
+            // mousing from battle save -> chapter save
             this._chapterSaveScrollbar.setActive(true);
             this._battleSaveScrollbar.setActive(false);
 
-            this._saveFileDetailWindow.setSaveFileInfo(this._battleSaveScrollbar.getObject());
+            this._saveFileDetailWindow.setSaveFileInfo(this.getDummySaveFile());
 
             this._loadMode = LoadMode.CHAPTER;
         } else if (this._loadMode === LoadMode.CHAPTER && MouseControl.isHovering(range2)) {
+            // mousing from chapter save -> battle save
             this._chapterSaveScrollbar.setActive(false);
             this._battleSaveScrollbar.setActive(true);
 
-            this._saveFileDetailWindow.setSaveFileInfo(this.getDummySaveFile());
+            this._saveFileDetailWindow.setSaveFileInfo(this._battleSaveScrollbar.getObject());
 
             this._loadMode = LoadMode.BATTLE;
         }

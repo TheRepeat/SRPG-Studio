@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * Split Saving v1.0
+ * Split Saving v1.1
  * Changes saves so saving during battle prep/base/EOC ("Chapter Saves") is a separate list of saves from mid-map saves ("Battle Saves").
  * LoadSaveScreen (no minimap) is repurposed for Chapter Saves exclusively.
  * LoadSaveScreenEx (w/ minimap) is repurposed for Battle Saves exclusively.

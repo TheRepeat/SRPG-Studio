@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * Split Saving v1.0
+ * Split Saving v1.1
  * Non-optional extension to Split Saves plugin.
  * Unlike saving, loading uses both scrollbars at the same time. The minimap is in the middle.
  * You can switch between them by pressing left/right or the C key.
@@ -24,6 +24,8 @@ var UnifiedLoadScreen = defineObject(LoadSaveScreenEx, {
     _loadMode: LoadMode.CHAPTER,
     _chapterSaveScrollbar: null, // left
     _battleSaveScrollbar: null, // right
+    _prevMouseX: null,
+    _prevMouseY: null,
 
     _prepareScreenMemberData: function (screenParam) {
         this._screenParam = screenParam;
@@ -31,7 +33,6 @@ var UnifiedLoadScreen = defineObject(LoadSaveScreenEx, {
         this._loadMode = LoadMode.CHAPTER;
         this._chapterSaveScrollbar = createScrollbarObject(ChapterSaveScrollbar, this);
         this._battleSaveScrollbar = createScrollbarObject(LoadSaveScrollbarEx, this);
-        this._questionWindow = createWindowObject(QuestionWindow, this);
     },
 
     _completeScreenMemberData: function (screenParam) {
@@ -46,8 +47,6 @@ var UnifiedLoadScreen = defineObject(LoadSaveScreenEx, {
         this._battleSaveScrollbar.setActive(false);
         this._setBattleScrollData(DefineControl.getMaxSaveFileCount(), this._isLoadMode); // <- use the vanilla check of DefineControl.getMaxSaveFileCount in battle save mode
         this._setDefaultBattleSaveFileIndex();
-
-        this._questionWindow.setQuestionMessage(StringTable.LoadSave_SaveQuestion);
 
         this.changeCycleMode(LoadSaveMode.TOP);
 
@@ -122,19 +121,19 @@ var UnifiedLoadScreen = defineObject(LoadSaveScreenEx, {
         var x = LayoutControl.getCenterX(-1, width);
         var y = LayoutControl.getCenterY(-1, this._battleSaveScrollbar.getScrollbarHeight());
         var rightScrollbarX = x + this._chapterSaveScrollbar.getObjectWidth() + this._saveFileDetailWindow.getWindowWidth();
-        var mode = this.getCycleMode();
+        var mouseX = root.getMouseX();
+        var mouseY = root.getMouseY();
 
         this._chapterSaveScrollbar.drawScrollbar(x, y);
         this._saveFileDetailWindow.drawWindow(x + this._chapterSaveScrollbar.getObjectWidth(), y);
         this._battleSaveScrollbar.drawScrollbar(rightScrollbarX, y);
 
-        this._handleMouseHover(x, rightScrollbarX, y, y);
-
-        if (mode === LoadSaveMode.SAVECHECK) {
-            x = LayoutControl.getCenterX(-1, this._questionWindow.getWindowWidth());
-            y = LayoutControl.getCenterY(-1, this._questionWindow.getWindowHeight());
-            this._questionWindow.drawWindow(x, y);
+        if (mouseX !== this._prevMouseX || mouseY !== this._prevMouseY) {
+            this._handleMouseHover(x, rightScrollbarX, y, y);
         }
+
+        this._prevMouseX = mouseX;
+        this._prevMouseY = mouseY;
     },
 
     _handleMouseHover: function (x, x2, y, y2) {

@@ -1,5 +1,5 @@
 Split Saving
-v1.0
+v1.1
 
 This plugin separates saving and loading across 3 screens:
  * Chapter Saves
@@ -16,3 +16,4 @@ This is plug and play, but there are configurable options in 0_split-save-config
 
 Update history:
 6/17/25: initial upload
+6/19/25: adjusted the load screen to only check the mouse's position when the mouse is moving

@@ -6,84 +6,94 @@ Commercial use: OK
 Adult use: OK
 If you use my plugins in your own project, it'd be nice if you credited me as Repeat or TheRepeat, but I won't force you to.
 
+The plugins don't usually rely on each other, so you can pick and choose at your leisure, or use them all.
+This collection is just to keep all of these enhancements together.
+
 
 	WHAT ALL IS IN HERE?
 There are a bunch of nice plugins included in this enhancement pack:
 
 Terrain Details, which shows the HP recovery (or damage) of terrain, plus displays skills and other quality of life improvements.
- 1. R-terrain-details.js
+ > R-terrain-details.js
 
 Detailed Unit Window, which expands on the unit hover window in the map view.
- 1. 0_unitwindow-config.js
- 2. R-unitwindow-large.js
- 3. R-unitwindow-med.js
+ > Everything in the Detailed Unit Window subfolder
 
 Forecast and Map Battle Enhancements:
-These are all individual plugins that are grouped together for cleanliness. They DO NOT rely on each other.
+This is a subfolder of individual plugins that are grouped together for cleanliness. They DO NOT rely on each other.
 {
 	Danger Skills, which shows icons for an enemy's dangerous skills in the combat forecast. See the file for more info.
-	1. R-danger-skills.js
+	> R-danger-skills.js
 
 	Better No-Animation Combat, which displays attack/accuracy/critical rate even when combat animations are turned off. Comes in two sizes.
-	1. R-detailed-easy-battle.js
+	> R-detailed-easy-battle.js
 
 	Easy Battle Pauses, which lets you customize the length of time to wait between each attack when combat animations are off (the vanilla pause time is really short!).
-	1. R-easy-battle-pauses.js
+	> R-easy-battle-pauses.js
 
 	Intuitive Seals, which hides battle stats on the combat forecast if the unit will be sealed by the opponent's skill or weapon.
-	1. R-intuitive-seal.js
+	> R-intuitive-seal.js
 
 	Player Phase Animations, which adds a third choice to the Real Battle config option: show full animations only on player phase, and show map animations on other phases.
 	Also lets user reverse the config option by holding Cycle (A/S keys, LB/RB buttons). Think "Hold L to Skip" from 3DS Fire Emblem games.
-	1. R-player-only-battle.js
+	> R-player-only-battle.js
 }
 
 Objective Window, which adds a new window to the map screen that allows you to display custom text and custom objective information (like enemy count or turns remaining).
-Latest version: 3.0
- 1. R-move-terrain.js
- 2. R-objective-alias.js
- 3. R-objective-enum.js
- 4. R-objective-window.js
+Latest version: 3.1
+ > Everything in the Objective Window subfolder
 
 Warning Markers, which adds floating icons over dangerous enemies, units that can be spoken to, and supporters.
 Also adds an icon to units on the unit selection screen in battle prep who have Talk events during the chapter.
 Latest version: 3.7
- 1. 0_mcmagister-unit-state-animator.js (credit to McMagister for graciously letting me include a copy of their plugin with my markers plugin)
- 2. R-markers.js
- 3. R-markers-values.js
- 4. R-prep-talk-markers.js
-
-Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
- 1. R-show-weapontype.js
-
-Item Drop Indicators, which places an icon over enemies who have an item they will drop.
-Uses McMagister's Unit State Animator.
- 1. R-drops-items.js
-
-Unit Roster, which adds new options to the map commands that allow you to view the full rosters of player, enemy, and ally units on the field, including plenty of information about all of them and allowing you to snap your cursor to a unit by selecting them in the menu.
- 1. R-unit-roster.js
-
-Visualize Sortie. If a unit is not selected in battle prep, their name and charchip will be grayed out in Manage Items.
- 1. R-visualize-sortie.js
-
-Flash White On Hit. Modified from a Claris plugin. Units will briefly flash white when taking damage in Easy Battle (=animations off).
- 1. CL-R-flash-white.js
-
-Always Show Dialogue Arrow. Normally, a "proceed" arrow won't show on the final line of dialogue, which this plugin changes.
- 1. R-dialogue-arrow-always.js
+Credit to McMagister for graciously letting me bundle a copy of their Unit State Animator plugin with my markers plugin that uses it
+ > Everything in the Markers subfolder
 
 Keybind Display + Rebinding. Displays controls onscreen during normal gameplay and allows players to rebind their controls in-game instead of in game.ini.
-Latest version: 1.3
- ?. contains a bunch of js files trust me. Read its readme or suffer
+Latest version: 1.5
+ > Everything in the Keybind Display subfolder
 
-Faster Healing. Replaces the slow vanilla healing animation with a much quicker (and less annoying) one.
- 1. R-faster-healing.js
+Alternate Controls. Slightly tweaks the default controls to remove redundancies and make the user experience more intuitive.
+ > R-alt-controls.js
+
+Show Weapon Type, which shows either the icon or the name of a weapon's type when checking its stats.
+ > R-show-weapontype.js
+
+Item Drop Indicators, which places an icon over enemies who have an item they will drop.
+Requires McMagister's Unit State Animator, which you can nab from the Markers folder.
+ > 0_mcmagister-unit-state-animator.js
+ > R-drops-items.js
+
+Unit Roster, which adds new options to the map commands that allow you to view the full rosters of player, enemy, and ally units on the field, including plenty of information about all of them and allowing you to snap your cursor to a unit by selecting them in the menu.
+ > R-unit-roster.js
+
+Visualize Sortie. If a unit is not selected in battle prep, their name and charchip will be grayed out in Manage Items.
+ > R-visualize-sortie.js
+
+Flash White On Hit. Modified from a Claris plugin. Units will briefly flash white when taking damage in Easy Battle (=animations off).
+ > CL-R-flash-white.js
+
+Always Show Dialogue Arrow. Normally, a "proceed" arrow won't show on the final line of dialogue, which this plugin changes.
+ > R-dialogue-arrow-always.js
+
+Faster Healing. Replaces the slow vanilla healing animation with a much quicker (and imo less annoying) one.
+ > R-faster-healing.js
 
 Show Difficulty on Save/Load. On the save/load screen, the save file's difficulty mode is also displayed over the map preview. Also fixes the misalignment of the colons in the Play Time display.
- 1. R-show-save-difficulty.js
+ > R-show-save-difficulty.js
 
-The plugins don't rely on each other, so you can pick and choose at your leisure, or use them all.
-This collection is just to keep all of these enhancements together.
+Single Save. After you save your game, instead of being forced to close the save window yourself, the screen instead closes automatically. More intuitive.
+Optionally, you can add a special sound effect for saving, too.
+ > R-single-save.js
+
+Fullscreen Config. Adds the ability to toggle fullscreen/windowed mode to the in-game Config settings.
+ > R-fullscreen-config.js
+
+Repair Polish. Improves the UX for Repair items, not letting you repair unbreakable or unused items. Includes UI tweaks to make the process more logical too.
+ > R-repair-polish.js
+
+Steal Polish. Improves the UX for Steal, hiding the steal command when there is nothing to steal or reverse-pickpocket.
+ > R-steal-polish.js
 
 Contact me on Discord if you need help getting anything to work!
 
@@ -110,4 +120,6 @@ UPDATE HISTORY (not comprehensive):
 8/14/2022: item drops v2.0
 9/11/2022: keybind display/rebind plugin
 8/7/2024: objective window v3.0
+1/20/2025: repair polish
 5/27/2025: added show save difficulty
+12/13/2025: steal polish

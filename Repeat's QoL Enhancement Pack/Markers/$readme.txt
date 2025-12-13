@@ -1,6 +1,6 @@
 Warning Markers
 By Repeat
-Version: 3.6.1
+Version: 3.7
 
 	ABOUT
 This plugin allows for warning markers like later FE games and many GBAFE romhacks use.

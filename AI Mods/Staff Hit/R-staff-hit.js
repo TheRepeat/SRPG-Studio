@@ -193,18 +193,8 @@ DamageItemUse.enterMainUseCycle = function (itemUseParent) {
 	var damageInfo = itemTargetInfo.item.getDamageInfo();
 	var type = itemTargetInfo.item.getRangeType();
 	var plus = Calculator.calculateDamageItemPlus(itemTargetInfo.unit, itemTargetInfo.targetUnit, itemTargetInfo.item);
-	var hit = damageInfo.getHit();
-
-	if (itemTargetInfo.item.custom.usesAcc) {
-		hit = getStaffTrueHit(damageInfo.getHit(), itemTargetInfo.unit, itemTargetInfo.targetUnit);
-
-		// NB: in vanilla, a damage hit value of 0 means "will never miss", while -1 means "will never hit", so we need to account for a calculated 0 hit in this way.
-		if (hit === 0) {
-			hit = -1;
-		}
-		// We only do this when usesAcc is true because otherwise an "Always hit" staff would actually always miss thanks to this check.
-		// For your "Always hit" staves, please don't use the usesAcc param.
-	}
+	var itemHit = damageInfo.getHit();
+	var usesAcc = itemTargetInfo.item.custom.usesAcc;
 
 	this._dynamicEvent = createObject(DynamicEvent);
 	generator = this._dynamicEvent.acquireEventGenerator();
@@ -213,13 +203,33 @@ DamageItemUse.enterMainUseCycle = function (itemUseParent) {
 		generator.locationFocus(itemTargetInfo.targetUnit.getMapX(), itemTargetInfo.targetUnit.getMapY(), true);
 	}
 
-	generator.damageHitEx(itemTargetInfo.targetUnit, this._getItemDamageAnime(itemTargetInfo), damageInfo.getDamageValue() + plus, damageInfo.getDamageType(), hit, itemTargetInfo.unit, itemUseParent.isItemSkipMode());
+	if (usesAcc) {
+		var hit = getStaffTrueHit(itemHit, itemTargetInfo.unit, itemTargetInfo.targetUnit);
 
-	// When using a damaged item with a durability of 1 to obtain "Item Drops",
-	// it is unnatural for the damaged item to appear in the item window.
-	// By reducing the durability of the damaged item in advance, the item window can be left blank.
-	itemUseParent.decreaseItem();
-	itemUseParent.disableItemDecrement();
+		// NB: in vanilla, a damage hit value of 0 means "will never miss", while -1 means "will never hit", so we need to account for a calculated 0 hit in this way.
+		// We only do this when usesAcc is true because otherwise an "Always hit" staff would actually always miss thanks to this check.
+		// For your "Always hit" staves, please don't use the usesAcc param.
+		if (hit === 0) {
+			hit = -1;
+		}
+
+		// You're supposed to use damageHitEx when accuracy is involved since it has a built-in 'hit' argument that does some dice roll behind the scenes.
+		// Sadly it seems to be bugged and can miss even with 100 hit. So I do my own rng check instead.
+		// If it succeeds, I use damageHit, which does not have an accuracy check, and if it fails, I use damageHitEx with hit set to -1 (guaranteed miss).
+		var rand = root.getRandomNumber() % 100;
+
+		if (rand < hit) {
+			generator.damageHit(itemTargetInfo.targetUnit, this._getItemDamageAnime(itemTargetInfo), damageInfo.getDamageValue() + plus, damageInfo.getDamageType(), itemTargetInfo.unit, itemUseParent.isItemSkipMode());
+		} else {
+			generator.damageHitEx(itemTargetInfo.targetUnit, this._getItemDamageAnime(itemTargetInfo), damageInfo.getDamageValue() + plus, damageInfo.getDamageType(), -1, itemTargetInfo.unit, itemUseParent.isItemSkipMode());
+		}
+
+	} else {
+		generator.damageHitEx(itemTargetInfo.targetUnit, this._getItemDamageAnime(itemTargetInfo),
+			damageInfo.getDamageValue() + plus, damageInfo.getDamageType(), itemHit, itemTargetInfo.unit, itemUseParent.isItemSkipMode());
+	}
+
+	this._preUseDurability(itemUseParent);
 
 	return this._dynamicEvent.executeDynamicEvent();
 }

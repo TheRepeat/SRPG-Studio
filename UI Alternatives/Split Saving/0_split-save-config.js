@@ -13,10 +13,10 @@ var SaveLoadScreenStrings = {
     TITLE__SAVE_CHAPTER: 'Chapter Save'
 };
 
+StringTable.LoadSave_NoData = '- No Data -';
+
 // If you haven't already messed with this number, you can uncomment this function and mess with it here.
 // DefineControl.getMaxSaveFileCount = function () {
 //     // The maximum value is 99.
 //     return 50;
 // }
-
-StringTable.LoadSave_NoData = '- No Data -';

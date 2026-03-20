@@ -1,18 +1,28 @@
 /**
  * By Repeat.
- * Split Saving v1.1
+ * Split Saving v2.0
  * Non-optional extension to Split Saves plugin.
- * Unlike saving, loading uses both scrollbars at the same time. The minimap is in the middle.
- * You can switch between them by pressing left/right or the C key.
+ * Unlike saving, loading uses both scrollbars at the same time. The minimap is in the middle on the largest res, or pops out on smaller resolutions.
+ * You can switch between them by pressing left/right or the OPTION key.
  * The minimap shows nothing when in Chapter Save mode.
+ * 
  * 
  * Function(s) overridden without alias:
  *  * LoadSaveControl.getLoadScreenObject
  *  * The Load command now uses its own distinct screen (UnifiedLoadScreen) instead of directly reusing the Save screens
  */
 
+var SaveLoadScreenBreakpoints = {
+    LARGE: 1088,
+    MEDIUM: 832,
+    SMALL: 800,
+    XSMALL: 768
+};
+
 LoadSaveControl.getLoadScreenObject = function () {
-    return UnifiedLoadScreen;
+    var screenWidth = root.getGameAreaWidth();
+
+    return screenWidth > SaveLoadScreenBreakpoints.LARGE ? UnifiedLoadScreen : SmallLoadScreen;
 }
 
 var LoadMode = {
@@ -26,6 +36,7 @@ var UnifiedLoadScreen = defineObject(LoadSaveScreenEx, {
     _battleSaveScrollbar: null, // right
     _prevMouseX: null,
     _prevMouseY: null,
+    _saveFileDetailWindow: null,
 
     _prepareScreenMemberData: function (screenParam) {
         this._screenParam = screenParam;
@@ -140,7 +151,7 @@ var UnifiedLoadScreen = defineObject(LoadSaveScreenEx, {
         /**
          * Range objects are the exact w/h of the scrollbars.
          * Hovering in the range of either range object changes which scrollbar is active.
-         * Should lead to a relatively seamless mouse operation.
+         * Leads to a relatively seamless mouse operation.
          */
         var range1 = createRangeObject(x, y, this._chapterSaveScrollbar.getObjectWidth(), this._chapterSaveScrollbar.getObjectHeight() * this.getVisibleSaveFileCount());
         var range2 = createRangeObject(x2, y2, this._battleSaveScrollbar.getObjectWidth(), this._battleSaveScrollbar.getObjectHeight() * this.getVisibleSaveFileCount());
@@ -259,3 +270,186 @@ var UnifiedLoadScreen = defineObject(LoadSaveScreenEx, {
         return this._loadMode === LoadMode.CHAPTER ? SaveLoadScreenStrings.TITLE__LOAD_CHAPTER : SaveLoadScreenStrings.TITLE__LOAD_BATTLE;
     }
 });
+
+
+/**
+ * Unified load screen for smaller resolutions.
+ * 
+ * Screen width is retrievable with root.getGameAreaWidth()
+ * Screen height isn't significant for this plugin
+ * 
+ * Breakpoints of note:
+ * 1280: index 3, max vanilla screen size
+ * 1088: 34 tile map, smallest that fits the whole load window
+ * 1056: 33 tile map
+ * 1024: index 2
+ * 832: 26 tile map, smallest that fits the 2-column chapter save screen
+ * 800: index 1
+ * 768: 24 tile map, smallest that fits the battle save screen
+ * 640: index 0, min vanilla screen size
+ * 416: unrealistic 13 tile map, smallest that fits the chapter save screen if I changed it to 1 col. Don't need to worry about that
+ * 
+ * Game plan:
+ * Chapter save: below 832px, change getFileCol to return 1 column
+ * Battle save: below 768px, don't show the preview image, just the column of save files
+ * Load screen: below 1088px, no preview img.
+ *  * as low as 640px it can still fit with the 2 columns and no img since the battle save column is narrower. Simplest solution.
+ *  * not having the img sucks though, so I implemented a popout when you move your cursor to BSS. Slave to the art
+ */
+
+var SmallLoadScreen = defineObject(UnifiedLoadScreen, {
+    _loadMode: LoadMode.CHAPTER,
+    _chapterSaveScrollbar: null, // left
+    _battleSaveScrollbar: null, // right
+    _prevMouseX: null,
+    _prevMouseY: null,
+    _mapPreviewX: null, // saveFileDetailWindow slides in and out from the left side of the screen - this tracks its position
+
+    _completeScreenMemberData: function (screenParam) {
+        var count = this.getVisibleSaveFileCount();
+
+        this._chapterSaveScrollbar.setScrollFormation(this._getFileCol(), count);
+        this._chapterSaveScrollbar.setActive(true);
+        this._setScrollData(this.getSaveFileCount(), this._isLoadMode); // <- only show the first (save file count - battle save count) files in chapter save mode
+        this._setDefaultSaveFileIndex();
+
+        this._battleSaveScrollbar.setScrollFormation(this._getFileCol(), count);
+        this._battleSaveScrollbar.setActive(false);
+        this._setBattleScrollData(DefineControl.getMaxSaveFileCount(), this._isLoadMode); // <- use the vanilla check of DefineControl.getMaxSaveFileCount in battle save mode
+        this._setDefaultBattleSaveFileIndex();
+
+        this.changeCycleMode(LoadSaveMode.TOP);
+
+        this._saveFileDetailWindow = createWindowObject(SaveFileDetailWindow, this);
+        this._saveFileDetailWindow.setSize(Math.floor(this._battleSaveScrollbar.getScrollbarHeight() * 1.2), this._battleSaveScrollbar.getScrollbarHeight());
+        this._saveFileDetailWindow.setSaveFileInfo(this.getDummySaveFile());
+
+        this._mapPreviewX = 0 - this._saveFileDetailWindow.getWindowWidth();
+    },
+
+    setDetailWindowSlide: function () {
+        var curX = this._mapPreviewX;
+        var finalPos = 8; // x position of where the window ends up
+
+        if (curX < finalPos) {
+            var width = this._saveFileDetailWindow.getWindowWidth();
+            var slideDuration = 8; // frames it takes to slide in
+
+            curX += width / slideDuration;
+        } else {
+            curX = finalPos;
+        }
+
+        this._mapPreviewX = curX;
+    },
+
+    setDetailWindowSlideReverse: function () {
+        var curX = this._mapPreviewX;
+        var finalPos = 0 - this._saveFileDetailWindow.getWindowWidth(); // x position of where the window ends up
+
+        if (curX > finalPos) {
+            var width = this._saveFileDetailWindow.getWindowWidth();
+            var slideDuration = 8; // frames it takes to slide in
+
+            curX -= width / slideDuration;
+        } else {
+            curX = finalPos;
+        }
+
+        this._mapPreviewX = curX;
+    },
+
+    drawScreenCycle: function () {
+        var screenWidth = root.getGameAreaWidth();
+        var isXSmall = screenWidth < SaveLoadScreenBreakpoints.SMALL;
+
+        var x = isXSmall ? 16 : 32;
+        var rightBuf = isXSmall ? 4 : 8;
+        var y = LayoutControl.getCenterY(-1, this._battleSaveScrollbar.getScrollbarHeight());
+        var rightScrollbarX = screenWidth - this._battleSaveScrollbar.getObjectWidth() - rightBuf;
+        var mouseX = root.getMouseX();
+        var mouseY = root.getMouseY();
+
+        // adjust the position for the map preview img, sliding in or out depending on loadmode
+        if (this._loadMode === LoadMode.BATTLE) {
+            this.setDetailWindowSlide();
+        } else {
+            this.setDetailWindowSlideReverse();
+        }
+
+        this._chapterSaveScrollbar.drawScrollbar(x, y);
+        this._saveFileDetailWindow.drawWindow(this._mapPreviewX, y);
+        this._battleSaveScrollbar.drawScrollbar(rightScrollbarX, y);
+
+        if (mouseX !== this._prevMouseX || mouseY !== this._prevMouseY) {
+            this._handleMouseHover(x, rightScrollbarX, y, y);
+        }
+
+        this._prevMouseX = mouseX;
+        this._prevMouseY = mouseY;
+    },
+
+    _switchLoadMode: function () {
+        this._loadMode = this._loadMode === LoadMode.BATTLE ? LoadMode.CHAPTER : LoadMode.BATTLE;
+
+        if (this._loadMode === LoadMode.BATTLE) {
+            this._chapterSaveScrollbar.setActive(false);
+            this._battleSaveScrollbar.setActive(true);
+
+            this._saveFileDetailWindow.setSaveFileInfo(this._battleSaveScrollbar.getObject());
+        } else { // chapter save
+            this._chapterSaveScrollbar.setActive(true);
+            this._battleSaveScrollbar.setActive(false);
+            
+            // reset the slidein position
+            this._saveFileDetailWindow.setSaveFileInfo(this.getDummySaveFile());
+        }
+    },
+
+    drawScreenTopText: function (textui) {
+        if (textui === null) {
+            return;
+        }
+
+        if (this._loadMode === LoadMode.CHAPTER) {
+            drawScreenTopTextEx(8, this.getScreenTitleName(), textui, false);
+        } else {
+            var pic = textui.getUIImage();
+            var newX = root.getGameAreaWidth() - pic.getWidth();
+
+            drawScreenTopTextEx(newX, this.getScreenTitleName(), textui, true);
+        }
+    },
+
+    _checkSaveFile: function () {
+        if (this._battleSaveScrollbar.checkAndUpdateIndex()) {
+            this._saveFileDetailWindow.setSaveFileInfo(this._battleSaveScrollbar.getObject());
+        }
+    }
+});
+
+// Reversible title ui with configurable x
+function drawScreenTopTextEx(xBase, titleName, textui, isReverse) {
+    var range;
+    var x = xBase;
+    var y = 0;
+    var color = textui.getColor();
+    var font = textui.getFont();
+    var pic = textui.getUIImage();
+    var buf = 105;
+    var align = TextFormat.LEFT;
+
+    if (pic !== null) {
+        pic.draw(x, y);
+        pic.setReverse(isReverse);
+
+        if (isReverse) {
+            buf *= -1;
+            align = TextFormat.RIGHT;
+        }
+
+        range = createRangeObject(x + buf, y, UIFormat.SCREENFRAME_WIDTH, 45);
+        TextRenderer.drawRangeText(range, align, titleName, -1, color, font);
+    }
+
+}

@@ -1,10 +1,10 @@
 /**
  * By Repeat.
- * Split Saving v1.1
+ * Split Saving v2.0
  * Changes saves so saving during battle prep/base/EOC ("Chapter Saves") is a separate list of saves from mid-map saves ("Battle Saves").
  * LoadSaveScreen (no minimap) is repurposed for Chapter Saves exclusively.
  * LoadSaveScreenEx (w/ minimap) is repurposed for Battle Saves exclusively.
- * Loading is a mix of both using new class UnifiedLoadScreen.
+ * Loading is a mix of both using new classes UnifiedLoadScreen or SmallLoadScreen, depending on the screen resolution.
  * 
  * Notes:
  *  * In 0_split-save-config.js, set BATTLE_SAVE_COUNT equal to the number of save slots to allot for battles only. The rest are used for Chapter Saves
@@ -39,6 +39,46 @@
 
         return obj;
     }
+
+    var alias2 = LoadSaveScreen.drawScreenCycle;
+    LoadSaveScreen.drawScreenCycle = function () {
+
+        if (this.isMediumScreen()) {
+            // save screen is right aligned on small res
+            var x = root.getGameAreaWidth() - this._scrollbar.getObjectWidth() - 8;
+            var y = LayoutControl.getCenterY(-1, this._scrollbar.getScrollbarHeight());
+            var mode = this.getCycleMode();
+
+            this._scrollbar.drawScrollbar(x, y);
+
+            if (mode === LoadSaveMode.SAVECHECK) {
+                x = LayoutControl.getCenterX(-1, this._questionWindow.getWindowWidth());
+                y = LayoutControl.getCenterY(-1, this._questionWindow.getWindowHeight());
+                this._questionWindow.drawWindow(x, y);
+            }
+        } else {
+            alias2.apply(this, arguments);
+        }
+    }
+
+    // For small-resolution battle saves, the Battle Save header is reversed just like it is in SmallLoadScreen
+    var alias3 = LoadSaveScreenEx.drawScreenTopText;
+    LoadSaveScreenEx.drawScreenTopText = function (textui) {
+        if (textui === null) {
+            return;
+        }
+
+        // same condition as drawing UnifiedLoadScreen vs SmallLoadScreen
+        if (this.isLargeScreen()) {
+            alias3.apply(this, arguments)
+        } else {
+            var pic = textui.getUIImage();
+            var newX = root.getGameAreaWidth() - pic.getWidth();
+
+            drawScreenTopTextEx(newX, this.getScreenTitleName(), textui, true);
+        }
+    }
+
 })();
 
 var ChapterSaveScrollbar = defineObject(LoadSaveScrollbar, {
@@ -208,6 +248,7 @@ LoadSaveScreenEx.getScreenTitleName = function () {
     return SaveLoadScreenStrings.TITLE__SAVE_BATTLE;
 }
 
+// onsave - chapter
 LoadSaveScreen._executeSave = function () {
     var index = this._scrollbar.getIndex();
 
@@ -216,8 +257,9 @@ LoadSaveScreen._executeSave = function () {
     root.getExternalData().env.ChapterSaveActiveIndex = this._scrollbar.getIndex();
 }
 
+// onsave - battle
 LoadSaveScreenEx._executeSave = function () {
-    var index = this._scrollbar.getIndex() + BATTLE_SAVE_COUNT;
+    var index = DefineControl.getMaxSaveFileCount() - BATTLE_SAVE_COUNT + this._scrollbar.getIndex();
 
     root.getLoadSaveManager().saveFile(index, this._screenParam.scene, this._screenParam.mapId, this._getCustomObject());
 
@@ -231,6 +273,7 @@ LoadSaveScreen._getScrollbarObject = function () {
 }
 
 LoadSaveControl.getSaveScreenObject = function () {
+    // DataSaveScreenEx -> LoadSaveScreenEx -> LoadSaveScrollbarEx (battle saves). DataSaveScreen -> LoadSaveScreen -> ChapterSaveScrollbar
     return this.isBattleSave() ? DataSaveScreenEx : DataSaveScreen;
 }
 
@@ -238,11 +281,15 @@ LoadSaveControl.isBattleSave = function () {
     return root.getCurrentScene() === SceneType.FREE;
 }
 
+LoadSaveScreen._getFileCol = function () {
+    return this.isMediumScreen() ? 1 : 2;
+}
+
 // Chapter saves: show (total save count) - (battle save count), e.g. BATTLE_SAVE_COUNT = 25 with 50 slots means Chapter Saves uses slots 0 through 24 and Battle Saves takes 25-49
 // Phrased another way, the last X save slots are set aside for Battle Saves only. X = BATTLE_SAVE_COUNT.
 // If you wanted to remake FE11 or 12, you would have DefineControl.getMaxSaveFileCount return 5 and set BATTLE_SAVE_COUNT = 2, so your first 3 saves are Chapter Saves and your last 2 are Battle Saves.
 LoadSaveScreen._completeScreenMemberData = function (screenParam) {
-    var count = 6; // LayoutControl.getObjectVisibleCount(76, 5);
+    var count = this.isXSmallScreen() ? 5 : 6; // LayoutControl.getObjectVisibleCount(76, 5);
 
     this._scrollbar.setScrollFormation(this._getFileCol(), count);
     this._scrollbar.setActive(true);
@@ -254,8 +301,34 @@ LoadSaveScreen._completeScreenMemberData = function (screenParam) {
     this.changeCycleMode(LoadSaveMode.TOP);
 }
 
+LoadSaveScreen.isXSmallScreen = function () {
+    var screenWidth = root.getGameAreaWidth();
+
+    // 768 px (24-tile-wide map) is the min width that actually fits the minimap view. Smaller sizes do without
+    return screenWidth < SaveLoadScreenBreakpoints.XSMALL;
+}
+
+LoadSaveScreen.isMediumScreen = function () {
+    var screenWidth = root.getGameAreaWidth();
+
+    // 832 px (26-tile-wide map) is the min width that actually fits the 2-column save screen. Smaller sizes have 1 col
+    return screenWidth < SaveLoadScreenBreakpoints.MEDIUM;
+}
+
+LoadSaveScreen.isLargeScreen = function () {
+    var screenWidth = root.getGameAreaWidth();
+
+    // 832 px (26-tile-wide map) is the min width that actually fits the 2-column save screen. Smaller sizes have 1 col
+    return screenWidth >= SaveLoadScreenBreakpoints.LARGE;
+}
+
+// used for Chapter Saves only - Battle Saves looks at the full list since it has to start partway through and read til the end
+LoadSaveScreen.getSaveFileCount = function () {
+    return DefineControl.getMaxSaveFileCount() - BATTLE_SAVE_COUNT;
+}
+
 LoadSaveScreenEx._completeScreenMemberData = function (screenParam) {
-    var count = 6; // LayoutControl.getObjectVisibleCount(76, 5);
+    var count = 5; // LayoutControl.getObjectVisibleCount(76, 5);
 
     this._scrollbar.setScrollFormation(this._getFileCol(), count);
     this._scrollbar.setActive(true);
@@ -269,14 +342,15 @@ LoadSaveScreenEx._completeScreenMemberData = function (screenParam) {
     this._scrollbar.enablePageChange();
 
     this._saveFileDetailWindow = createWindowObject(SaveFileDetailWindow, this);
-    this._saveFileDetailWindow.setSize(Math.floor(this._scrollbar.getScrollbarHeight() * 1.2), this._scrollbar.getScrollbarHeight());
+
+    if (this.isXSmallScreen()) {
+        // 5/6 (0.8333...) is the inverse of 1.2 (6/5) so this keeps the same proportions as the usual dimensions passed to setSize
+        this._saveFileDetailWindow.setSize(this._scrollbar.getScrollbarHeight(), Math.floor(this._scrollbar.getScrollbarHeight() * 5 / 6));
+    } else {
+        this._saveFileDetailWindow.setSize(Math.floor(this._scrollbar.getScrollbarHeight() * 1.2), this._scrollbar.getScrollbarHeight());
+    }
 
     this._checkSaveFile();
-}
-
-// used for Chapter Saves only - Battle Saves looks at the full list since it has to start partway through and read til the end
-LoadSaveScreen.getSaveFileCount = function () {
-    return DefineControl.getMaxSaveFileCount() - BATTLE_SAVE_COUNT;
 }
 
 LoadSaveScreenEx._setScrollData = function (count, isLoadMode) {
@@ -293,13 +367,22 @@ LoadSaveScreenEx._setScrollData = function (count, isLoadMode) {
 }
 
 // Flips the order of scrollbar->detailwindow to detailwindow->scrollbar for consistency with the Load screen
+// For extra small screens, shows the window left-aligned and with a smaller detailwindow
 LoadSaveScreenEx.drawScreenCycle = function () {
-    var width = this._scrollbar.getObjectWidth() + this._saveFileDetailWindow.getWindowWidth();
-    var x = LayoutControl.getCenterX(-1, width);
-    var y = LayoutControl.getCenterY(-1, this._scrollbar.getScrollbarHeight());
+    if (this.isXSmallScreen()) {
+        var x = 12;
+        var y = LayoutControl.getCenterY(-1, this._scrollbar.getScrollbarHeight());
 
-    this._saveFileDetailWindow.drawWindow(x, y);
-    this._scrollbar.drawScrollbar(x + this._saveFileDetailWindow.getWindowWidth(), y);
+        this._saveFileDetailWindow.drawWindow(root.getGameAreaWidth() - this._saveFileDetailWindow.getWindowWidth(), y + 32);
+        this._scrollbar.drawScrollbar(x, y);
+    } else {
+        var width = this._scrollbar.getObjectWidth() + this._saveFileDetailWindow.getWindowWidth();
+        var x = LayoutControl.getCenterX(-1, width);
+        var y = LayoutControl.getCenterY(-1, this._scrollbar.getScrollbarHeight());
+
+        this._saveFileDetailWindow.drawWindow(x, y);
+        this._scrollbar.drawScrollbar(x + this._saveFileDetailWindow.getWindowWidth(), y);
+    }
 
     if (this.getCycleMode() === LoadSaveMode.SAVECHECK) {
         x = LayoutControl.getCenterX(-1, this._questionWindow.getWindowWidth());
@@ -309,7 +392,8 @@ LoadSaveScreenEx.drawScreenCycle = function () {
 }
 
 // This function is used to remember your last save slot and start the cursor there when you reopen the Save screen, using root.getExternalData().getActiveSaveFileIndex().
-// Sadly, you only get 1, and you can't really control when it gets saved. But the cursor memory actually works just fine with a custom env parameter too, so I ignore getActiveSaveFileIndex and just duplicate the behavior here.
+// Sadly, you only get 1, and you can't really control when it gets saved.
+// But the cursor memory actually works just fine with a custom env parameter too, so I ignore getActiveSaveFileIndex and just duplicate the behavior here.
 // The respective ActiveIndices are set whenever you make a selection (save or load).
 LoadSaveScreen._setDefaultSaveFileIndex = function () {
     var index = root.getExternalData().env.ChapterSaveActiveIndex || 0;

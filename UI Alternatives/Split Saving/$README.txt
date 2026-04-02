@@ -1,5 +1,5 @@
 Split Saving
-v2.0
+v2.1
 
 This plugin separates saving and loading across 3 screens:
  * Chapter Saves
@@ -26,3 +26,4 @@ Update history:
 3/19/26: v2.0: "The Responsive Update"
  * Support for all screen sizes
  * Bugfix for battle saves saving in the wrong slot
+4/2/26: v2.1: crash fix for users that do not have a Top Frame image set for the save or load screens, and added config options to change the Top Frame's behavior

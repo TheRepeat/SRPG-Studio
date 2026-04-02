@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * Split Saving v2.0
+ * Split Saving v2.1
  * Non-optional extension to Split Saves plugin.
  * Unlike saving, loading uses both scrollbars at the same time. The minimap is in the middle on the largest res, or pops out on smaller resolutions.
  * You can switch between them by pressing left/right or the OPTION key.
@@ -400,7 +400,7 @@ var SmallLoadScreen = defineObject(UnifiedLoadScreen, {
         } else { // chapter save
             this._chapterSaveScrollbar.setActive(true);
             this._battleSaveScrollbar.setActive(false);
-            
+
             // reset the slidein position
             this._saveFileDetailWindow.setSaveFileInfo(this.getDummySaveFile());
         }
@@ -411,13 +411,19 @@ var SmallLoadScreen = defineObject(UnifiedLoadScreen, {
             return;
         }
 
-        if (this._loadMode === LoadMode.CHAPTER) {
+        var pic = textui.getUIImage();
+
+        if (!pic) {
+            return;
+        }
+
+        if (this._loadMode === LoadMode.CHAPTER || SplitSaveTopConfig.drawAsDefault) {
             drawScreenTopTextEx(8, this.getScreenTitleName(), textui, false);
         } else {
             var pic = textui.getUIImage();
             var newX = root.getGameAreaWidth() - pic.getWidth();
 
-            drawScreenTopTextEx(newX, this.getScreenTitleName(), textui, true);
+            drawScreenTopTextEx(newX, this.getScreenTitleName(), textui, SplitSaveTopConfig.reverseImage);
         }
     },
 

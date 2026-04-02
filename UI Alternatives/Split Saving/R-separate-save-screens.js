@@ -1,6 +1,6 @@
 /**
  * By Repeat.
- * Split Saving v2.0
+ * Split Saving v2.1
  * Changes saves so saving during battle prep/base/EOC ("Chapter Saves") is a separate list of saves from mid-map saves ("Battle Saves").
  * LoadSaveScreen (no minimap) is repurposed for Chapter Saves exclusively.
  * LoadSaveScreenEx (w/ minimap) is repurposed for Battle Saves exclusively.
@@ -68,14 +68,20 @@
             return;
         }
 
+        var pic = textui.getUIImage();
+
+        if (!pic) {
+            return;
+        }
+
         // same condition as drawing UnifiedLoadScreen vs SmallLoadScreen
-        if (this.isLargeScreen()) {
+        if (this.isLargeScreen() || SplitSaveTopConfig.drawAsDefault) {
             alias3.apply(this, arguments)
         } else {
             var pic = textui.getUIImage();
             var newX = root.getGameAreaWidth() - pic.getWidth();
 
-            drawScreenTopTextEx(newX, this.getScreenTitleName(), textui, true);
+            drawScreenTopTextEx(newX, this.getScreenTitleName(), textui, SplitSaveTopConfig.reverseImage);
         }
     }
 

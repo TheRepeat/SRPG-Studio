@@ -206,6 +206,15 @@ Localization, TL notes, and some new features and fixes: Repeat
 		E.g. MapItemCommandIndex = 2 puts the Item command at the second index.
 		If you want to hide this command, set MapItemCommandIndex = -1
 
+	14. (Addition by Repeat) I want to automatically set certain System Settings to apply on walk maps, such as disabling Map HP bar display.
+		→ Set values for walkSystemSettings to false.
+		This behaves the same as using the System Settings event command and setting that value to Disabled.
+		If values are left at true, no changes to that setting are made (even if you've disabled them yourself with event commands; this plugin will not re-enable them).
+		(The value of doing it this way, as opposed to purely with event commands in-engine (say, in an Opening Event), is that this persists on loading save files since the settings get re-applied automatically.)
+		!!WARNING!! The system settings you disable do not automatically get re-enabled after the walk map has completed!
+		Please remember to include a System Settings event command in your map's Ending Events that re-enables the relevant settings for your players.
+		It may be helpful, in case you're worried you'll forget to do this on every walk map, to make one Map Common Event → Ending Event and put your System Settings event there.
+
 ■ Commands that can be used with Execute Script
 	Event command: These commands can be used in Execute Script → Execute Code.
 
@@ -368,9 +377,9 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 	var isRTP_ChgSE = true;			// Use RTP SFX when switching units with C? (false=original instead of RTP)
 	var use_ChgSE_ID = 11;			// ID of sound effect to use（default: 11, RTP "Use Item" sound）
 
-	var MapStockCommandIndex = 1;	// Convoy command position (0: bottom, value of 1 or more: value from top)
+	var MapStockCommandIndex = -1;	// Convoy command position (0: bottom, value of 1 or more: value from top)
 	// * If -1, the Convoy command won't show.
-	var MapUnitMarshalIndex = -1;	// Position of Manage Units (0: bottom, value of 1 or more: value from top) 
+	var MapUnitMarshalIndex = 1;	// Position of Manage Units (0: bottom, value of 1 or more: value from top) 
 	// * If it is -1, the Manage command won't show.
 	var MapItemCommandIndex = -1;	// position of the Item command (0: bottom, value of 1 or more: value from top)
 	// * If -1, the Item command won't show.
@@ -378,6 +387,22 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 	var MoveSpeed = 3;				// Default speed ​​of movement, from 0 to 3 (3 is slowest)
 	var cannotRun = false;			// If true, Running is disabled completely.
 	var runWithSystem = false;		// If true, Run is executed by holding the SYSTEM key instead of one of the the LSWITCH/RSWITCH keys
+
+	// Settings to automatically apply on all walk maps.
+	// Analagous to the "System Settings" event command in-engine.
+	// false=disable | true=do not change from the current setting
+	// (Recommend disabling MAPHP and MAPSYMBOL but it's up to you)
+	// If any of these are false, be sure to re-enable them in the walk map's Ending events or they will continue to apply on future maps.
+	// Setting it to true doesn't re-enable it if it's already disabled.
+	var walkSystemSettings = {
+		SKIP: true, // Skip Operation
+		UNITMOVESOUND: true, // Moving Sound
+		ANIMESOUND: true, // Animation Sound
+		MARKING: true, // Enemy Range
+		MAPGRID: true, // Map Grid
+		MAPHP: true, // Map Unit HP
+		MAPSYMBOL: true // Map Unit Symbol
+	};
 
 	/* Place Events section */
 	var isSearchTalk = false;		// Detect Talk Events on the tile you're standing on?
@@ -3366,8 +3391,9 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 					}
 				}
 
-				//		groupArray.appendObject(MarshalCommand.ItemTrade);
-				//		groupArray.appendObject(MarshalCommand.UnitSort);
+				// Addition by Repeat - re-enabled Trade and Formation (UnitSort)
+				groupArray.appendObject(MarshalCommand.ItemTrade);
+				groupArray.appendObject(MarshalCommand.UnitSort);
 				groupArray.appendObject(MarshalCommand.UnitStatusForWalk);
 
 				if (DataConfig.isBattleSetupItemUseAllowed()) {
@@ -3892,6 +3918,9 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 					// Set walking mode (ALONE or GROUP)
 					this._nowPlayerTurn.setWalkGroup(WalkControl.getWalkGroup());
 
+					// automatically set values from walkSystemSettings
+					this._setSystemSettings();
+
 					// Hide other player units if walk type is GROUP
 					if (this._nowPlayerTurn.isWalkGroup() == true) {
 						this._nowPlayerTurn.invisibleWalkGroup();
@@ -4045,6 +4074,42 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 
 			_doEventEndAction: function () {
 				this._nowPlayerTurn._doEventEndAction();
+			},
+
+			// Addition by Repeat.
+			_setSystemSettings: function () {
+				// the naive approach is to have no ifs and just do this: 
+				// root.setSystemSettings(SystemSettingsType.SKIP, walkSystemSettings.SKIP); // and so on with the rest...
+				// however, "true" is meant to mean "don't change the setting", not "change the setting to true".
+				// only "false" should have an effect.
+				if (!walkSystemSettings.SKIP) {
+					root.setSystemSettings(SystemSettingsType.SKIP, false);
+				}
+
+				if (!walkSystemSettings.UNITMOVESOUND) {
+					root.setSystemSettings(SystemSettingsType.UNITMOVESOUND, false);
+				}
+
+				if (!walkSystemSettings.ANIMESOUND) {
+					root.setSystemSettings(SystemSettingsType.ANIMESOUND, false);
+				}
+
+				if (!walkSystemSettings.MARKING) {
+					root.setSystemSettings(SystemSettingsType.MARKING, false);
+				}
+
+				if (!walkSystemSettings.MAPGRID) {
+					root.setSystemSettings(SystemSettingsType.MAPGRID, false);
+				}
+
+				if (!walkSystemSettings.MAPHP) {
+					root.setSystemSettings(SystemSettingsType.MAPHP, false);
+				}
+
+				if (!walkSystemSettings.MAPSYMBOL) {
+					// TODO: replace 6 with enum for Map Unit Symbol, pending next SRPG Studio update
+					root.setSystemSettings(6, false);
+				}
 			}
 		}
 	);

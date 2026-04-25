@@ -7,3 +7,4 @@ Credits:
 Creator, original author: 名前未定（仮） / name TBD (tentative)
 Translation: Google Translate, DeepL
 Localization, TL notes, some new features/fixes: Repeat
+Input control updates: PCMath

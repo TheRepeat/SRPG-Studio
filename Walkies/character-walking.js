@@ -389,7 +389,7 @@ var canTargetChange = false;	// If true, player can switch units by pressing C
 	var runWithSystem = false;		// If true, Run is executed by holding the SYSTEM key instead of one of the the LSWITCH/RSWITCH keys
 
 	// Settings to automatically apply on all walk maps.
-	// Analagous to the "System Settings" event command in-engine.
+	// Analogous to the "System Settings" event command in-engine.
 	// false=disable | true=do not change from the current setting
 	// (Recommend disabling MAPHP and MAPSYMBOL but it's up to you)
 	// If any of these are false, be sure to re-enable them in the walk map's Ending events or they will continue to apply on future maps.

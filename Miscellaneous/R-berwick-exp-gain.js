@@ -11,6 +11,7 @@
  * 
  * This plugin doesn't affect hardcoded means of gaining EXP (e.g. staves), events, or Paragon (via skill or difficulty option)
  * This plugin removes the check for DataConfig.isFixedExperience ("Get optional exp of class when enemy is killed").
+ * The "Basic Exp" setting for a difficulty mode can still be used as a modifier to make EXP gain more generous.
  * 
  * Functions overridden without aliases:
  *  * ExperienceCalculator._getNoDamageExperience
@@ -47,11 +48,11 @@
 			return 0;
 		}
 
-		if (levelDiff < 0) {
+		if (levelDiff < 0) { // negative (you are a higher level)
 			expMod = levelDiff * 5;
 		} else if (levelDiff === 7) {
 			expMod = 15;
-		} else {
+		} else { // positive (you are the same or lower level)
 			expMod = levelDiff * 2;
 		}
 
